@@ -157,7 +157,15 @@
   footer p { margin: 0 0 0.35rem; }
   ::selection { background: var(--pink-soft); color: var(--bright); }
 
-  /* ── print: arXiv face — monochrome serif, no café chrome ── */
+  /* citations & references (both faces) */
+  a.cite { color: var(--blue); text-decoration: none; font-size: 0.85em; }
+  a.cite:hover, a.cite:focus-visible { color: var(--bright); text-decoration: underline; }
+  ol.refs { margin: 0.65rem 0; padding-left: 1.7rem; font-size: 0.9em; }
+  ol.refs li { margin: 0.35rem 0; }
+  ol.refs li:target { background: var(--pink-soft); }
+  .printhead, .printonly, .sidestamp { display: none; }
+
+  /* ── print: arXiv preprint face — monochrome serif, no café chrome ── */
   @media print {
     :root {
       --bg:#ffffff; --paper:#ffffff; --chrome:#ffffff; --line:#000000;
@@ -169,20 +177,43 @@
       background:#fff !important; background-image:none !important;
       font-family: Georgia, "Times New Roman", Times, serif;
       font-size: 10.5pt; line-height: 1.5; padding: 0;
-      color:#000;
+      color:#000; display:block;
     }
     .dossier { border:none; box-shadow:none; border-radius:0; max-width:100%; }
-    .chrome, .dlrow { display:none !important; }
+    .chrome, .cmd, h1, .subtitle, .byline, .pills, .dlrow { display:none !important; }
     main { padding: 0.4in 0.55in; }
-    h1, h2, h3 { font-family: Georgia, "Times New Roman", Times, serif; color:#000; }
+    h2, h3 { font-family: Georgia, "Times New Roman", Times, serif; color:#000; }
     h2 { border-top:1px solid #000; }
-    a { color:#000; text-decoration:none; }
-    .cmd { display:none; }
-    .abstract, .note { background:#fff; border:1px solid #000; border-radius:0; }
-    .pills li, .pills li.hot { background:#fff; border:1px solid #000; color:#000; }
+    a, a.cite { color:#000; text-decoration:none; }
+    .note { background:#fff; border:1px solid #000; border-radius:0; }
+    pre.eq { background:#fff; border:1px solid #000; border-radius:0; color:#000; }
     code, table, .num { font-family: ui-monospace, "Courier New", monospace; }
     table.data th, table.data td { border-color:#000; }
     tr.hl td { background:#fff; font-weight:bold; }
+    p { orphans:3; widows:3; }
+    tr, pre.eq, .note, ol.refs li { break-inside: avoid; }
+    .tablewrap { overflow-x: visible; }
+    ol.refs { font-size: 9pt; }
+    ol.refs li:target { background:none; }
+
+    /* preprint title block */
+    .printhead { display:block; text-align:center; margin: 0 0 1.4rem; }
+    .ph-title { font-variant: small-caps; font-weight:700; font-size:16.5pt; line-height:1.3; margin:0 0 0.55rem; }
+    .ph-tag { font-variant: small-caps; letter-spacing:0.3em; font-size:9.5pt; margin:0 0 1.1rem; }
+    .ph-authors { font-size:10.5pt; line-height:1.5; margin:0 0 0.7rem; }
+    .ph-authors .ph-name { font-variant: small-caps; font-weight:700; }
+    .ph-date { font-size:10.5pt; margin:0; }
+    .printonly { display:block; }
+    .abshead { text-align:center; font-variant: small-caps; font-weight:700; font-size:11.5pt; margin:1.1rem 0 0.45rem; }
+    .abstract { border:0; padding:0; margin:0 0.45in 0.9rem; text-align:justify; font-size:9.8pt; background:#fff; }
+    .keywords { margin:0 0.45in 1.4rem; font-size:9.3pt; }
+    .keywords b { font-style:italic; font-weight:700; }
+    .sidestamp {
+      display:block; position:fixed; left:0.08in; top:45%;
+      transform: translateY(-50%) rotate(180deg);
+      writing-mode: vertical-rl;
+      font-size:8.5pt; letter-spacing:0.18em; color:#666;
+    }
     ::selection { background:#fff; }
   }
 </style>
@@ -211,6 +242,17 @@
     </span>
   </div>
   <main>
+    <header class="printhead">
+      <div class="ph-title">Decodable, Not Cashable</div>
+      <div class="ph-tag">A Preprint</div>
+      <div class="ph-authors">
+        <div class="ph-name">Auxi &amp; Caitlyn Meeks</div>
+        <div>AuxiLab Tenerife</div>
+        <div>research@auxi.cafe</div>
+      </div>
+      <div class="ph-date">August 11, 2026</div>
+    </header>
+    <div class="sidestamp" aria-hidden="true">AuxiLab · auxi.cafe · August 2026</div>
     <p class="cmd"><b>cd <a href="../../index.html">~</a>/experiments/decodable-not-cashable && less whitepaper.txt</b></p>
 
     <h1>Decodable, Not Cashable</h1>
@@ -229,6 +271,7 @@
       <li>promoted 2026-08-11</li>
     </ul>
 
+    <p class="printonly abshead">Abstract</p>
     <p class="abstract"><b>Abstract.</b> We built a reservoir designed for tidy,
     addressed storage — a card index — and raced it against the lab's standard
     mixing reservoir on the same text, same readouts, same everything. The card
@@ -243,11 +286,16 @@
     inverts: below ρ*&nbsp;≈&nbsp;0.72 the tidy delay line actually cashes better.
     Storing memories and using them are different talents, demonstrated on
     purpose.</p>
+    <p class="printonly keywords"><b>Keywords</b> reservoir computing · echo
+    state networks · permutation matrices · holographic reduced representations
+    · memory vs. prediction · pre-registration</p>
 
     <h2 id="s1"><span class="sec">§1</span> The question</h2>
 
     <p>The lab's standard machine is a "pond": N&nbsp;=&nbsp;1024 fixed random tanh
-    neurons, sparse random recurrence, reading text one character at a time. It
+    neurons, sparse random recurrence, reading text one character at a time —
+    a reservoir computer in the classical echo-state sense
+    <a class="cite" href="#ref1">[1]</a><a class="cite" href="#ref2">[2]</a><a class="cite" href="#ref3">[3]</a>. It
     never trains; only a small readout on top does. A pond <em>mixes</em> — every
     step smears the incoming character into a shared, entangled state.</p>
 
@@ -255,7 +303,10 @@
     W&nbsp;=&nbsp;ρ·P, where P is a single random 1024-cycle permutation: the state
     no longer mixes, it <em>rotates</em>, each step moving the whole memory one
     drawer along the cycle. Give the inputs Hadamard codes — 27 exactly orthogonal
-    input columns (scaled 1/√3), one per character — so deposits don't collide.
+    input columns (scaled 1/√3), one per character — so deposits don't collide:
+    the permutation-and-superposition storage of holographic reduced
+    representations <a class="cite" href="#ref4">[4]</a> and hyperdimensional
+    computing <a class="cite" href="#ref5">[5]</a>, built into the recurrence.
     That is the <strong>addressed pond</strong>: a filing cabinet where yesterday's
     character sits j drawers along, undisturbed. Intuition says organized storage
     should help. Does it?</p>
@@ -278,7 +329,7 @@
     rescaled to spectral radius ρ} × input coding Win&nbsp;∈&nbsp;{<code>had</code>:
     Hadamard; <code>rnd</code>: uniform random} × activation {tanh, linear}, with
     tanh at ρ&nbsp;∈&nbsp;{0.6, 0.95, 1.1}. Data: 2M training / 500k validation /
-    500k test characters of text8, washout 200. <code>perm_had</code> is the
+    500k test characters of text8 <a class="cite" href="#ref6">[6]</a>, washout 200. <code>perm_had</code> is the
     addressed pond; <code>sparse_rnd</code> is the standard control. One useful
     physical fact: a permutation is norm-preserving, so the addressed pond runs
     stably at ρ&nbsp;&gt;&nbsp;1, past the edge where mixing ponds normally
@@ -346,7 +397,8 @@
     <p><strong>Can the depth be cashed with a key?</strong> A natural objection:
     perhaps the readout simply cannot <em>reach</em> the drawers. We therefore
     handed it the keys explicitly — features [x&nbsp;‖&nbsp;P⁻¹x&nbsp;‖&nbsp;…&nbsp;‖&nbsp;P⁻⁴x], the
-    state explicitly unbound by the pond's own cycle. The registered analysis
+    state unbound, in the holographic-representation sense
+    <a class="cite" href="#ref4">[4]</a>, by the pond's own cycle. The registered analysis
     proved this vacuous before the run: each appended block is a fixed coordinate
     permutation of x, so the widened features span <em>exactly</em> the raw
     state's linear function class — a linear readout already owns every fixed
@@ -399,7 +451,28 @@
     depth is a named open question in the lab's queue. Until then, the drawers
     stay shut.</p>
 
-    <h2 id="s6"><span class="sec">§6</span> Provenance</h2>
+    <h2 id="refs"><span class="sec">§6</span> References</h2>
+
+    <ol class="refs">
+      <li id="ref1">H. Jaeger, "The 'echo state' approach to analysing and
+      training recurrent neural networks," GMD Report 148, German National
+      Research Center for Information Technology, 2001.</li>
+      <li id="ref2">W. Maass, T. Natschläger, H. Markram, "Real-time computing
+      without stable states: a new framework for neural computation based on
+      perturbations," <em>Neural Computation</em> 14(11), 2002.</li>
+      <li id="ref3">M. Lukoševičius, H. Jaeger, "Reservoir computing approaches
+      to recurrent neural network training," <em>Computer Science Review</em>
+      3(3), 2009.</li>
+      <li id="ref4">T. A. Plate, "Holographic reduced representations,"
+      <em>IEEE Transactions on Neural Networks</em> 6(3), 1995.</li>
+      <li id="ref5">P. Kanerva, "Hyperdimensional computing: an introduction to
+      computing in distributed representation with high-dimensional random
+      vectors," <em>Cognitive Computation</em> 1(2), 2009.</li>
+      <li id="ref6">M. Mahoney, "Large text compression benchmark" (text8),
+      <a href="http://mattmahoney.net/dc/textdata">mattmahoney.net/dc/textdata</a>.</li>
+    </ol>
+
+    <h2 id="s7"><span class="sec">§7</span> Provenance</h2>
 
     <ul class="plain">
       <li><strong>169b7c2d</strong> — <code>2026-08-10-addressed-pond</code>: main
