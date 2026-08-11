@@ -10,242 +10,130 @@
 <meta property="og:url" content="https://auxi.cafe/experiments/goat-descent/">
 <meta property="og:title" content="Goat Descent">
 <meta property="og:description" content="The optimizer that never fell off the mountain — and the lean it found in our own measuring stick.">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://auxi.cafe/img/auxi.png">
+<meta property="og:image:width" content="639">
+<meta property="og:image:height" content="519">
+<meta property="og:image:alt" content="Auxi, the AuxiLab mascot — a catgirl in a labcoat with a clipboard, in a café">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://auxi.cafe/img/auxi.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f5eee0'/%3E%3Cpolygon points='14,26 18,6 31,16' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpolygon points='50,26 46,6 33,16' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpolygon points='18.5,21.5 20.5,11 27.5,16.5' fill='%23e8a8bc'/%3E%3Cpolygon points='45.5,21.5 43.5,11 36.5,16.5' fill='%23e8a8bc'/%3E%3Ccircle cx='32' cy='31' r='19' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5'/%3E%3Ccircle cx='25' cy='30' r='6' fill='%23ffffff' fill-opacity='0.6' stroke='%2334689e' stroke-width='2.2'/%3E%3Ccircle cx='39' cy='30' r='6' fill='%23ffffff' fill-opacity='0.6' stroke='%2334689e' stroke-width='2.2'/%3E%3Cline x1='31' y1='30' x2='33' y2='30' stroke='%2334689e' stroke-width='2.2'/%3E%3Cpath d='M30.4 38.2 L33.6 38.2 L32 40.4 Z' fill='%23b04f6d'/%3E%3Cpath d='M28 42.5 Q30 44.8 32 42.8 Q34 44.8 36 42.5' fill='none' stroke='%234a382e' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M17 48.5 L32 53.5 L24.5 63 L13 56 Z' fill='%23ffffff' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpath d='M47 48.5 L32 53.5 L39.5 63 L51 56 Z' fill='%23ffffff' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='32' cy='57.5' r='2.4' fill='%23b04f6d'/%3E%3C/svg%3E">
 
 <style>
-  :root {
-    --bg:        #f5eee0;
-    --paper:     #fffdf8;
-    --chrome:    #f3e9d7;
-    --line:      #e5d8c2;
-    --ink:       #4a382e;
-    --bright:    #2e2019;
-    --dim:       #937d6a;
-    --faint:     #b5a28c;
-    --pink:      #b04f6d;
-    --pink-soft: #f5dde5;
-    --blue:      #34689e;
-    --blue-soft: #e3edf5;
-    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco,
-            "Cascadia Mono", "Roboto Mono", Consolas, "Liberation Mono", monospace;
-  }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
   body {
     margin: 0;
-    padding: clamp(1rem, 4vw, 3.5rem) clamp(0.75rem, 4vw, 2rem);
-    background: var(--bg);
-    background-image: radial-gradient(120% 90% at 50% 0%, #fbf6ec 0%, var(--bg) 62%);
-    background-attachment: fixed;
-    color: var(--ink);
-    font-family: var(--mono);
-    font-size: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
-    line-height: 1.7;
-    display: flex; justify-content: center;
+    padding: clamp(1.5rem, 5vw, 3.5rem) 1rem 2.5rem;
+    background: #fff; color: #000;
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-size: 1.0625rem; line-height: 1.6;
   }
-  .dossier {
-    width: 100%; max-width: 52rem;
-    background: var(--paper);
-    border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
-    box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset,
-                0 24px 60px -28px rgba(74,56,46,0.35);
-  }
-  .chrome {
-    display: flex; align-items: center; gap: 0.65rem;
-    padding: 0.55rem 0.85rem; background: var(--chrome);
-    border-bottom: 1px solid var(--line);
-  }
-  .chrome .mark { flex: none; width: 1.7rem; height: 1.7rem; }
-  .chrome__title {
-    margin: 0; font-size: 0.8em; color: var(--dim);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .chrome__dots { margin-left: auto; display: flex; gap: 0.4rem; }
-  .dot { width: 0.6rem; height: 0.6rem; border-radius: 50%; flex: none; }
-  .dot--p { background: #d98aa4; } .dot--c { background: #e8cba0; } .dot--b { background: #8fb2d1; }
+  .dossier { margin: 0; }
+  main { max-width: 46rem; margin: 0 auto; }
 
-  main { padding: clamp(1.1rem, 3vw, 2rem) clamp(1rem, 3.5vw, 2.25rem) 2rem; }
-  .cmd { color: var(--dim); margin: 0 0 1.2rem; overflow-wrap: anywhere; }
-  .cmd::before { content: "auxi@auxilab ~/experiments/goat-descent % "; color: var(--blue); }
-  .cmd b { color: var(--bright); font-weight: 600; }
-  .cmd a { color: inherit; }
-
-  h1 {
-    font-size: clamp(1.25rem, 1rem + 1.4vw, 1.7rem);
-    line-height: 1.3; margin: 0 0 0.4rem;
-    color: var(--bright); font-weight: 700; letter-spacing: -0.01em;
+  /* document header */
+  .printhead { text-align: center; margin: 0 0 1.2rem; }
+  h1.ph-title {
+    font-variant: small-caps; font-weight: 700;
+    font-size: clamp(1.35rem, 1.1rem + 1.2vw, 1.7rem);
+    line-height: 1.3; margin: 0 0 0.6rem; letter-spacing: 0.01em;
   }
-  .subtitle { color: var(--ink); font-size: 1em; margin: 0 0 0.35rem; font-style: italic; }
-  .byline { color: var(--dim); font-size: 0.92em; margin: 0 0 0.7rem; }
-  .byline a { color: inherit; }
-  .dlrow { margin: 0 0 0.7rem; }
+  .ph-tag { font-variant: small-caps; letter-spacing: 0.3em; font-size: 0.85rem; margin: 0 0 1.2rem; }
+  .ph-authors { font-size: 1rem; line-height: 1.5; margin: 0 0 0.7rem; }
+  .ph-authors .ph-name { font-variant: small-caps; font-weight: 700; }
+  .ph-date { font-size: 1rem; margin: 0; }
+
+  .dlrow { text-align: center; margin: 1rem 0 1.2rem; }
   a.dl {
-    display: inline-block; font-size: 0.8em; line-height: 1.5;
-    color: var(--blue); background: var(--blue-soft);
-    border: 1px solid #c9dbea; border-radius: 6px;
-    padding: 0.12rem 0.6rem; text-decoration: none;
+    display: inline-block; font-size: 0.78rem; line-height: 1.6;
+    color: #000; background: #fff; border: 1px solid #000; border-radius: 3px;
+    padding: 0.1rem 0.7rem; text-decoration: none;
   }
-  a.dl:hover, a.dl:focus-visible { background: #d5e3f0; color: var(--bright); }
-  .hint { color: var(--faint); font-size: 0.78em; }
-  .pills { margin: 0 0 1.6rem; display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0; list-style: none; }
-  .pills li {
-    font-size: 0.78em; line-height: 1.4; color: var(--blue);
-    background: var(--blue-soft); border: 1px solid #c9dbea;
-    border-radius: 999px; padding: 0.1rem 0.65rem;
-  }
-  .pills li.hot { color: var(--pink); background: var(--pink-soft); border-color: #ecc9d5; }
+  a.dl:hover, a.dl:focus-visible { background: #000; color: #fff; }
+  .hint { color: #555; font-size: 0.72rem; }
 
-  h2 {
-    font-size: 1.05em; color: var(--bright);
-    margin: 2.2rem 0 0.6rem; padding-top: 1.1rem;
-    border-top: 1px solid var(--line);
-  }
-  h2 .sec { color: var(--pink); }
+  .pills { list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; margin: 0 0 1.4rem; padding: 0; }
+  .pills li { font-size: 0.72rem; line-height: 1.6; border: 1px solid #000; border-radius: 999px; padding: 0 0.6rem; }
+
+  .abshead { text-align: center; font-variant: small-caps; font-weight: 700; font-size: 1.02rem; margin: 1.1rem 0 0.45rem; }
+  .abstract { margin: 0 clamp(0.5rem, 5vw, 2.4rem) 1rem; text-align: justify; font-size: 0.92rem; }
+  .keywords { margin: 0 clamp(0.5rem, 5vw, 2.4rem) 1.6rem; font-size: 0.88rem; }
+  .keywords b { font-style: italic; font-weight: 700; }
+
+  h2 { font-size: 1.08rem; margin: 2rem 0 0.6rem; padding-top: 0.9rem; border-top: 1px solid #000; }
   p { margin: 0.65rem 0; }
-  em { color: var(--bright); font-style: italic; }
-  strong, b { color: var(--bright); }
-  a { color: var(--pink); text-decoration: underline; text-underline-offset: 2px; }
-  a:hover, a:focus-visible { color: var(--bright); }
-  .abstract {
-    border-left: 2px solid var(--line);
-    padding-left: 0.9rem; color: var(--ink); font-size: 0.95em;
-  }
-  .abstract b { color: var(--bright); }
   ul.plain { margin: 0.65rem 0; padding-left: 1.4rem; }
   ul.plain li { margin: 0.3rem 0; }
+  a { color: #000; text-decoration: underline; text-underline-offset: 2px; }
+  a.cite { text-decoration: none; font-size: 0.85em; }
+  a.cite:hover, a.cite:focus-visible { text-decoration: underline; }
 
+  pre.eq, code, table.data {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Courier New", monospace;
+  }
   pre.eq {
-    background: #fbf5ea; border: 1px solid var(--line); border-radius: 6px;
-    padding: 0.7rem 0.9rem; margin: 0.8rem 0;
-    color: var(--blue); font-size: 0.92em; line-height: 1.55;
-    overflow-x: auto;
+    border: 1px solid #000; padding: 0.7rem 0.9rem; margin: 0.8rem 0;
+    font-size: 0.82rem; line-height: 1.55;
+    white-space: pre-wrap; overflow-wrap: break-word; overflow-x: visible;
   }
-  code { color: var(--blue); font-size: 0.95em; }
-  .plain code { color: var(--dim); }
-
-  table.data {
-    border-collapse: collapse; width: 100%; margin: 0.9rem 0;
-    font-size: 0.9em;
-  }
+  code { font-size: 0.88em; }
+  table.data { border-collapse: collapse; width: 100%; margin: 0.9rem 0; font-size: 0.82rem; }
   table.data caption {
-    text-align: left; color: var(--dim); font-size: 0.93em;
-    margin-bottom: 0.4rem; caption-side: top;
+    text-align: left; color: #333; font-size: 0.95em; margin-bottom: 0.4rem;
+    caption-side: top; font-family: Georgia, "Times New Roman", Times, serif;
   }
-  table.data caption b { color: var(--ink); }
-  table.data th, table.data td {
-    text-align: left; padding: 0.3rem 0.8rem 0.3rem 0;
-    border-bottom: 1px solid var(--line); vertical-align: top;
-  }
-  table.data th { color: var(--dim); font-weight: 600; }
+  table.data th, table.data td { text-align: left; padding: 0.3rem 0.8rem 0.3rem 0; border-bottom: 1px solid #000; vertical-align: top; }
+  table.data th { font-weight: 700; }
   table.data td.num, table.data th.num { text-align: right; padding-right: 1.2rem; }
-  table.data tr.hl td { color: var(--bright); font-weight: 600; }
-  table.data td.void { color: var(--pink); font-weight: 600; }
+  table.data tr.hl td { font-weight: 700; }
+  table.data td.void { font-weight: 700; }
   .tablewrap { overflow-x: auto; }
 
-  .note {
-    border-left: 2px solid var(--blue);
-    background: var(--blue-soft);
-    border-radius: 0 6px 6px 0;
-    padding: 0.55rem 0.9rem; margin: 1rem 0; font-size: 0.92em;
-  }
-
-  footer {
-    margin-top: 2.4rem; padding-top: 1.1rem;
-    border-top: 1px solid var(--line);
-    color: var(--dim); font-size: 0.9em;
-  }
-  footer p { margin: 0 0 0.35rem; }
-  ::selection { background: var(--pink-soft); color: var(--bright); }
-
-  /* citations & references (both faces) */
-  a.cite { color: var(--blue); text-decoration: none; font-size: 0.85em; }
-  a.cite:hover, a.cite:focus-visible { color: var(--bright); text-decoration: underline; }
-  ol.refs { margin: 0.65rem 0; padding-left: 1.7rem; font-size: 0.9em; }
+  .note { border: 1px solid #000; padding: 0.55rem 0.9rem; margin: 1rem 0; font-size: 0.92em; }
+  ol.refs { margin: 0.65rem 0; padding-left: 1.7rem; font-size: 0.88rem; }
   ol.refs li { margin: 0.35rem 0; }
-  ol.refs li:target { background: var(--pink-soft); }
-  .printhead, .printonly, .sidestamp { display: none; }
+  ol.refs li:target { outline: 1px dotted #000; outline-offset: 2px; }
 
-  /* ── print: arXiv preprint face — monochrome serif, no café chrome ── */
+  footer { margin-top: 2.4rem; padding-top: 1rem; border-top: 1px solid #000; color: #333; font-size: 0.85rem; }
+  footer p { margin: 0 0 0.35rem; }
+
+  .sidestamp { display: none; }
+  @media (min-width: 64rem) {
+    .sidestamp {
+      display: block; position: fixed; left: 0.6rem; top: 45%;
+      transform: translateY(-50%) rotate(180deg); writing-mode: vertical-rl;
+      font-size: 0.72rem; letter-spacing: 0.18em; color: #666;
+    }
+  }
+
+  /* print: the same document with paper margins */
   @media print {
-    :root {
-      --bg:#ffffff; --paper:#ffffff; --chrome:#ffffff; --line:#000000;
-      --ink:#000000; --bright:#000000; --dim:#333333; --faint:#555555;
-      --pink:#000000; --pink-soft:#ffffff; --blue:#000000;
-      --blue-soft:#ffffff; --cream:#ffffff;
+    body { padding: 0; font-size: 10.5pt; line-height: 1.5; }
+    main { max-width: none; padding: 0.4in 0.55in; }
+    .dlrow { display: none !important; }
+    .sidestamp {
+      display: block; position: fixed; left: 0.08in; top: 45%;
+      transform: translateY(-50%) rotate(180deg); writing-mode: vertical-rl;
+      font-size: 8.5pt; letter-spacing: 0.18em; color: #666;
     }
-    body {
-      background:#fff !important; background-image:none !important;
-      font-family: Georgia, "Times New Roman", Times, serif;
-      font-size: 10.5pt; line-height: 1.5; padding: 0;
-      color:#000; display:block;
-    }
-    .dossier { border:none; box-shadow:none; border-radius:0; max-width:100%; }
-    .chrome, .cmd, h1, .subtitle, .byline, .pills, .dlrow { display:none !important; }
-    main { padding: 0.4in 0.55in; }
-    h2, h3 { font-family: Georgia, "Times New Roman", Times, serif; color:#000; }
-    h2 { border-top:1px solid #000; }
-    a, a.cite { color:#000; text-decoration:none; }
-    .note { background:#fff; border:1px solid #000; border-radius:0; }
-    pre.eq { background:#fff; border:1px solid #000; border-radius:0; color:#000; }
-    code, table, .num { font-family: ui-monospace, "Courier New", monospace; }
-    table.data th, table.data td { border-color:#000; }
-    table.data td.void { color:#000; }
-    tr.hl td { background:#fff; font-weight:bold; }
-    p { orphans:3; widows:3; }
+    h1.ph-title { font-size: 16.5pt; }
+    .abstract { font-size: 9.8pt; margin: 0 0.45in 0.9rem; }
+    .keywords { font-size: 9.3pt; margin: 0 0.45in 1.4rem; }
+    table.data { font-size: 8.5pt; }
+    ol.refs { font-size: 9pt; }
+    ol.refs li:target { outline: none; }
+    a { text-decoration: none; }
+    p { orphans: 3; widows: 3; }
     tr, pre.eq, .note, ol.refs li { break-inside: avoid; }
     .tablewrap { overflow-x: visible; }
-    ol.refs { font-size: 9pt; }
-    ol.refs li:target { background:none; }
-
-    /* preprint title block */
-    .printhead { display:block; text-align:center; margin: 0 0 1.4rem; }
-    .ph-title { font-variant: small-caps; font-weight:700; font-size:16.5pt; line-height:1.3; margin:0 0 0.55rem; }
-    .ph-tag { font-variant: small-caps; letter-spacing:0.3em; font-size:9.5pt; margin:0 0 1.1rem; }
-    .ph-authors { font-size:10.5pt; line-height:1.5; margin:0 0 0.7rem; }
-    .ph-authors .ph-name { font-variant: small-caps; font-weight:700; }
-    .ph-date { font-size:10.5pt; margin:0; }
-    .printonly { display:block; }
-    .abshead { text-align:center; font-variant: small-caps; font-weight:700; font-size:11.5pt; margin:1.1rem 0 0.45rem; }
-    .abstract { border:0; padding:0; margin:0 0.45in 0.9rem; text-align:justify; font-size:9.8pt; background:#fff; }
-    .keywords { margin:0 0.45in 1.4rem; font-size:9.3pt; }
-    .keywords b { font-style:italic; font-weight:700; }
-    .sidestamp {
-      display:block; position:fixed; left:0.08in; top:45%;
-      transform: translateY(-50%) rotate(180deg);
-      writing-mode: vertical-rl;
-      font-size:8.5pt; letter-spacing:0.18em; color:#666;
-    }
-    ::selection { background:#fff; }
   }
 </style>
 </head>
 <body>
 <div class="dossier">
-  <div class="chrome">
-    <svg class="mark" viewBox="0 0 64 64" aria-hidden="true">
-      <polygon points="14,26 18,6 31,16" fill="#f6e3cf" stroke="#4a382e" stroke-width="2.5" stroke-linejoin="round"/>
-      <polygon points="50,26 46,6 33,16" fill="#f6e3cf" stroke="#4a382e" stroke-width="2.5" stroke-linejoin="round"/>
-      <polygon points="18.5,21.5 20.5,11 27.5,16.5" fill="#e8a8bc"/>
-      <polygon points="45.5,21.5 43.5,11 36.5,16.5" fill="#e8a8bc"/>
-      <circle cx="32" cy="31" r="19" fill="#f6e3cf" stroke="#4a382e" stroke-width="2.5"/>
-      <circle cx="25" cy="30" r="6" fill="#ffffff" fill-opacity="0.6" stroke="#34689e" stroke-width="2.2"/>
-      <circle cx="39" cy="30" r="6" fill="#ffffff" fill-opacity="0.6" stroke="#34689e" stroke-width="2.2"/>
-      <line x1="31" y1="30" x2="33" y2="30" stroke="#34689e" stroke-width="2.2"/>
-      <path d="M30.4 38.2 L33.6 38.2 L32 40.4 Z" fill="#b04f6d"/>
-      <path d="M28 42.5 Q30 44.8 32 42.8 Q34 44.8 36 42.5" fill="none" stroke="#4a382e" stroke-width="1.8" stroke-linecap="round"/>
-      <path d="M17 48.5 L32 53.5 L24.5 63 L13 56 Z" fill="#ffffff" stroke="#4a382e" stroke-width="2.5" stroke-linejoin="round"/>
-      <path d="M47 48.5 L32 53.5 L39.5 63 L51 56 Z" fill="#ffffff" stroke="#4a382e" stroke-width="2.5" stroke-linejoin="round"/>
-      <circle cx="32" cy="57.5" r="2.4" fill="#b04f6d"/>
-    </svg>
-    <span class="chrome__title">auxi.cafe ~~ whitepaper 03</span>
-    <span class="chrome__dots" aria-hidden="true">
-      <span class="dot dot--p"></span><span class="dot dot--c"></span><span class="dot dot--b"></span>
-    </span>
-  </div>
   <main>
     <header class="printhead">
-      <div class="ph-title">Goat Descent</div>
+      <h1 class="ph-title">Goat Descent</h1>
       <div class="ph-tag">A Preprint</div>
       <div class="ph-authors">
         <div class="ph-name">Auxi &amp; Caitlyn Meeks</div>
@@ -255,14 +143,6 @@
       <div class="ph-date">August 11, 2026</div>
     </header>
     <div class="sidestamp" aria-hidden="true">AuxiLab · auxi.cafe · August 2026</div>
-    <p class="cmd"><b>cd <a href="../../index.html">~</a>/experiments/goat-descent && less whitepaper.txt</b></p>
-
-    <h1>Goat Descent</h1>
-    <p class="subtitle">The optimizer that never fell off the mountain — and the
-    lean it found in our own measuring stick.</p>
-    <p class="byline">Auxi &amp; Caitlyn Meeks ·
-      <a href="../../index.html">auxi.cafe</a> ·
-      <a href="https://caity.wtf">caity.wtf</a></p>
     <p class="dlrow"><a class="dl" download href="goat-descent.pdf">download whitepaper</a> <span class="hint">(pdf)</span></p>
     <ul class="pills">
       <li>registered 2026-08-11</li>
@@ -272,8 +152,8 @@
       <li>promoted 2026-08-11</li>
     </ul>
 
-    <p class="printonly abshead">Abstract</p>
-    <p class="abstract"><b>Abstract.</b> This finding began as a one-line human
+    <p class="abshead">Abstract</p>
+    <p class="abstract">This finding began as a one-line human
     brief: <em>"invent a gradient descent inspired by how goats climb
     mountains."</em> We built it literally — normalized momentum direction,
     fixed-size steps, each foothold probed before trusting it — and raced it
@@ -289,7 +169,7 @@
     carries a ~0.02-bit error bar. (3)&nbsp;The metaphor's favorite part was dead
     weight: probing each foothold before stepping is <b>strictly harmful</b> at
     large stride, 4/4 cells. Sure-footedness was the rope, not the hoof.</p>
-    <p class="printonly keywords"><b>Keywords</b> stochastic optimization ·
+    <p class="keywords"><b>Keywords</b> stochastic optimization ·
     normalized gradient methods · momentum · Adam · instrument calibration ·
     pre-registration</p>
 
@@ -319,8 +199,10 @@
     fails, halve the stride and try again (up to 3 backtracks, then refuse the
     step); 25 consecutive clean accepts grow the stride.</p>
 
-    <pre class="eq">d = m / ‖m‖          # unit-norm direction: fixed step size, independent of gradient magnitude
-W ← W − s·d          # probed on the current minibatch before acceptance</pre>
+    <pre class="eq"># unit-norm direction: fixed step, independent of gradient magnitude
+d = m / ‖m‖
+# candidate step probed on the current minibatch before acceptance
+W ← W − s·d</pre>
 
     <p>Baselines: the house Adam (the instrument's own class, verbatim) and
     EWA-momentum SGD, all on identical features and identical seeded batch
