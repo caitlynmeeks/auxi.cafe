@@ -89,6 +89,10 @@
   table.data td.void { font-weight: 700; }
   .tablewrap { overflow-x: auto; }
 
+  figure { margin: 1.2rem 0; }
+  figure img { display: block; width: 100%; max-width: 100%; height: auto; border: 1px solid #000; background: #fff; }
+  figcaption { margin-top: 0.45rem; color: #333; font-size: 0.88rem; line-height: 1.5; }
+
   .note { border: 1px solid #000; padding: 0.55rem 0.9rem; margin: 1rem 0; font-size: 0.92em; }
   ol.refs { margin: 0.65rem 0; padding-left: 1.7rem; font-size: 0.88rem; }
   ol.refs li { margin: 0.35rem 0; }
@@ -124,7 +128,7 @@
     ol.refs li:target { outline: none; }
     a { text-decoration: none; }
     p { orphans: 3; widows: 3; }
-    tr, pre.eq, .note, ol.refs li { break-inside: avoid; }
+    tr, pre.eq, .note, ol.refs li, figure { break-inside: avoid; }
     .tablewrap { overflow-x: visible; }
   }
 </style>
@@ -274,6 +278,19 @@
     ≤&nbsp;0.05 characters, about half a percent of the gap being tested.
     Plausibly because a random N-cycle is the same object up to relabeling, the
     depth of an addressed pond is essentially deterministic in the seed.</p>
+
+    <figure>
+      <img src="fig1.png" width="1334" height="649"
+        alt="Two scatter panels. Left: U3 decode depth in characters versus spectral radius; blue addressed-pond markers sit above orange standard-pond markers at rho 0.95 and 1.1. Right: logistic validation bits per character versus spectral radius; the same blue markers sit above (worse than) the orange ones, all below the dotted 3-gram baseline. Filled markers are seeds 1 to 3; hollow markers are seed 0.">
+      <figcaption><b>Figure 1.</b> The replication at a glance (run ledgers
+      #1–#2, tanh arms). Left: U3 decode depth (characters) vs ρ. Right:
+      logistic validation bpc vs ρ; dotted line: the 3-gram baseline 2.9279.
+      Blue: <code>perm_had</code> (addressed pond); orange:
+      <code>sparse_rnd</code> (standard pond); filled markers: seeds 1–3;
+      hollow: seed 0 (run #1). At both ρ the addressed pond is deeper on the
+      left panel and worse on the right panel in every seed — the 12/12
+      strict inequalities of Table 2.</figcaption>
+    </figure>
 
     <p><strong>Can the depth be cashed with a key?</strong> A natural objection:
     perhaps the readout simply cannot <em>reach</em> the drawers. We therefore

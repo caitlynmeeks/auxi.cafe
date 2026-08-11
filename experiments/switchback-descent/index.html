@@ -88,6 +88,10 @@
   table.data tr.hl td { font-weight: 700; }
   .tablewrap { overflow-x: auto; }
 
+  figure { margin: 1.2rem 0; }
+  figure img { display: block; width: 100%; max-width: 100%; height: auto; border: 1px solid #000; background: #fff; }
+  figcaption { margin-top: 0.45rem; color: #333; font-size: 0.88rem; line-height: 1.5; }
+
   .note { border: 1px solid #000; padding: 0.55rem 0.9rem; margin: 1rem 0; font-size: 0.92em; }
   ol.refs { margin: 0.65rem 0; padding-left: 1.7rem; font-size: 0.88rem; }
   ol.refs li { margin: 0.35rem 0; }
@@ -123,7 +127,7 @@
     ol.refs li:target { outline: none; }
     a { text-decoration: none; }
     p { orphans: 3; widows: 3; }
-    tr, pre.eq, .note, ol.refs li { break-inside: avoid; }
+    tr, pre.eq, .note, ol.refs li, figure { break-inside: avoid; }
     .tablewrap { overflow-x: visible; }
   }
 </style>
@@ -296,6 +300,20 @@ W ← W − s·d
     fresh-anchor band hit 2/2; the amplitude-power-law band was unjudgeable
     by its own registered gate (only two qualifying cells, where the gate
     required three).</p>
+
+    <figure>
+      <img src="fig1.png" width="1440" height="630"
+        alt="Two panels, champ and cliff. Each plots delta validation bits per character versus matched straight descent against traverse-leg amplitude A on a log axis, with a shaded tie band around zero. Blue stride-built points stay inside the band on champ and dip below zero at large amplitude on the cliff; the orange leg-built line leaves the band steeply, reaching about plus 0.088 on champ and plus 0.081 on cliff at L equals 64.">
+      <figcaption><b>Figure 1.</b> The tax follows the leg knob, not the
+      amplitude (seed 0, run ledger #10). Both panels: Δ validation bpc vs
+      the matched-η<sub>eff</sub> straight-descent anchor, against traverse-leg
+      amplitude A = s·L·cos&thinsp;θ (log scale); shaded: the tie band. Blue:
+      amplitude built by stride (L=16, s swept) — inside the band everywhere
+      on champ, and <em>negative</em> (better than straight descent) at the
+      two large-A cliff cells (−0.0185, −0.0220). Orange: amplitude built by
+      leg length (s=0.1, L swept) — the two L=64 cells pay +0.0881 (champ)
+      and +0.0808 (cliff).</figcaption>
+    </figure>
 
     <div class="tablewrap">
     <table class="data">
