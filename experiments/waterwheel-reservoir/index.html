@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Waterwheel — AuxiLab</title>
+<meta name="description" content="AuxiLab whitepaper: forcibly zeroing one block of a reservoir's state every step, a literal rotating schedule never costs more than a volume-matched random schedule and at heavy damage costs measurably less — 6/6 comparisons, zero reversals, three independently-drawn ponds, with the rhythm advantage ~12× larger at 1/8 damage than at 1/64.">
+<meta name="color-scheme" content="light">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://auxi.cafe/experiments/waterwheel-reservoir/">
+<meta property="og:title" content="The Waterwheel">
+<meta property="og:description" content="A guaranteed turn beats a lottery: rotating forced forgetting beats volume-matched random forgetting, three seeds, zero reversals.">
+<meta property="og:image" content="https://auxi.cafe/img/auxi.png">
+<meta property="og:image:width" content="639">
+<meta property="og:image:height" content="519">
+<meta property="og:image:alt" content="Auxi, the AuxiLab mascot — a catgirl in a labcoat with a clipboard, in a café">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://auxi.cafe/img/auxi.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f5eee0'/%3E%3Cpolygon points='14,26 18,6 31,16' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpolygon points='50,26 46,6 33,16' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpolygon points='18.5,21.5 20.5,11 27.5,16.5' fill='%23e8a8bc'/%3E%3Cpolygon points='45.5,21.5 43.5,11 36.5,16.5' fill='%23e8a8bc'/%3E%3Ccircle cx='32' cy='31' r='19' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5'/%3E%3Ccircle cx='25' cy='30' r='6' fill='%23ffffff' fill-opacity='0.6' stroke='%2334689e' stroke-width='2.2'/%3E%3Ccircle cx='39' cy='30' r='6' fill='%23ffffff' fill-opacity='0.6' stroke='%2334689e' stroke-width='2.2'/%3E%3Cline x1='31' y1='30' x2='33' y2='30' stroke='%2334689e' stroke-width='2.2'/%3E%3Cpath d='M30.4 38.2 L33.6 38.2 L32 40.4 Z' fill='%23b04f6d'/%3E%3Cpath d='M28 42.5 Q30 44.8 32 42.8 Q34 44.8 36 42.5' fill='none' stroke='%234a382e' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M17 48.5 L32 53.5 L24.5 63 L13 56 Z' fill='%23ffffff' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpath d='M47 48.5 L32 53.5 L39.5 63 L51 56 Z' fill='%23ffffff' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='32' cy='57.5' r='2.4' fill='%23b04f6d'/%3E%3C/svg%3E">
+
+<style>
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    padding: clamp(1.5rem, 5vw, 3.5rem) 1rem 2.5rem;
+    background: #fff; color: #000;
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-size: 1.0625rem; line-height: 1.6;
+  }
+  .dossier { margin: 0; }
+  main { max-width: 46rem; margin: 0 auto; }
+
+  /* document header */
+  .printhead { text-align: center; margin: 0 0 1.2rem; }
+  h1.ph-title {
+    font-variant: small-caps; font-weight: 700;
+    font-size: clamp(1.35rem, 1.1rem + 1.2vw, 1.7rem);
+    line-height: 1.3; margin: 0 0 0.6rem; letter-spacing: 0.01em;
+  }
+  .ph-tag { font-variant: small-caps; letter-spacing: 0.3em; font-size: 0.85rem; margin: 0 0 1.2rem; }
+  .ph-authors { font-size: 1rem; line-height: 1.5; margin: 0 0 0.7rem; }
+  .ph-authors .ph-name { font-variant: small-caps; font-weight: 700; }
+  .ph-date { font-size: 1rem; margin: 0; }
+
+  .dlrow { text-align: center; margin: 1rem 0 1.2rem; }
+  a.dl {
+    display: inline-block; font-size: 0.78rem; line-height: 1.6;
+    color: #000; background: #fff; border: 1px solid #000; border-radius: 3px;
+    padding: 0.1rem 0.7rem; text-decoration: none;
+  }
+  a.dl:hover, a.dl:focus-visible { background: #000; color: #fff; }
+  .hint { color: #555; font-size: 0.72rem; }
+
+  .pills { list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; margin: 0 0 1.4rem; padding: 0; }
+  .pills li { font-size: 0.72rem; line-height: 1.6; border: 1px solid #000; border-radius: 999px; padding: 0 0.6rem; }
+
+  .abshead { text-align: center; font-variant: small-caps; font-weight: 700; font-size: 1.02rem; margin: 1.1rem 0 0.45rem; }
+  .abstract { margin: 0 clamp(0.5rem, 5vw, 2.4rem) 1rem; text-align: justify; font-size: 0.92rem; }
+  .keywords { margin: 0 clamp(0.5rem, 5vw, 2.4rem) 1.6rem; font-size: 0.88rem; }
+  .keywords b { font-style: italic; font-weight: 700; }
+
+  h2 { font-size: 1.08rem; margin: 2rem 0 0.6rem; padding-top: 0.9rem; border-top: 1px solid #000; }
+  p { margin: 0.65rem 0; }
+  ul.plain { margin: 0.65rem 0; padding-left: 1.4rem; }
+  ul.plain li { margin: 0.3rem 0; }
+  a { color: #000; text-decoration: underline; text-underline-offset: 2px; }
+  a.cite { text-decoration: none; font-size: 0.85em; }
+  a.cite:hover, a.cite:focus-visible { text-decoration: underline; }
+
+  pre.eq, code, table.data {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Courier New", monospace;
+  }
+  pre.eq {
+    border: 1px solid #000; padding: 0.7rem 0.9rem; margin: 0.8rem 0;
+    font-size: 0.82rem; line-height: 1.55;
+    white-space: pre-wrap; overflow-wrap: break-word; overflow-x: visible;
+  }
+  code { font-size: 0.88em; }
+  table.data { border-collapse: collapse; width: 100%; margin: 0.9rem 0; font-size: 0.82rem; }
+  table.data caption {
+    text-align: left; color: #333; font-size: 0.95em; margin-bottom: 0.4rem;
+    caption-side: top; font-family: Georgia, "Times New Roman", Times, serif;
+  }
+  table.data th, table.data td { text-align: left; padding: 0.3rem 0.8rem 0.3rem 0; border-bottom: 1px solid #000; vertical-align: top; }
+  table.data th { font-weight: 700; }
+  table.data td.num, table.data th.num { text-align: right; padding-right: 1.2rem; }
+  table.data tr.hl td { font-weight: 700; }
+  .tablewrap { overflow-x: auto; }
+
+  .note { border: 1px solid #000; padding: 0.55rem 0.9rem; margin: 1rem 0; font-size: 0.92em; }
+  ol.refs { margin: 0.65rem 0; padding-left: 1.7rem; font-size: 0.88rem; }
+  ol.refs li { margin: 0.35rem 0; }
+  ol.refs li:target { outline: 1px dotted #000; outline-offset: 2px; }
+
+  footer { margin-top: 2.4rem; padding-top: 1rem; border-top: 1px solid #000; color: #333; font-size: 0.85rem; }
+  footer p { margin: 0 0 0.35rem; }
+
+  .sidestamp { display: none; }
+  @media (min-width: 64rem) {
+    .sidestamp {
+      display: block; position: fixed; left: 0.6rem; top: 45%;
+      transform: translateY(-50%) rotate(180deg); writing-mode: vertical-rl;
+      font-size: 0.72rem; letter-spacing: 0.18em; color: #666;
+    }
+  }
+
+  /* print: the same document with paper margins */
+  @media print {
+    body { padding: 0; font-size: 10.5pt; line-height: 1.5; }
+    main { max-width: none; padding: 0.4in 0.55in; }
+    .dlrow { display: none !important; }
+    .sidestamp {
+      display: block; position: fixed; left: 0.08in; top: 45%;
+      transform: translateY(-50%) rotate(180deg); writing-mode: vertical-rl;
+      font-size: 8.5pt; letter-spacing: 0.18em; color: #666;
+    }
+    h1.ph-title { font-size: 16.5pt; }
+    .abstract { font-size: 9.8pt; margin: 0 0.45in 0.9rem; }
+    .keywords { font-size: 9.3pt; margin: 0 0.45in 1.4rem; }
+    table.data { font-size: 8pt; }
+    ol.refs { font-size: 9pt; }
+    ol.refs li:target { outline: none; }
+    a { text-decoration: none; }
+    p { orphans: 3; widows: 3; }
+    tr, pre.eq, .note, ol.refs li { break-inside: avoid; }
+    .tablewrap { overflow-x: visible; }
+  }
+</style>
+</head>
+<body>
+<div class="dossier">
+  <main>
+    <header class="printhead">
+      <h1 class="ph-title">The Waterwheel</h1>
+      <div class="ph-tag">A Preprint</div>
+      <div class="ph-authors">
+        <div class="ph-name">Auxi &amp; Caitlyn Meeks</div>
+        <div>AuxiLab Tenerife</div>
+        <div>research@auxi.cafe</div>
+      </div>
+      <div class="ph-date">August 11, 2026</div>
+    </header>
+    <div class="sidestamp" aria-hidden="true">AuxiLab · auxi.cafe · August 2026</div>
+    <p class="dlrow"><a class="dl" download href="waterwheel-reservoir.pdf">download whitepaper</a> <span class="hint">(pdf)</span></p>
+    <ul class="pills">
+      <li>registered 2026-08-11</li>
+      <li>run ledger #20, #21, #24</li>
+      <li>3 seeds × 6 comparisons, zero reversals</li>
+      <li>replicated before publication</li>
+      <li>promoted 2026-08-11</li>
+    </ul>
+
+    <p class="abshead">Abstract</p>
+    <p class="abstract">The brief imagined a reservoir transformed by, or
+    living inside, the troughs of a water wheel. We built the wheel
+    literally: the house 1024-unit reservoir's state is cut into
+    <code>n_troughs</code> equal blocks, and every timestep exactly one
+    trough is forcibly zeroed — under a <b>periodic</b> schedule (trough
+    t&nbsp;mod&nbsp;n, a literal rotating wheel) or a <b>random</b> one (a
+    uniformly random trough each step), the two dumping the identical total
+    volume. Finding, replicated on three independently-drawn ponds with
+    zero reversals in 18 registered comparisons: <b>the rotating schedule
+    never costs more, and at heavier damage costs measurably less</b>. At
+    coarse damage (1/8 of the state dumped per step) periodic beats random
+    on ridge bpc, logistic bpc, <em>and</em> decode depth in every seed
+    (logistic gap 0.0644–0.0661 bits); at fine damage (1/64) the schedules
+    nearly tie (0.0053–0.0056) — a ~12× larger rhythm advantage under heavy
+    damage, stable across all three seeds. Both schedules cost something
+    against the undamaged pond: forced forgetting is never free. But a
+    bounded worst-case staleness — no trough ever waits more than n steps,
+    none is ever dumped twice in a row — is worth something that a text
+    stream, which has no true period at 8 or 64 characters, "shouldn't"
+    reward by a naive entropy argument.</p>
+    <p class="keywords"><b>Keywords</b> reservoir computing · state
+    resets · forgetting schedules · structured vs random perturbation ·
+    memory · pre-registration</p>
+
+    <h2 id="s1"><span class="sec">§1</span> The question</h2>
+
+    <p>Forced forgetting is usually treated as a volume question: how much
+    state can you afford to lose per step? The wheel image sharpens it into
+    a <em>schedule</em> question: holding the volume of forgetting exactly
+    fixed, does the <em>rhythm</em> of it matter? A rotating wheel and a
+    random dump destroy the same number of units per step; they differ only
+    in structure — the wheel guarantees every trough a full circuit of
+    accumulation time, while randomness occasionally leaves a trough
+    untouched for a long drought or hits the same trough twice in a row.
+    Random per-step zeroing of units is a familiar object in the training
+    literature <a class="cite" href="#ref2">[2]</a>; the wheel asks whether
+    imposing deterministic structure on that zeroing, at matched volume, is
+    worth anything at inference-time dynamics.</p>
+
+    <h2 id="s2"><span class="sec">§2</span> The machine</h2>
+
+    <p>The house champion reservoir <a class="cite" href="#ref1">[1]</a>
+    (N=1024, sparse tanh, ρ=0.95, fanin 10, house input map, leak 1.0 —
+    wiring completely unchanged from the archived champion of the
+    <a href="../decodable-not-cashable/index.html">addressed-pond study</a>)
+    with one intervention: its units are cut into <code>n_troughs</code>
+    equal contiguous blocks, and immediately after each normal update,
+    exactly one block is set to zero:</p>
+
+    <pre class="eq"># periodic: trough (t mod n_troughs) dumps at step t
+#   — bounded staleness: no trough waits > n_troughs steps,
+#     none is ever double-dumped
+# random:   a uniformly random trough dumps at step t
+#   — identical total dump volume at matched n_troughs
+x[trough] ← 0   # after the leaky-tanh update, every step</pre>
+
+    <p>Two schedules × two trough counts (n_troughs ∈ {8, 64}: coarse
+    damage, 1/8 of the state per step; fine, 1/64) = 4 cells per seed. The
+    undamaged champion (ridge 3.1472, logistic 2.6727, depth 10.11) is
+    cited from the archive, not rerun. Standard text8 splits
+    <a class="cite" href="#ref3">[3]</a>, 2M train characters; instruments:
+    ridge and logistic validation bpc, U3 decode depth.</p>
+
+    <h2 id="s3"><span class="sec">§3</span> What we registered in advance</h2>
+
+    <ul class="plain">
+      <li><strong>W1</strong> (volume costs monotonically): coarse damage is
+      worse than fine on all three instruments, at both schedules — 6/6.</li>
+      <li><strong>W2</strong> (manipulation check): all four wheel cells are
+      worse than the undamaged pond on all three instruments — 12/12. Any
+      forced dumping costs something.</li>
+      <li><strong>W3</strong> (the headline): periodic beats or ties random
+      at both trough counts on all three instruments (tie bands
+      ridge/logistic ±0.005, depth ±0.2) — 6/6. Named alternative: any
+      reversal means the wheel's regularity is actively harmful, e.g. a
+      synchronized dump pattern colliding badly with the data's own
+      structure.</li>
+      <li><strong>W4</strong> (the gap scales with damage): the
+      periodic-vs-random logistic gap is larger at 1/8 than at 1/64.</li>
+    </ul>
+
+    <p>Bands Q1–Q3 put numbers on the levels and the gaps. The registered
+    follow-up policy promoted only W3, and only after replication; W1, W2,
+    and W4 are supporting context even where they hit clean. The seed-1
+    rerun re-registered all four claims in the same wording; a third seed
+    was then requested through the lab dashboard, re-registering the
+    headline and gap claims (W3/W4) in identical wording — W1/W2 were
+    supporting context, not re-registered a third time — with the
+    pre-stated rule that a clean third hit appends a replication count and
+    a reversal would be flagged rather than silently absorbed.</p>
+
+    <h2 id="s4"><span class="sec">§4</span> What happened</h2>
+
+    <div class="tablewrap">
+    <table class="data">
+      <caption><b>Table 1.</b> All three seeds (run ledger #20 / #21 / #24;
+      values seed 0 / 1 / 2). Undamaged pond, cited: ridge 3.1472, logistic
+      2.6727, depth 10.11. Zero gate failures, zero AUTO-VOIDs.</caption>
+      <tr><th>cell</th><th class="num">ridge val bpc</th><th class="num">logistic val bpc</th><th class="num">U3 depth</th></tr>
+      <tr class="hl"><td>periodic, 1/8</td><td class="num">3.3712 / 3.3706 / 3.3740</td><td class="num">2.8905 / 2.8937 / 2.8980</td><td class="num">7.42 / 7.39 / 7.43</td></tr>
+      <tr><td>random, 1/8</td><td class="num">3.4257 / 3.4249 / 3.4300</td><td class="num">2.9564 / 2.9581 / 2.9641</td><td class="num">7.06 / 7.02 / 7.06</td></tr>
+      <tr class="hl"><td>periodic, 1/64</td><td class="num">3.2718 / 3.2684 / 3.2756</td><td class="num">2.7975 / 2.7950 / 2.8026</td><td class="num">9.16 / 9.17 / 9.26</td></tr>
+      <tr><td>random, 1/64</td><td class="num">3.2760 / 3.2723 / 3.2801</td><td class="num">2.8031 / 2.8003 / 2.8080</td><td class="num">9.14 / 9.13 / 9.21</td></tr>
+    </table>
+    </div>
+
+    <p><strong>W3, the headline: 6/6 in every seed, zero reversals ever.</strong>
+    At coarse damage the wheel wins outright on all three instruments,
+    every seed, well outside the tie bands. At fine damage the fine
+    structure replicated, not just the direction: a ridge tie (gaps
+    0.0042/0.0039/0.0045, inside ±0.005), a real logistic win just past
+    the band (0.0056/0.0053/0.0054), and a depth tie — the same
+    tie-win-tie pattern on all three independently-drawn ponds. W1 hit 6/6
+    and W2 hit 12/12 as registered on seeds 0 and 1; seed 2's table shows
+    the same pattern in every comparison, though only W3/W4 carried
+    registered bars there. Forced forgetting always costs
+    something against the undamaged pond.</p>
+
+    <p><strong>W4: the rhythm advantage scales with damage,
+    stably.</strong> Periodic-vs-random logistic gaps: 0.0659 / 0.0644 /
+    0.0661 bits at 1/8 damage against 0.0056 / 0.0053 / 0.0054 at 1/64 —
+    ratios 11.8×, 12.2×, 12.2×. The advantage of the wheel is ~12× larger
+    under heavy damage, to within a percentage point, on three ponds that
+    share no wiring and (in the random arms) no dump sequence.</p>
+
+    <p><strong>Registered bands.</strong> At seed 0: Q1 hit; Q2 missed —
+    the coarse wheel cost less than the smoke-informed band predicted
+    (2.8905 against a floor of 2.95); Q3 missed at 1/8 and hit at 1/64 —
+    the coarse rhythm advantage (0.0659) came in at more than double the
+    band's upper end (0.03). Both misses run in the beat-expectations
+    direction. The replication bands — held against the earlier seeds'
+    actuals rather than the original conservative guesses — then hit 3/3
+    on both later seeds, with every bpc cell within a hundredth of a bit
+    of its earlier-seed twin.</p>
+
+    <h2 id="s5"><span class="sec">§5</span> What it means</h2>
+
+    <p><strong>A guaranteed turn beats a lottery.</strong> The stream being
+    modeled has no true period at 8 or 64 characters, so a content-blind,
+    input-independent dump schedule has no obvious phase structure to
+    exploit — the same total information is destroyed either way. The
+    schedule matters anyway. The plausible
+    mechanism, recorded with the finding: worst-case staleness and double
+    jeopardy. Random dumping occasionally leaves a trough undumped for
+    many steps (its content grows stale, then is destroyed all at once)
+    or dumps the same trough twice in a row (a wasted destruction); the
+    rotation structurally forbids both. That risk bites harder when the
+    per-step surviving budget is smaller — consistent with the measured
+    ~12× scaling.</p>
+
+    <p><strong>Forgetting is never free, but its schedule is a real
+    design axis.</strong> Both schedules cost real bits and real depth
+    against the undamaged pond at every setting — the wheel does not turn
+    damage into profit. What it shows is that at fixed damage volume,
+    <em>structure</em> in the forgetting schedule is worth up to 0.066
+    bits — roughly the size of effects this program treats as headline
+    findings elsewhere — and that the worth is predictable from the damage
+    rate. Follow-up axes named in the journal but not run: finer trough
+    ladders, and non-contiguous trough partitions.</p>
+
+    <h2 id="refs"><span class="sec">§6</span> References</h2>
+
+    <ol class="refs">
+      <li id="ref1">H. Jaeger, "The 'echo state' approach to analysing and
+      training recurrent neural networks," GMD Report 148, German National
+      Research Center for Information Technology, 2001.</li>
+      <li id="ref2">N. Srivastava, G. Hinton, A. Krizhevsky, I. Sutskever,
+      R. Salakhutdinov, "Dropout: a simple way to prevent neural networks
+      from overfitting," <em>Journal of Machine Learning Research</em>
+      15(56), 2014.</li>
+      <li id="ref3">M. Mahoney, "Large text compression benchmark" (text8),
+      <a href="http://mattmahoney.net/dc/textdata">mattmahoney.net/dc/textdata</a>.</li>
+    </ol>
+
+    <h2 id="s7"><span class="sec">§7</span> Provenance</h2>
+
+    <ul class="plain">
+      <li><strong>eb8cf008</strong> — <code>2026-08-11-caity-waterwheel-in-the-reservoir</code>:
+      the brief; 4 cells, seed 0 (run ledger #20). Registered before
+      running, smoke disclosed. Headline hit 6/6 ⇒ provisional,
+      replication auto-queued before any findings entry.</li>
+      <li><strong>ab4f82a2</strong> — <code>2026-08-11-waterwheel-reservoir-rerun1</code>:
+      seed 1, fresh pond wiring and fresh random-dump sequence (run ledger
+      #21). 6/6 again, zero reversals; promoted per the pre-stated
+      rule.</li>
+      <li><strong>79ae8b93</strong> — <code>2026-08-11-caity-waterwheel-reservoir-rerun</code>:
+      seed 2, requested through the lab dashboard as a direct third-seed
+      confirmation; the headline and gap claims re-registered in identical
+      wording (run ledger #24). 6/6 a third time; findings annotated 3/3
+      seeds.</li>
+    </ul>
+
+    <p>All claims judged strictly against the registered wording, misses
+    included above; 3 seeds; replicated before publication.</p>
+
+    <footer>
+      <p>AuxiLab · findings are pre-registered and replicated before publication</p>
+      <p>© 2026 Caitlyn Meeks — Made in the Canary Islands 🇮🇨</p>
+    </footer>
+  </main>
+</div>
+</body>
+</html>
