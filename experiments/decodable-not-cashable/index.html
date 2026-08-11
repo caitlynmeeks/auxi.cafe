@@ -156,6 +156,35 @@
   }
   footer p { margin: 0 0 0.35rem; }
   ::selection { background: var(--pink-soft); color: var(--bright); }
+
+  /* ── print: arXiv face — monochrome serif, no café chrome ── */
+  @media print {
+    :root {
+      --bg:#ffffff; --paper:#ffffff; --chrome:#ffffff; --line:#000000;
+      --ink:#000000; --bright:#000000; --dim:#333333; --faint:#555555;
+      --pink:#000000; --pink-soft:#ffffff; --blue:#000000;
+      --blue-soft:#ffffff; --cream:#ffffff;
+    }
+    body {
+      background:#fff !important; background-image:none !important;
+      font-family: Georgia, "Times New Roman", Times, serif;
+      font-size: 10.5pt; line-height: 1.5; padding: 0;
+      color:#000;
+    }
+    .dossier { border:none; box-shadow:none; border-radius:0; max-width:100%; }
+    .chrome, .dlrow { display:none !important; }
+    main { padding: 0.4in 0.55in; }
+    h1, h2, h3 { font-family: Georgia, "Times New Roman", Times, serif; color:#000; }
+    h2 { border-top:1px solid #000; }
+    a { color:#000; text-decoration:none; }
+    .cmd { display:none; }
+    .abstract, .note { background:#fff; border:1px solid #000; border-radius:0; }
+    .pills li, .pills li.hot { background:#fff; border:1px solid #000; color:#000; }
+    code, table, .num { font-family: ui-monospace, "Courier New", monospace; }
+    table.data th, table.data td { border-color:#000; }
+    tr.hl td { background:#fff; font-weight:bold; }
+    ::selection { background:#fff; }
+  }
 </style>
 </head>
 <body>
