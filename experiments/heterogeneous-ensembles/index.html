@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Heterogeneous Reservoir Ensembles Decode Deeper and Predict Worse Than Homogeneous Ones at Matched Width — AuxiLab</title>
+<meta name="description" content="AuxiLab whitepaper: at matched total width, concatenating five structurally different reservoir families predicts worse — higher validation bits per character — than either one intact reservoir or five independent same-family draws on both trained readouts, while decoding strictly deeper. The result is a complete three-way rank inversion between the bits-per-character and decode-depth instruments, replicated exactly on a fresh hardware-drawn seed, with the heterogeneous-minus-homogeneous gap stable to roughly 0.005–0.007 bits. This is the program's fourth independent route to the decodability–usability gap, and the first produced by cross-family heterogeneity itself.">
+<meta name="color-scheme" content="light">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://auxi.cafe/experiments/heterogeneous-ensembles/">
+<meta property="og:title" content="Heterogeneous Reservoir Ensembles Decode Deeper and Predict Worse Than Homogeneous Ones at Matched Width">
+<meta property="og:description" content="Concatenating five structurally different reservoir families at matched total width yields a state that decodes deeper but predicts worse than homogeneous ensembles — a clean rank inversion between storage and usability, reproduced on a second seed.">
+<meta property="og:image" content="https://auxi.cafe/experiments/heterogeneous-ensembles/fig1.png">
+<meta property="og:image:alt" content="Figure 1 of this preprint.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://auxi.cafe/experiments/heterogeneous-ensembles/fig1.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f5eee0'/%3E%3Cpolygon points='14,26 18,6 31,16' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpolygon points='50,26 46,6 33,16' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpolygon points='18.5,21.5 20.5,11 27.5,16.5' fill='%23e8a8bc'/%3E%3Cpolygon points='45.5,21.5 43.5,11 36.5,16.5' fill='%23e8a8bc'/%3E%3Ccircle cx='32' cy='31' r='19' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5'/%3E%3Ccircle cx='25' cy='30' r='6' fill='%23ffffff' fill-opacity='0.6' stroke='%2334689e' stroke-width='2.2'/%3E%3Ccircle cx='39' cy='30' r='6' fill='%23ffffff' fill-opacity='0.6' stroke='%2334689e' stroke-width='2.2'/%3E%3Cline x1='31' y1='30' x2='33' y2='30' stroke='%2334689e' stroke-width='2.2'/%3E%3Cpath d='M30.4 38.2 L33.6 38.2 L32 40.4 Z' fill='%23b04f6d'/%3E%3Cpath d='M28 42.5 Q30 44.8 32 42.8 Q34 44.8 36 42.5' fill='none' stroke='%234a382e' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M17 48.5 L32 53.5 L24.5 63 L13 56 Z' fill='%23ffffff' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpath d='M47 48.5 L32 53.5 L39.5 63 L51 56 Z' fill='%23ffffff' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='32' cy='57.5' r='2.4' fill='%23b04f6d'/%3E%3C/svg%3E">
+
+<style>
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    padding: clamp(1.5rem, 5vw, 3.5rem) 1rem 2.5rem;
+    background: #fff; color: #000;
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-size: 1.0625rem; line-height: 1.6;
+  }
+  .dossier { margin: 0; }
+  main { max-width: 46rem; margin: 0 auto; }
+
+  /* document header */
+  .printhead { text-align: center; margin: 0 0 1.2rem; }
+  h1.ph-title {
+    font-variant: small-caps; font-weight: 700;
+    font-size: clamp(1.35rem, 1.1rem + 1.2vw, 1.7rem);
+    line-height: 1.3; margin: 0 0 0.6rem; letter-spacing: 0.01em;
+  }
+  .ph-tag { font-variant: small-caps; letter-spacing: 0.3em; font-size: 0.85rem; margin: 0 0 1.2rem; }
+  .ph-authors { font-size: 1rem; line-height: 1.5; margin: 0 0 0.7rem; }
+  .ph-authors .ph-name { font-variant: small-caps; font-weight: 700; }
+  .ph-date { font-size: 1rem; margin: 0; }
+
+  .dlrow { text-align: center; margin: 1rem 0 1.2rem; }
+  a.dl {
+    display: inline-block; font-size: 0.78rem; line-height: 1.6;
+    color: #000; background: #fff; border: 1px solid #000; border-radius: 3px;
+    padding: 0.1rem 0.7rem; text-decoration: none;
+  }
+  a.dl:hover, a.dl:focus-visible { background: #000; color: #fff; }
+  .hint { color: #555; font-size: 0.72rem; }
+
+  .pills { list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; margin: 0 0 1.4rem; padding: 0; }
+  .pills li { font-size: 0.72rem; line-height: 1.6; border: 1px solid #000; border-radius: 999px; padding: 0 0.6rem; }
+
+  .abshead { text-align: center; font-variant: small-caps; font-weight: 700; font-size: 1.02rem; margin: 1.1rem 0 0.45rem; }
+  .abstract { margin: 0 clamp(0.5rem, 5vw, 2.4rem) 1rem; text-align: justify; font-size: 0.92rem; }
+  .keywords { margin: 0 clamp(0.5rem, 5vw, 2.4rem) 1.6rem; font-size: 0.88rem; }
+  .keywords b { font-style: italic; font-weight: 700; }
+
+  h2 { font-size: 1.08rem; margin: 2rem 0 0.6rem; padding-top: 0.9rem; border-top: 1px solid #000; }
+  p { margin: 0.65rem 0; }
+  ul.plain { margin: 0.65rem 0; padding-left: 1.4rem; }
+  ul.plain li { margin: 0.3rem 0; }
+  a { color: #000; text-decoration: underline; text-underline-offset: 2px; }
+  a.cite { text-decoration: none; font-size: 0.85em; }
+  a.cite:hover, a.cite:focus-visible { text-decoration: underline; }
+
+  pre.eq, code, table.data {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Courier New", monospace;
+  }
+  pre.eq {
+    border: 1px solid #000; padding: 0.7rem 0.9rem; margin: 0.8rem 0;
+    font-size: 0.82rem; line-height: 1.55;
+    white-space: pre-wrap; overflow-wrap: break-word; overflow-x: visible;
+  }
+  code { font-size: 0.88em; }
+  table.data { border-collapse: collapse; width: 100%; margin: 0.9rem 0; font-size: 0.82rem; }
+  table.data caption {
+    text-align: left; color: #333; font-size: 0.95em; margin-bottom: 0.4rem;
+    caption-side: top; font-family: Georgia, "Times New Roman", Times, serif;
+  }
+  table.data th, table.data td { text-align: left; padding: 0.3rem 0.8rem 0.3rem 0; border-bottom: 1px solid #000; vertical-align: top; }
+  table.data th { font-weight: 700; }
+  table.data td.num, table.data th.num { text-align: right; padding-right: 1.2rem; }
+  table.data tr.hl td { font-weight: 700; }
+  .tablewrap { overflow-x: auto; }
+
+  figure { margin: 1.2rem 0; }
+  figure img { display: block; width: 100%; max-width: 100%; height: auto; border: 1px solid #000; background: #fff; }
+  figcaption { margin-top: 0.45rem; color: #333; font-size: 0.88rem; line-height: 1.5; }
+
+  .note { border: 1px solid #000; padding: 0.55rem 0.9rem; margin: 1rem 0; font-size: 0.92em; }
+  ol.refs { margin: 0.65rem 0; padding-left: 1.7rem; font-size: 0.88rem; }
+  ol.refs li { margin: 0.35rem 0; }
+  ol.refs li:target { outline: 1px dotted #000; outline-offset: 2px; }
+
+  footer { margin-top: 2.4rem; padding-top: 1rem; border-top: 1px solid #000; color: #333; font-size: 0.85rem; }
+  footer p { margin: 0 0 0.35rem; }
+
+  .sidestamp { display: none; }
+  @media (min-width: 64rem) {
+    .sidestamp {
+      display: block; position: fixed; left: 0.6rem; top: 45%;
+      transform: translateY(-50%) rotate(180deg); writing-mode: vertical-rl;
+      font-size: 0.72rem; letter-spacing: 0.18em; color: #666;
+    }
+  }
+
+  /* print: the same document with paper margins */
+  @media print {
+    body { padding: 0; font-size: 10.5pt; line-height: 1.5; }
+    main { max-width: none; padding: 0.4in 0.55in; }
+    .dlrow { display: none !important; }
+    .sidestamp {
+      display: block; position: fixed; left: 0.08in; top: 45%;
+      transform: translateY(-50%) rotate(180deg); writing-mode: vertical-rl;
+      font-size: 8.5pt; letter-spacing: 0.18em; color: #666;
+    }
+    h1.ph-title { font-size: 16.5pt; }
+    .abstract { font-size: 9.8pt; margin: 0 0.45in 0.9rem; }
+    .keywords { font-size: 9.3pt; margin: 0 0.45in 1.4rem; }
+    table.data { font-size: 8pt; }
+    ol.refs { font-size: 9pt; }
+    ol.refs li:target { outline: none; }
+    a { text-decoration: none; }
+    p { orphans: 3; widows: 3; }
+    tr, pre.eq, .note, ol.refs li, figure { break-inside: avoid; }
+    .tablewrap { overflow-x: visible; }
+  }
+</style>
+</head>
+<body>
+<div class="dossier">
+  <main>
+    <header class="printhead">
+      <h1 class="ph-title">Heterogeneous Reservoir Ensembles Decode Deeper and Predict Worse Than Homogeneous Ones at Matched Width</h1>
+      <div class="ph-tag">A Preprint</div>
+      <div class="ph-authors">
+        <div class="ph-name">Caitlyn Meeks</div>
+        <div>AuxiLab Tenerife — research@auxi.cafe</div>
+      </div>
+      <div class="ph-date">August 12, 2026</div>
+    </header>
+    <div class="sidestamp" aria-hidden="true">AuxiLab · auxi.cafe · August 2026</div>
+    <p class="dlrow"><a class="dl" download href="heterogeneous-ensembles.pdf">download whitepaper</a> <span class="hint">(pdf)</span></p>
+    <ul class="pills">
+      <li>registered 2026-08-12</li>
+      <li>run ledger #33, #36</li>
+      <li>2 seeds × 3 arms, zero reversals</li>
+      <li>replicated before publication</li>
+      <li>promoted 2026-08-12</li>
+    </ul>
+
+    <p class="abshead">Abstract</p>
+    <p class="abstract">An open-ended design brief
+    became a controlled test of representational heterogeneity. Three
+    arms at matched total width N=640, driven by an identical text stream:
+    <b>S</b>, one intact reference reservoir; <b>M</b>, five independent
+    same-family reference draws concatenated; <b>C</b>, five structurally
+    <em>different</em> reservoir families concatenated — the reference
+    sparse-tanh mixer, an addressed-memory reservoir with permutation
+    recurrence, an 8-bit state-quantized reservoir, a periodic block-reset
+    reservoir, and a block-diagonally fragmented reservoir — with C drawing
+    the identical per-slot seeds as M, so that family identity is the only
+    difference. Finding, replicated on a fresh hardware-drawn seed with
+    zero reversals: <b>the heterogeneous ensemble predicts worse than both S
+    and M on ridge and logistic validation bits per character (bpc), while
+    decoding strictly deeper than
+    both</b> — a complete three-way rank inversion (bpc ranking M &lt; S &lt;
+    C; depth ranking C &gt; S &gt; M), reproduced exactly. The C−M gap is
+    stable across seeds to roughly 0.005–0.007 bits (ridge 0.0577/0.0532,
+    logistic 0.0625/0.0560). A companion result: M lands within 0.0175
+    bits of S or closer on every instrument at both seeds, extending the
+    program's fragmentation-is-nearly-free findings to five-way at a new
+    width. This is the program's fourth independent route to the
+    decodability–usability gap — and the first produced by cross-family
+    heterogeneity itself rather than a single mechanism inside one
+    family.</p>
+    <p class="keywords"><b>Keywords</b> reservoir computing · echo state
+    networks · heterogeneous ensembles · decodability vs.
+    usability · rank inversion · pre-registration</p>
+
+    <h2 id="s1"><span class="sec">§1</span> The question</h2>
+
+    <p>Combining structurally different reservoirs is a long-standing idea —
+    decoupled sub-reservoirs were proposed as an architecture almost two
+    decades ago <a class="cite" href="#ref2">[2]</a> — and the intuitive
+    expectation is that diversity should help: five kinds of
+    memory ought to cover for one another's blind spots. This program has
+    repeatedly measured a gap, however, between what a state <em>stores</em>
+    and what a trained readout can <em>use</em>. The registered question
+    therefore became: at strictly matched total width, does concatenating
+    five families buy usable prediction, or does it buy something else?</p>
+
+    <h2 id="s2"><span class="sec">§2</span> Method</h2>
+
+    <p>All arms at N=640 total width, with the program's standard parameters
+    throughout (spectral radius ρ=0.95, leak 1.0,
+    bias 0.2, tanh activation where applicable
+    <a class="cite" href="#ref1">[1]</a>),
+    standard text8 splits <a class="cite" href="#ref3">[3]</a>, 2M training
+    characters:</p>
+
+    <pre class="eq">S: one intact reference reservoir, N=640
+M: 5 x reference(N=128), independent seeds {0..4}, concatenated
+C: 5 x N=128, SAME per-slot seeds as M, different families:
+   slot 0  reference sparse-tanh mixer
+   slot 1  addressed-memory ESN (permutation + Hadamard coding)
+   slot 2  state-quantized ESN, b=8 bits per unit
+   slot 3  periodic block-reset schedule, 8 blocks
+   slot 4  block-diagonal fragmentation, H=8</pre>
+
+    <p>M and C sharing seed draws slot-for-slot isolates the causal
+    question — does family identity matter? — from a random-draw
+    confound. Construction code for each component reservoir was copied
+    verbatim from its source study. The five component families are drawn
+    from earlier work in this program:
+    <a href="../addressed-memory-esn/index.html">the addressed-memory ESN</a>,
+    <a href="../periodic-block-resets/index.html">the periodic block-reset
+    reservoir</a>, and
+    <a href="../block-diagonal-fragmentation/index.html">the block-fragmented reservoir</a> have
+    their own whitepapers; the state-quantized family comes from the
+    program's quantization runs.
+    Instruments: ridge and logistic validation bpc, U3 decode depth — the
+    linear decode-depth probe, so designated in the program's internal
+    instrument numbering. The
+    replication seed (3643503230) was hardware-drawn and recorded before
+    running.</p>
+
+    <h2 id="s3"><span class="sec">§3</span> Pre-registered predictions</h2>
+
+    <p>A disclosed pilot run showed the direction before any prediction
+    was written — and it was <em>not</em> the direction the brief's premise
+    suggested. The registered predictions followed the pilot, with that
+    premise retained as the named alternative:</p>
+
+    <ul class="plain">
+      <li><strong>CC1/CC2</strong>: C predicts worse than both S and M on
+      ridge (2/2) and logistic (2/2) validation bpc. Named alternative
+      (the brief's premise, and a registered surprise if it occurred):
+      C ≤ M — the benefit of diversity reasserts itself at 20× the pilot's
+      data.</li>
+      <li><strong>CC3</strong>: C decodes deeper than both S and M
+      (2/2).</li>
+      <li><strong>CC4</strong> (headline): the full rank inversion — bpc
+      best-to-worst M, S, C on both instruments; depth
+      deepest-to-shallowest C, S, M. Hits only if CC1–CC3 all hit
+      together. Named alternative: any partial inversion.</li>
+      <li><strong>CC5</strong> (supporting): M within 0.03 bits of S on
+      both instruments — five-way same-family fragmentation is nearly
+      free.</li>
+      <li><strong>Bands</strong>: C's logistic val in [2.85, 3.10]; the
+      C−M logistic gap ≥ 0.01 bits; the C−M depth gap ≥ 0.2
+      characters.</li>
+    </ul>
+
+    <p>The replication re-registered all five ordinals (R-CC1–R-CC5, with
+    a widened ±0.05 tie band for R-CC5) and both surviving bands, with
+    promotion pre-committed to R-CC1 through R-CC4 hitting clean.</p>
+
+    <h2 id="s4"><span class="sec">§4</span> Results</h2>
+
+    <div class="tablewrap">
+    <table class="data">
+      <caption><b>Table 1.</b> Both seeds (run ledger #33 / #36; values
+      given as seed 0 / seed 3643503230). All gates pass, no voided logistic
+      fits, zero reversals across every registered comparison.</caption>
+      <tr><th>arm</th><th class="num">ridge val bpc</th><th class="num">logistic val bpc</th><th class="num">U3 depth</th></tr>
+      <tr><td>S — intact reference reservoir</td><td class="num">3.2652 / 3.2580</td><td class="num">2.7843 / 2.7787</td><td class="num">9.28 / 9.33</td></tr>
+      <tr><td>M — five same-family draws</td><td class="num">3.2477 / 3.2499</td><td class="num">2.7683 / 2.7708</td><td class="num">8.97 / 9.03</td></tr>
+      <tr class="hl"><td>C — five different families</td><td class="num">3.3054 / 3.3031</td><td class="num">2.8308 / 2.8268</td><td class="num">9.49 / 9.52</td></tr>
+    </table>
+    </div>
+
+    <figure>
+      <img src="fig1.png" width="1338" height="522"
+        alt="Three panels: ridge validation bits per character, logistic validation bits per character, and decode depth, each showing arms S, M and C with a filled marker for seed 0 and an open marker for the replication seed, every value annotated. In both bits-per-character panels the orange C arm sits highest — worst — while the green M arm sits lowest; in the depth panel the ordering is exactly reversed, C deepest and M shallowest.">
+      <figcaption><b>Figure 1.</b> The rank inversion, both seeds (run
+      ledger #33, #36). Filled markers: seed 0; open: seed 3643503230. On
+      both trained-readout instruments the ordering is M &lt; S &lt; C
+      (best to worst); on decode depth it is exactly reversed, C &gt; S
+      &gt; M.</figcaption>
+    </figure>
+
+    <p><strong>All primary ordinals hit at both seeds, with zero
+    reversals.</strong> C predicts worst on both instruments and decodes
+    deepest, at both seeds; the full three-way rank inversion (CC4,
+    R-CC4) reproduces exactly. The effect's <em>size</em> is stable, not
+    only its direction: C−M gaps of 0.0577/0.0625 bits (ridge/logistic)
+    at seed 0 against 0.0532/0.0560 at the replication seed, and C−M
+    depth gaps of 0.52 and 0.49 characters.</p>
+
+    <p><strong>Five same-family draws are nearly free — and slightly better
+    than one intact reservoir.</strong> M lands within 0.0175/
+    0.0160 bits of S at seed 0 and 0.0081/0.0079 at the replication seed,
+    and is directionally <em>better</em> than S on both instruments at
+    both seeds — extending the two-way (orthogonal-reservoir) and 64-way
+    (block-diagonal fragmentation) results to five-way at a new width.</p>
+
+    <p><strong>Bands: 2/3 at seed 0, with the miss in the
+    better-than-predicted direction.</strong> C's logistic validation bpc
+    (2.8308)
+    landed below the registered [2.85, 3.10] floor — the heterogeneous
+    ensemble predicted <em>better</em> than the pilot-informed band
+    anticipated while still being the worst arm — matching this program's
+    established pattern of
+    quantitative bands missing toward better-than-predicted performance.
+    The gap bands held at both seeds.</p>
+
+    <h2 id="s5"><span class="sec">§5</span> Discussion</h2>
+
+    <p><strong>Heterogeneity itself trades usability for
+    decodability.</strong> The
+    program's three prior routes to this dissociation each ran through a
+    single mechanism inside one family — an addressing scheme, a
+    future-keyed linear bridge, a quantization dial. Here the same signature
+    emerges from <em>combining unrelated substrates</em>, with no single
+    mechanism doing the
+    work: five kinds of memory, concatenated, retain more of the recent
+    stream than any homogeneous arm at the same width, and a trained
+    readout converts strictly less of it into prediction. Diverse
+    representations are harder to use than they are to fill.</p>
+
+    <p><strong>What this does not establish.</strong> Whether the
+    predictive-capture law
+    (<a href="../predictive-capture/index.html">x<sub>c</sub></a>) prices this
+    heterogeneous state the same way it priced the other three dissociations
+    is untested — recorded in the program's work queue as answerable from
+    result files already on disk. Width and budget are fixed at N=640 and 2M
+    characters; nothing here shows that the inversion survives other
+    operating points. Uncertainty is reported as a min–max range across two
+    seeds, and the program's independent audit of this entry is still
+    pending.</p>
+
+    <h2 id="refs"><span class="sec">§6</span> References</h2>
+
+    <ol class="refs">
+      <li id="ref1">H. Jaeger, "The 'echo state' approach to analysing and
+      training recurrent neural networks," GMD Report 148, German National
+      Research Center for Information Technology, 2001.</li>
+      <li id="ref2">Y. Xue, L. Yang, S. Haykin, "Decoupled echo state
+      networks with lateral inhibition," <em>Neural Networks</em> 20(3),
+      2007.</li>
+      <li id="ref3">M. Mahoney, "Large text compression benchmark" (text8),
+      <a href="http://mattmahoney.net/dc/textdata">mattmahoney.net/dc/textdata</a>.</li>
+    </ol>
+
+    <h2 id="s7"><span class="sec">§7</span> Provenance</h2>
+
+    <ul class="plain">
+      <li><strong>ef80c874</strong> — <code>2026-08-12-caity-cinco-cereales</code>:
+      the initiating design brief; 3 arms, seed 0 (run ledger #33). Pilot
+      disclosed before registration; CC1–CC5 all hit ⇒ provisional,
+      replication auto-queued, an intake record filed on the possible
+      connection to the predictive-capture law.</li>
+      <li><strong>2251de15</strong> — <code>2026-08-12-cinco-cereales-rerun1</code>:
+      seed 3643503230, hardware-drawn with the raw draw recorded before
+      running (run ledger #36). All five ordinals and both bands hit,
+      zero reversals ⇒ promoted per the pre-stated rule.</li>
+    </ul>
+
+    <p>All claims judged strictly against the registered wording, the
+    band miss included above; 2 seeds; replicated before publication; the
+    program's independent audit of this entry is still pending. Internal
+    designation: cinco cereales.</p>
+
+    <footer>
+      <p>AuxiLab · findings are pre-registered and replicated before publication</p>
+      <p>© 2026 Caitlyn Meeks — Made in the Canary Islands 🇮🇨</p>
+    </footer>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A Threshold-Fire-and-Refractory Reservoir: Event-Driven Dynamics Behind a Hidden Membrane — AuxiLab</title>
+<meta name="description" content="AuxiLab whitepaper: a threshold-fire-and-refractory reservoir of integrate-and-fire units, with the membrane potential structurally invisible to the readout, has a strict interior firing-threshold optimum at θ=0.80 and favors fast emitted-trace decay over slow at every threshold tested, 10/10 adjacent-pair comparisons across two independently drawn reservoirs with zero reversals. The best cell reproduces within 0.0026 bits across seeds; every cell trails the reference sparse-tanh reservoir by 0.43–0.44 bits.">
+<meta name="color-scheme" content="light">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://auxi.cafe/experiments/threshold-fire-reservoir/">
+<meta property="og:title" content="A Threshold-Fire-and-Refractory Reservoir: Event-Driven Dynamics Behind a Hidden Membrane">
+<meta property="og:description" content="An event-driven reservoir of integrate-and-fire units shows a strict interior optimum in the firing threshold, and a fast-decaying emitted trace outperforms a slow one at every threshold — the opposite of the direction observed in every leaky-integrator reservoir in this program — replicated on an independent hardware-drawn seed.">
+<meta property="og:image" content="https://auxi.cafe/experiments/threshold-fire-reservoir/fig1.png">
+<meta property="og:image:alt" content="Figure 1 of this preprint.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://auxi.cafe/experiments/threshold-fire-reservoir/fig1.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f5eee0'/%3E%3Cpolygon points='14,26 18,6 31,16' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpolygon points='50,26 46,6 33,16' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpolygon points='18.5,21.5 20.5,11 27.5,16.5' fill='%23e8a8bc'/%3E%3Cpolygon points='45.5,21.5 43.5,11 36.5,16.5' fill='%23e8a8bc'/%3E%3Ccircle cx='32' cy='31' r='19' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5'/%3E%3Ccircle cx='25' cy='30' r='6' fill='%23ffffff' fill-opacity='0.6' stroke='%2334689e' stroke-width='2.2'/%3E%3Ccircle cx='39' cy='30' r='6' fill='%23ffffff' fill-opacity='0.6' stroke='%2334689e' stroke-width='2.2'/%3E%3Cline x1='31' y1='30' x2='33' y2='30' stroke='%2334689e' stroke-width='2.2'/%3E%3Cpath d='M30.4 38.2 L33.6 38.2 L32 40.4 Z' fill='%23b04f6d'/%3E%3Cpath d='M28 42.5 Q30 44.8 32 42.8 Q34 44.8 36 42.5' fill='none' stroke='%234a382e' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M17 48.5 L32 53.5 L24.5 63 L13 56 Z' fill='%23ffffff' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpath d='M47 48.5 L32 53.5 L39.5 63 L51 56 Z' fill='%23ffffff' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='32' cy='57.5' r='2.4' fill='%23b04f6d'/%3E%3C/svg%3E">
+
+<style>
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    padding: clamp(1.5rem, 5vw, 3.5rem) 1rem 2.5rem;
+    background: #fff; color: #000;
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-size: 1.0625rem; line-height: 1.6;
+  }
+  .dossier { margin: 0; }
+  main { max-width: 46rem; margin: 0 auto; }
+
+  /* document header */
+  .printhead { text-align: center; margin: 0 0 1.2rem; }
+  h1.ph-title {
+    font-variant: small-caps; font-weight: 700;
+    font-size: clamp(1.35rem, 1.1rem + 1.2vw, 1.7rem);
+    line-height: 1.3; margin: 0 0 0.6rem; letter-spacing: 0.01em;
+  }
+  .ph-tag { font-variant: small-caps; letter-spacing: 0.3em; font-size: 0.85rem; margin: 0 0 1.2rem; }
+  .ph-authors { font-size: 1rem; line-height: 1.5; margin: 0 0 0.7rem; }
+  .ph-authors .ph-name { font-variant: small-caps; font-weight: 700; }
+  .ph-date { font-size: 1rem; margin: 0; }
+
+  .dlrow { text-align: center; margin: 1rem 0 1.2rem; }
+  a.dl {
+    display: inline-block; font-size: 0.78rem; line-height: 1.6;
+    color: #000; background: #fff; border: 1px solid #000; border-radius: 3px;
+    padding: 0.1rem 0.7rem; text-decoration: none;
+  }
+  a.dl:hover, a.dl:focus-visible { background: #000; color: #fff; }
+  .hint { color: #555; font-size: 0.72rem; }
+
+  .pills { list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; margin: 0 0 1.4rem; padding: 0; }
+  .pills li { font-size: 0.72rem; line-height: 1.6; border: 1px solid #000; border-radius: 999px; padding: 0 0.6rem; }
+
+  .abshead { text-align: center; font-variant: small-caps; font-weight: 700; font-size: 1.02rem; margin: 1.1rem 0 0.45rem; }
+  .abstract { margin: 0 clamp(0.5rem, 5vw, 2.4rem) 1rem; text-align: justify; font-size: 0.92rem; }
+  .keywords { margin: 0 clamp(0.5rem, 5vw, 2.4rem) 1.6rem; font-size: 0.88rem; }
+  .keywords b { font-style: italic; font-weight: 700; }
+
+  h2 { font-size: 1.08rem; margin: 2rem 0 0.6rem; padding-top: 0.9rem; border-top: 1px solid #000; }
+  p { margin: 0.65rem 0; }
+  ul.plain { margin: 0.65rem 0; padding-left: 1.4rem; }
+  ul.plain li { margin: 0.3rem 0; }
+  a { color: #000; text-decoration: underline; text-underline-offset: 2px; }
+  a.cite { text-decoration: none; font-size: 0.85em; }
+  a.cite:hover, a.cite:focus-visible { text-decoration: underline; }
+
+  pre.eq, code, table.data {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Courier New", monospace;
+  }
+  pre.eq {
+    border: 1px solid #000; padding: 0.7rem 0.9rem; margin: 0.8rem 0;
+    font-size: 0.82rem; line-height: 1.55;
+    white-space: pre-wrap; overflow-wrap: break-word; overflow-x: visible;
+  }
+  code { font-size: 0.88em; }
+  table.data { border-collapse: collapse; width: 100%; margin: 0.9rem 0; font-size: 0.82rem; }
+  table.data caption {
+    text-align: left; color: #333; font-size: 0.95em; margin-bottom: 0.4rem;
+    caption-side: top; font-family: Georgia, "Times New Roman", Times, serif;
+  }
+  table.data th, table.data td { text-align: left; padding: 0.3rem 0.8rem 0.3rem 0; border-bottom: 1px solid #000; vertical-align: top; }
+  table.data th { font-weight: 700; }
+  table.data td.num, table.data th.num { text-align: right; padding-right: 1.2rem; }
+  table.data tr.hl td { font-weight: 700; }
+  .tablewrap { overflow-x: auto; }
+
+  figure { margin: 1.2rem 0; }
+  figure img { display: block; width: 100%; max-width: 100%; height: auto; border: 1px solid #000; background: #fff; }
+  figcaption { margin-top: 0.45rem; color: #333; font-size: 0.88rem; line-height: 1.5; }
+
+  .note { border: 1px solid #000; padding: 0.55rem 0.9rem; margin: 1rem 0; font-size: 0.92em; }
+  ol.refs { margin: 0.65rem 0; padding-left: 1.7rem; font-size: 0.88rem; }
+  ol.refs li { margin: 0.35rem 0; }
+  ol.refs li:target { outline: 1px dotted #000; outline-offset: 2px; }
+
+  footer { margin-top: 2.4rem; padding-top: 1rem; border-top: 1px solid #000; color: #333; font-size: 0.85rem; }
+  footer p { margin: 0 0 0.35rem; }
+
+  .sidestamp { display: none; }
+  @media (min-width: 64rem) {
+    .sidestamp {
+      display: block; position: fixed; left: 0.6rem; top: 45%;
+      transform: translateY(-50%) rotate(180deg); writing-mode: vertical-rl;
+      font-size: 0.72rem; letter-spacing: 0.18em; color: #666;
+    }
+  }
+
+  /* print: the same document with paper margins */
+  @media print {
+    body { padding: 0; font-size: 10.5pt; line-height: 1.5; }
+    main { max-width: none; padding: 0.4in 0.55in; }
+    .dlrow { display: none !important; }
+    .sidestamp {
+      display: block; position: fixed; left: 0.08in; top: 45%;
+      transform: translateY(-50%) rotate(180deg); writing-mode: vertical-rl;
+      font-size: 8.5pt; letter-spacing: 0.18em; color: #666;
+    }
+    h1.ph-title { font-size: 16.5pt; }
+    .abstract { font-size: 9.8pt; margin: 0 0.45in 0.9rem; }
+    .keywords { font-size: 9.3pt; margin: 0 0.45in 1.4rem; }
+    table.data { font-size: 8pt; }
+    ol.refs { font-size: 9pt; }
+    ol.refs li:target { outline: none; }
+    a { text-decoration: none; }
+    p { orphans: 3; widows: 3; }
+    tr, pre.eq, .note, ol.refs li, figure { break-inside: avoid; }
+    .tablewrap { overflow-x: visible; }
+  }
+</style>
+</head>
+<body>
+<div class="dossier">
+  <main>
+    <header class="printhead">
+      <h1 class="ph-title">A Threshold-Fire-and-Refractory Reservoir: Event-Driven Dynamics Behind a Hidden Membrane</h1>
+      <div class="ph-tag">A Preprint</div>
+      <div class="ph-authors">
+        <div class="ph-name">Caitlyn Meeks</div>
+        <div>AuxiLab Tenerife — research@auxi.cafe</div>
+      </div>
+      <div class="ph-date">August 12, 2026</div>
+    </header>
+    <div class="sidestamp" aria-hidden="true">AuxiLab · auxi.cafe · August 2026</div>
+    <p class="dlrow"><a class="dl" download href="threshold-fire-reservoir.pdf">download whitepaper</a> <span class="hint">(pdf)</span></p>
+    <ul class="pills">
+      <li>registered 2026-08-12</li>
+      <li>run ledger #31, #32</li>
+      <li>2 seeds × 15 cells, zero reversals</li>
+      <li>replicated before publication</li>
+      <li>promoted 2026-08-12</li>
+    </ul>
+
+    <p class="abshead">Abstract</p>
+    <p class="abstract">This study originated in an open-ended design
+    brief. It introduces the program's first event-driven reservoir: a
+    threshold-fire-and-refractory network built from integrate-and-fire
+    units rather than leaky integrators. Each of 1024 units silently
+    accumulates drive into a hidden membrane potential; crossing a
+    threshold θ emits an event of fixed amplitude, resets the membrane,
+    and opens a brief refractory window; between emissions the emitted
+    trace decays at rate <code>decay</code>. Only the emitted trace is
+    ever fed back or read out — the membrane is structurally invisible, a
+    hard information bottleneck with no learned component. Sweeping θ
+    across five values and decay across three at the program's standard
+    budget, on two independently drawn reservoirs (the second seed
+    hardware-drawn): <b>ridge validation bits per character (bpc) has a
+    strict interior optimum at θ=0.80</b>, both grid ends worse in both
+    seeds, <b>and rises monotonically as the emitted-trace decay
+    slows</b> — 10/10 adjacent-pair comparisons across both seeds, zero
+    reversals. That direction is the opposite of how persistence
+    parameters (spectral radius, leak rate) behave in every other
+    reservoir family measured in this program. Linear decode depth agrees
+    with bpc throughout — no decodability–usability split. The best cell
+    reproduces within 0.0026 bits across seeds (3.5799 vs 3.5825), with
+    active fraction 7.93% and 7.51%, inside the registered 3–15% band.
+    Every cell trails the reference sparse-tanh reservoir by 0.43–0.44
+    bits: a new substrate family with a reproducible structural law, not
+    an improved predictor.</p>
+    <p class="keywords"><b>Keywords</b> reservoir computing ·
+    integrate-and-fire · event-driven sparse coding · spiking dynamics ·
+    emitted-trace decay · pre-registration</p>
+
+    <h2 id="s1"><span class="sec">§1</span> Introduction</h2>
+
+    <p>Every reservoir previously studied in this program updates every
+    unit at every step through a smooth, continuous nonlinearity. An
+    alternative is to compute with threshold events: a unit stays silent
+    until its accumulated drive crosses a threshold, then emits a
+    discrete event and falls silent again. That idea founds the
+    liquid-state tradition
+    <a class="cite" href="#ref2">[2]</a>; this study builds the smallest
+    version of it that remains directly comparable to the program's
+    reference reservoir, and asks two registered questions. Is there an
+    interior optimum in how readily the units fire? And does a
+    slower-decaying emitted trace — greater state persistence, the
+    direction that helps in every leaky-integrator reservoir measured
+    here — help or hurt?</p>
+
+    <h2 id="s2"><span class="sec">§2</span> Method</h2>
+
+    <p>The state of each unit is a triple (emitted trace g, membrane
+    potential m, refractory counter r):</p>
+
+    <pre class="eq">drive = W @ g + Win @ e_c + b     # input one-hot e_c
+# units not refractory integrate silently:
+m ← 0.7·m + drive
+if m crosses θ:                   # EMIT
+    g ← 1.0                       # emit at fixed amplitude
+    m ← 0                         # membrane resets
+    r ← 3                         # refractory window opens
+else:
+    g ← decay · g                 # emitted trace decays
+# ONLY g feeds back through W and reaches the readout;
+# m is structurally invisible outside the unit</pre>
+
+    <p>W, Win, and the bias are constructed exactly as in the program's
+    reference reservoir <a class="cite" href="#ref1">[1]</a> (sparse
+    random, fan-in 10, spectral radius ρ = 0.95, N=1024), so the
+    comparison against that reference sparse-tanh reservoir isolates the
+    change of nonlinearity alone. The threshold grid θ ∈ {0.35, 0.55,
+    0.80, 1.15, 1.70} was anchored to the reservoir's own dynamic range
+    by a disclosed never-firing probe over real text; decay ∈ {0.50,
+    0.80, 0.95}. Standard text8 splits
+    <a class="cite" href="#ref3">[3]</a>, 2M training characters;
+    instruments: ridge and logistic validation bpc, and U3 — a linear
+    decode-depth probe, in the program's internal instrument
+    numbering. The second seed (3818644351) was drawn from a hardware
+    random-number generator, with the raw draw recorded in the
+    registration before running.</p>
+
+    <h2 id="s3"><span class="sec">§3</span> Pre-registered predictions</h2>
+
+    <p>A 100k-character pilot run over the full 5×3 grid was carried out
+    first and disclosed: it showed the interior θ optimum <em>and</em>
+    reversed the a-priori expectation on decay (slower decay — greater
+    persistence — had been expected to yield more memory; the pilot run
+    showed the opposite). Predictions were finalized after it and
+    labeled as pilot-informed:</p>
+
+    <ul class="plain">
+      <li><strong>J1</strong> (headline): at decay 0.50, ridge validation
+      bpc is non-monotone in θ with a strictly interior minimum. Named
+      loss: the full-budget optimum sits at a grid endpoint.</li>
+      <li><strong>J2</strong> (direction): at every θ, ridge validation
+      bpc rises monotonically with decay — 5/5, zero reversals
+      allowed.</li>
+      <li><strong>J3</strong>: decode depth shows the same qualitative
+      pattern as J1 and J2 — a decodability–usability split would be
+      reported as a named alternative, not folded into a miss.</li>
+      <li><strong>J4</strong> (manipulation check): all 15 cells worse
+      than the reference-reservoir anchor (3.1472) on ridge validation
+      bpc. Named alternative, rated a major surprise: any cell beats
+      it.</li>
+      <li><strong>JQ1/JQ2</strong> (bands): the best cell's active
+      fraction lands in [3%, 15%]; the best cell trails the reference
+      reservoir by more than 0.15 bits.</li>
+    </ul>
+
+    <p>The seed-2 replication re-registered all six as R-J1–R-J4,
+    R-JQ1–R-JQ2, with promotion pre-committed to R-J1 and R-J2 both being
+    confirmed cleanly.</p>
+
+    <h2 id="s4"><span class="sec">§4</span> Results</h2>
+
+    <div class="tablewrap">
+    <table class="data">
+      <caption><b>Table 1.</b> Ridge validation bpc, both seeds (internal
+      run log entries #31 / #32; each cell: seed 0 / seed 3818644351).
+      Best cell in bold. Reference sparse-tanh reservoir anchor, cited:
+      3.1472. No logistic readout was voided by the program's
+      fit-invalidating divergence rule.</caption>
+      <tr><th>θ \ decay</th><th class="num">0.50</th><th class="num">0.80</th><th class="num">0.95</th></tr>
+      <tr><td>0.35</td><td class="num">3.6468 / 3.6515</td><td class="num">3.7097 / 3.7098</td><td class="num">3.7694 / 3.7688</td></tr>
+      <tr><td>0.55</td><td class="num">3.6078 / 3.6134</td><td class="num">3.6880 / 3.6920</td><td class="num">3.7555 / 3.7543</td></tr>
+      <tr class="hl"><td>0.80</td><td class="num">3.5799 / 3.5825</td><td class="num">3.6767 / 3.6855</td><td class="num">3.7545 / 3.7581</td></tr>
+      <tr><td>1.15</td><td class="num">3.5877 / 3.6060</td><td class="num">3.7093 / 3.7312</td><td class="num">3.7763 / 3.8015</td></tr>
+      <tr><td>1.70</td><td class="num">3.7067 / 3.7186</td><td class="num">3.8405 / 3.8713</td><td class="num">3.8985 / 3.9450</td></tr>
+    </table>
+    </div>
+
+    <figure>
+      <img src="fig1.png" width="1159" height="565"
+        alt="Two panels, one per seed, plotting ridge validation bits per character against firing threshold theta for three emitted-trace decay rates drawn as three blue lines from dark (decay 0.50) to light (decay 0.95). In both panels the curves dip to an interior minimum at theta 0.80, circled in orange on the darkest line, and the three lines stack in the same order — faster decay always lower. A dashed gray line far below marks the cited reference sparse-tanh reservoir anchor at 3.1472.">
+      <figcaption><b>Figure 1.</b> Ridge validation bpc against firing
+      threshold θ for the three emitted-trace decay rates, both seeds
+      (internal run log entries #31, #32). The circled point is the
+      interior optimum (θ=0.80, decay=0.50), the same location in both
+      seeds. The dashed line is the cited reference sparse-tanh reservoir
+      anchor (3.1472) — every cell of this family sits well above
+      it.</figcaption>
+    </figure>
+
+    <p><strong>All six registered predictions were confirmed at both
+    seeds, with zero reversals anywhere.</strong> The interior optimum
+    sits at θ=0.80 in both seeds, with both grid ends worse; the best
+    cell lands within 0.0026 bits of itself across two fully independent
+    wiring draws. The decay ordering 0.50 &lt; 0.80 &lt; 0.95 holds at
+    every θ in both seeds — 10/10 adjacent pairs. Decode depth mirrors
+    bpc throughout (interior maximum at θ=0.80, monotone worsening as
+    decay slows) — no decodability–usability split, unlike several other
+    families in this program. Active fraction at the best cell: 7.93% /
+    7.51%, inside the registered band.</p>
+
+    <p><strong>Comparison against the reference reservoir.</strong> Every
+    cell in both seeds — 30 of 30 — is worse than the reference
+    sparse-tanh anchor, by 0.4327 bits at the best cell (seed 0) and
+    0.4353 (second seed). The registered framing of a performance band
+    rather than an improvement held exactly: event-driven sparse coding
+    is not competitive with continuous mixing at this budget.</p>
+
+    <p><strong>A diagnostic limitation, found and retained.</strong> At
+    the sparsest-firing corner (θ=1.70, all three decay values), the U3
+    lag-1 diagnostic gate fails at full budget in both seeds despite
+    passing at pilot scale — so both runs score 12/15 cells on the gated
+    depth instrument, and the depth reading at that corner sits outside
+    the gate (its direction is consistent with the rest of the grid). No
+    bpc conclusion depends on that gate. The first run's committed
+    conclusion text misrecorded this count as 0/15 gate failures; the
+    replication caught it, and the correction is flagged in the
+    program's records for its audit pass.</p>
+
+    <h2 id="s5"><span class="sec">§5</span> Discussion</h2>
+
+    <p><strong>A persistence parameter with the opposite sign.</strong>
+    In every leaky-integrator reservoir measured in this program, greater
+    state persistence (spectral radius, leak rate) buys more memory until
+    it buys instability. The emitted-trace decay rate is also a
+    persistence parameter — and yet slower decay is monotonically worse,
+    everywhere, at both seeds. The mechanistic reading registered with
+    the finding: a slowly decaying trace keeps re-triggering the units it
+    is wired to through W — measured active fraction rises with decay —
+    and that recurrent re-excitation adds activity that behaves like
+    noise, not memory. The information the readout uses lives in
+    <em>which units have just fired</em>, and fast-decaying traces keep
+    that signal clean.</p>
+
+    <p><strong>An interior optimum, not a monotone trend.</strong> A
+    threshold that is too low saturates the network with activity (12.33%
+    of unit-steps at peak at the densest tested extreme, seed 0); one
+    that is too high leaves it nearly silent (1.80% at the sparsest). The
+    optimum sits between, at a reproducible threshold and a reproducible
+    ~7.5–7.9% activity level. What this study does not claim: that any
+    setting of this family is competitive with the reference sparse-tanh
+    reservoir (none tested is), or anything beyond two seeds —
+    uncertainty is reported as a min–max range across two draws, and the
+    program's independent audit of this entry is still pending.</p>
+
+    <h2 id="refs"><span class="sec">§6</span> References</h2>
+
+    <ol class="refs">
+      <li id="ref1">H. Jaeger, "The 'echo state' approach to analysing and
+      training recurrent neural networks," GMD Report 148, German National
+      Research Center for Information Technology, 2001.</li>
+      <li id="ref2">W. Maass, T. Natschläger, H. Markram, "Real-time computing
+      without stable states: a new framework for neural computation based on
+      perturbations," <em>Neural Computation</em> 14(11), 2002.</li>
+      <li id="ref3">M. Mahoney, "Large text compression benchmark" (text8),
+      <a href="http://mattmahoney.net/dc/textdata">mattmahoney.net/dc/textdata</a>.</li>
+    </ol>
+
+    <h2 id="s7"><span class="sec">§7</span> Provenance</h2>
+
+    <ul class="plain">
+      <li><strong>fb338dda</strong> — <code>2026-08-12-caity-jellyfish-swarm</code>:
+      the originating design brief; 15 cells, seed 0 (internal run log
+      #31). Probe and pilot run disclosed before registration; all six
+      predictions confirmed ⇒ provisional, replication
+      automatically queued.</li>
+      <li><strong>208425c9</strong> — <code>2026-08-12-jellyfish-swarm-rerun1</code>:
+      seed 3818644351, hardware-drawn with the raw draw recorded before
+      running (internal run log #32). All six replication predictions
+      confirmed, zero reversals ⇒ promoted to the program's
+      confirmed-findings record per the pre-stated rule; the seed-0
+      gate-count error found and flagged during this pass.</li>
+    </ul>
+
+    <p>All claims judged strictly against the registered wording; 2 seeds;
+    replicated before publication; the program's independent audit of this
+    entry is still pending. Internal designation: jellyfish swarm.</p>
+
+    <footer>
+      <p>AuxiLab · findings are pre-registered and replicated before publication</p>
+      <p>© 2026 Caitlyn Meeks — Made in the Canary Islands 🇮🇨</p>
+    </footer>
+  </main>
+</div>
+</body>
+</html>

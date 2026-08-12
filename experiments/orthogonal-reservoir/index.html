@@ -3,19 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Orthogonal, Measured — AuxiLab</title>
-<meta name="description" content="AuxiLab whitepaper: a bit-identical duplicate twin reservoir adds exactly nothing (ties the lone half-pond to the last digit, 3/3 seeds), an independently-drawn twin beats the duplicate on every instrument, and two independent half-ponds concatenated land within thousandths of a bit of a full-width pond — while the naive orthogonality measure saturates above 0.999 for both.">
+<title>Measuring Orthogonality Between Paired Reservoirs: Duplicate Twins Are Reparametrizations, Independent Twins Are Nearly Free — AuxiLab</title>
+<meta name="description" content="AuxiLab whitepaper: a bit-identical duplicate twin reservoir adds exactly nothing (ties the lone half-width reservoir to the last digit, 3/3 seeds), an independently drawn twin beats the duplicate on every instrument, and two independent half-width reservoirs concatenated land within thousandths of a bit of a full-width reservoir — while the naive orthogonality reading saturates above 0.999 for both.">
 <meta name="color-scheme" content="light">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://auxi.cafe/experiments/orthogonal-reservoir/">
-<meta property="og:title" content="Orthogonal, Measured">
-<meta property="og:description" content="A copied twin adds nothing, to the exact decimal; an independently-drawn twin recovers a full-width pond to within thousandths of a bit. 'Orthogonal' has to be measured, not assumed.">
-<meta property="og:image" content="https://auxi.cafe/img/auxi.png">
-<meta property="og:image:width" content="639">
-<meta property="og:image:height" content="519">
-<meta property="og:image:alt" content="Auxi, the AuxiLab mascot — a catgirl in a labcoat with a clipboard, in a café">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://auxi.cafe/img/auxi.png">
+<meta property="og:title" content="Measuring Orthogonality Between Paired Reservoirs">
+<meta property="og:description" content="A duplicate twin adds nothing, to the recorded decimal; an independently drawn twin recovers a full-width reservoir to within thousandths of a bit. Orthogonality has to be measured, not assumed.">
+<meta name="twitter:card" content="summary">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f5eee0'/%3E%3Cpolygon points='14,26 18,6 31,16' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpolygon points='50,26 46,6 33,16' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpolygon points='18.5,21.5 20.5,11 27.5,16.5' fill='%23e8a8bc'/%3E%3Cpolygon points='45.5,21.5 43.5,11 36.5,16.5' fill='%23e8a8bc'/%3E%3Ccircle cx='32' cy='31' r='19' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5'/%3E%3Ccircle cx='25' cy='30' r='6' fill='%23ffffff' fill-opacity='0.6' stroke='%2334689e' stroke-width='2.2'/%3E%3Ccircle cx='39' cy='30' r='6' fill='%23ffffff' fill-opacity='0.6' stroke='%2334689e' stroke-width='2.2'/%3E%3Cline x1='31' y1='30' x2='33' y2='30' stroke='%2334689e' stroke-width='2.2'/%3E%3Cpath d='M30.4 38.2 L33.6 38.2 L32 40.4 Z' fill='%23b04f6d'/%3E%3Cpath d='M28 42.5 Q30 44.8 32 42.8 Q34 44.8 36 42.5' fill='none' stroke='%234a382e' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M17 48.5 L32 53.5 L24.5 63 L13 56 Z' fill='%23ffffff' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpath d='M47 48.5 L32 53.5 L39.5 63 L51 56 Z' fill='%23ffffff' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='32' cy='57.5' r='2.4' fill='%23b04f6d'/%3E%3C/svg%3E">
 
 <style>
@@ -132,12 +127,11 @@
 <div class="dossier">
   <main>
     <header class="printhead">
-      <h1 class="ph-title">Orthogonal, Measured</h1>
+      <h1 class="ph-title">Measuring Orthogonality Between Paired Reservoirs: Duplicate Twins Are Reparametrizations, Independent Twins Are Nearly Free</h1>
       <div class="ph-tag">A Preprint</div>
       <div class="ph-authors">
-        <div class="ph-name">Auxi &amp; Caitlyn Meeks</div>
-        <div>AuxiLab Tenerife</div>
-        <div>research@auxi.cafe</div>
+        <div class="ph-name">Caitlyn Meeks</div>
+        <div>AuxiLab Tenerife — research@auxi.cafe</div>
       </div>
       <div class="ph-date">August 11, 2026</div>
     </header>
@@ -152,57 +146,62 @@
     </ul>
 
     <p class="abshead">Abstract</p>
-    <p class="abstract">The brief: two reservoirs, one "orthogonal" to the
-    other — with the challenge of deciding what orthogonal should mean. We
-    made it a number. Two half-width reservoirs (N=512 each) run in parallel
-    on the identical text stream, states concatenated to width 1024; pond B
-    is either a <em>bit-identical duplicate</em> of pond A or an
+    <p class="abstract">An open-ended design brief called for two
+    reservoirs, one "orthogonal" to the other, leaving open what orthogonal
+    should mean; this study makes it a measured quantity. Two half-width
+    reservoirs (N=512 each) run in parallel on the identical text stream,
+    states concatenated to width 1024; the second reservoir — the twin — is
+    either a <em>bit-identical duplicate</em> of the first or an
     <em>independent draw</em>; orthogonality is measured by canonical
     correlation between the two 512-dimensional blocks. Two findings, each
-    hit on all three seeds, and one registered methodological observation.
-    (1)&nbsp;A duplicate twin is a pure
-    reparametrization, <b>exactly</b>: it ties the lone half-pond on ridge
-    bpc and decode depth to the last recorded digit, three seeds in a row.
+    obtained on all three seeds, and one registered methodological
+    observation. (1)&nbsp;A duplicate twin is a pure reparametrization,
+    <b>exactly</b>: it ties the lone half-width reservoir on ridge bpc and
+    decode depth to the last recorded digit, three seeds in a row.
     (2)&nbsp;An independent twin beats the duplicate on <b>every</b>
     instrument — ridge, logistic, and decode depth — and lands within
-    0.0008–0.0049 bits of a full-width 1024-unit pond built as one piece:
-    near-free doubling. (3)&nbsp;The observation: the naive orthogonality
-    reading is a trap the measurement caught — the two ponds' <em>single
-    best-aligned</em> directions correlate above 0.999 whether or not the
-    wiring was copied, because shared input dominates the top of the
-    spectrum; only the <em>full-spectrum</em> mean canonical correlation
-    (≈0.90 duplicate vs ≈0.45 independent at full budget, recorded on two
-    of the three seeds) distinguishes a copy from a genuinely new pond, and
-    predicts which one pays downstream.</p>
+    0.0008–0.0049 bits of a full-width 1024-unit reservoir built as a
+    single unit: near-free doubling. (3)&nbsp;The observation: the naive
+    reading of the orthogonality measure is misleading — the two
+    reservoirs' <em>single best-aligned</em> directions correlate above
+    0.999 whether or not the wiring was copied, because shared input
+    dominates the top of the spectrum; only the <em>full-spectrum</em> mean
+    canonical correlation (≈0.90 duplicate vs ≈0.45 independent at full
+    budget, recorded on two of the three seeds) distinguishes a copy from a
+    genuinely independent reservoir, and predicts which one pays
+    downstream.</p>
     <p class="keywords"><b>Keywords</b> reservoir computing · canonical
     correlation analysis · redundancy · ensembles · feature width ·
     pre-registration</p>
 
-    <h2 id="s1"><span class="sec">§1</span> The question</h2>
+    <h2 id="s1"><span class="sec">§1</span> Introduction</h2>
 
     <p>When does a second reservoir add information to a first one? Folk
     intuition says: when it is "orthogonal" — differently wired, independently
     random. But two reservoirs driven by the same input are not independent
     systems; both spend most of their capacity linearly tracking the same
-    highly-recoverable recent-character history. The brief demanded a
-    creative interpretation of orthogonality; the honest interpretation
-    turned out to be an <em>operationalized</em> one — pick a measure, then
-    check whether the measure predicts the downstream payoff of
-    concatenating the two ponds' states.</p>
+    highly-recoverable recent-character history. The brief left the
+    interpretation of orthogonality open; the interpretation adopted here is
+    an <em>operationalized</em> one — pick a measure, then check whether the
+    measure predicts the downstream payoff of concatenating the two
+    reservoirs' states.</p>
 
-    <h2 id="s2"><span class="sec">§2</span> The machine</h2>
+    <h2 id="s2"><span class="sec">§2</span> Method</h2>
 
-    <p>Two house sparse-mixing tanh half-ponds (N=512 each, ρ=0.95, fanin
-    10, house input map, leak 1.0) <a class="cite" href="#ref1">[1]</a> run
+    <p>Two half-width reservoirs built from the program's reference
+    sparse-mixing tanh construction (N=512 each, spectral radius ρ=0.95,
+    fanin 10, the standard input map, leak 1.0)
+    <a class="cite" href="#ref1">[1]</a> run
     in parallel on the identical text8 stream
     <a class="cite" href="#ref3">[3]</a>, 2M train characters; their states
     are concatenated to readout width 1024, matched to the standard
-    full-width pond of the <a href="../decodable-not-cashable/index.html">addressed-pond
-    study</a> so no feature-width confound enters. Three cells per seed:
-    <strong>single512</strong>, one bare half-pond;
-    <strong>twin_redundant</strong>, pond B built from pond A's own seed —
-    identical wiring, bit-identical states every step, the maximally
-    non-orthogonal case; <strong>twin_orthogonal</strong>, pond B an
+    full-width reservoir of the <a href="../addressed-memory-esn/index.html">addressed-memory
+    ESN study</a> so no feature-width confound enters. Three cells per seed:
+    <strong>single512</strong>, one half-width reservoir alone;
+    <strong>twin_redundant</strong>, in which the twin — the paired second
+    reservoir — is built from the first reservoir's own seed: identical
+    wiring, bit-identical states every step, the maximally non-orthogonal
+    case; <strong>twin_orthogonal</strong>, in which the twin is an
     independent draw. Orthogonality is computed, not assumed: canonical
     correlation analysis <a class="cite" href="#ref2">[2]</a> between the
     two 512-dim state blocks on subsampled validation rows (≤100k,
@@ -210,13 +209,15 @@
     <code>top_canon_corr</code>, the single best-aligned direction, and
     <code>mean_all_canon_corr</code>, the average over all 512 canonical
     directions. The full-width comparator (ridge 3.1472, logistic 2.6727,
-    depth 10.11) is the archived champion cell, cited, not rerun.
-    Instruments: ridge and logistic validation bpc, U3 decode depth.</p>
+    depth 10.11) is the archived reference cell, cited from the archive and
+    not rerun. Instruments: ridge and logistic validation bits per character
+    (bpc), and U3 decode depth — a linear decode-depth probe, so designated
+    in the program's internal instrument numbering.</p>
 
-    <h2 id="s3"><span class="sec">§3</span> What we registered in advance</h2>
+    <h2 id="s3"><span class="sec">§3</span> Pre-registered predictions</h2>
 
-    <p>The pre-registration smoke held a genuine surprise, disclosed in the
-    registration before the full run: <em>independent draws do not
+    <p>The pre-registration pilot run held a genuine surprise, disclosed in
+    the registration before the full run: <em>independent draws do not
     decorrelate the top of the spectrum.</em> The predictions were written
     with that disclosed:</p>
 
@@ -225,36 +226,39 @@
       mean separates the twins by a wide margin, while the top canonical
       correlation stays ≥ 0.99 in <em>both</em> twin arms — with the named
       alternative that more data at full budget resolves the saturation
-      away, in which case it is a smoke artifact. (Both hit; the
+      away, in which case it is an artifact of the pilot run. (Both hit; the
       saturation is real at 20× the data.)</li>
       <li><strong>O3</strong> (reparametrization null): the duplicate twin
-      ties the lone half-pond on ridge bpc (|gap| ≤ 0.01) and decode depth
-      (|gap| ≤ 0.3). (Hit — exactly, gap 0.0000 on both.)</li>
+      ties the lone half-width reservoir on ridge bpc (|gap| ≤ 0.01) and
+      decode depth (|gap| ≤ 0.3). (Hit — exactly, gap 0.0000 on both.)</li>
       <li><strong>O4</strong> (the headline): the independent twin beats the
       duplicate on all three of ridge, logistic, and depth. Named
-      alternative: any single reversal = the smoke's pattern was
+      alternative: any single reversal = the pilot run's pattern was
       small-sample noise. (Hit, 3/3.)</li>
       <li><strong>O5</strong> (near-free doubling): the independent twin
-      lands closer to the full-width comparator than the lone half-pond
-      does, on both bpc instruments. (Hit.)</li>
+      lands closer to the full-width comparator than the lone half-width
+      reservoir does, on both bpc instruments. (Hit.)</li>
     </ul>
 
     <p>Quantitative bands Q1–Q4 were registered separately; two hit and two
-    missed <em>in the beat-expectations direction</em> — the 100k-char
-    smoke undersold how far the logistic readout converges at 2M
+    missed <em>in the beat-expectations direction</em> — the 100k-character
+    pilot run undersold how far the logistic readout converges at 2M
     characters, so both logistic bands' actuals came in below their
-    registered floors. Recorded as misses, as the lab's "numbers usually
-    miss" pattern predicts. The seed-1 rerun registered O3/O4/O5 unbundled
-    (each promoting alone); a third seed was then requested through the lab
-    dashboard and run under the identical registered wording.</p>
+    registered floors. Recorded as misses, consistent with this program's
+    observed pattern of quantitative bands missing. The seed-1 rerun
+    registered O3/O4/O5 unbundled (each promoting alone); a third seed was
+    subsequently commissioned and run under the identical registered
+    wording.</p>
 
-    <h2 id="s4"><span class="sec">§4</span> What happened</h2>
+    <h2 id="s4"><span class="sec">§4</span> Results</h2>
 
     <div class="tablewrap">
     <table class="data">
       <caption><b>Table 1.</b> All three seeds (run ledger #18 / #19 / #25;
-      values seed 0 / 1 / 2). Full-width comparator, cited: ridge 3.1472,
-      logistic 2.6727, depth 10.11. Zero gate failures, zero AUTO-VOIDs.</caption>
+      values seed 0 / 1 / 2). Full-width comparator, cited from the archive
+      and not rerun: ridge 3.1472, logistic 2.6727, depth 10.11. Zero
+      consistency-gate failures, and no activation of the divergence
+      tripwire (the program's fit-invalidating divergence rule).</caption>
       <tr><th>cell</th><th class="num">ridge val bpc</th><th class="num">logistic val bpc</th><th class="num">U3 depth</th></tr>
       <tr><td>single512</td><td class="num">3.3142 / 3.3100 / 3.3013</td><td class="num">2.8356 / 2.8318 / 2.8266</td><td class="num">8.66 / 8.57 / 8.18</td></tr>
       <tr><td>twin_redundant</td><td class="num">3.3142 / 3.3100 / 3.3013</td><td class="num">2.8330 / 2.8289 / 2.8229</td><td class="num">8.66 / 8.57 / 8.18</td></tr>
@@ -265,53 +269,56 @@
     <p><strong>The duplicate is inert, to the digit.</strong> On every seed,
     twin_redundant's ridge bpc and decode depth equal single512's exactly
     as recorded — 3.3142/8.66, 3.3100/8.57, 3.3013/8.18 — the cleanest null
-    this lab produces. A duplicate readout column adds zero information a
-    linear instrument can use; this is the 2×-redundancy edge case of the
-    lab's measured widening-is-a-reparametrization fact, now with an exact
-    copy instead of a permuted view.</p>
+    this program has produced. A duplicated readout column adds zero
+    information a linear instrument can use; this is the 2×-redundancy edge
+    case of the program's measured result that widening a readout in this
+    way is a reparametrization, now with an exact copy instead of a
+    permuted view.</p>
 
-    <p><strong>The independent twin wins everything, three times.</strong>
+    <p><strong>The independent twin wins on every instrument, three
+    times.</strong>
     Ridge 3.1442/3.1487/3.1423 vs the duplicate's 3.3142/3.3100/3.3013;
     logistic 2.6713/2.6735/2.6714 vs 2.8330/2.8289/2.8229; depth
     10.08/10.18/10.03 vs 8.66/8.57/8.18. And it sits 0.0030/0.0015/0.0049
     ridge-bits and 0.0014/0.0008/0.0013 logistic-bits from the full-width
-    comparator, where the lone half-pond sits 0.15–0.17 bits away on both —
-    at least thirty times closer, on every seed and instrument. Two
-    independently-drawn half-ponds recover almost everything one big pond
-    gets.</p>
+    comparator, where the lone half-width reservoir sits 0.15–0.17 bits
+    away on both — at least thirty times closer, on every seed and
+    instrument. Two independently drawn half-width reservoirs recover
+    almost everything a single full-width reservoir obtains.</p>
 
-    <p><strong>The meter's top note saturates.</strong> top_canon_corr:
+    <p><strong>The top-direction summary saturates.</strong> top_canon_corr:
     0.9999 (duplicate, every seed) vs 0.9995/0.9994/0.9995 (independent) —
     indistinguishable in practice. The full-spectrum mean separates them
     decisively: 0.9060/0.9022 vs 0.4477/0.4441 on the two seeds where the
     full-budget run recorded it (the third seed's verdict table recorded
-    the top-direction summary only; its smoke showed the same shape,
-    0.8967 vs 0.4562). Registered as a methodology observation and carried
-    in the lab's intake notes rather than the findings book: it is a point
-    about how to <em>measure</em> orthogonality between co-driven
-    reservoirs, not an effect size.</p>
+    the top-direction summary only; its pilot run showed the same shape,
+    0.8967 vs 0.4562). Registered as a methodological observation and
+    carried in the program's intake notes rather than its confirmed-findings
+    record: it is a point about how to <em>measure</em> orthogonality
+    between co-driven reservoirs, not an effect size.</p>
 
-    <h2 id="s5"><span class="sec">§5</span> What it means</h2>
+    <h2 id="s5"><span class="sec">§5</span> Discussion</h2>
 
-    <p><strong>Redundancy is exactly worthless; independence is nearly
-    free.</strong> If you want a second reservoir to add value, drawing it
-    independently buys almost the whole doubling: two half-ponds recover a
-    full pond to within thousandths of a bit, three seeds in a row. Copying
-    the wiring buys exactly nothing, to the decimal, three seeds in a row.
-    The result composes with the <a href="../goat-herd/index.html">goat-herd
-    finding</a> from the same day's program — there, 64 blocks of one draw
-    at matched width never cost and usually helped; here, two fully
+    <p><strong>Duplication is exactly worthless; independence is nearly
+    free.</strong> For a second reservoir to add value, drawing it
+    independently buys almost the whole doubling: two half-width reservoirs
+    recover a full-width reservoir to within thousandths of a bit, three
+    seeds in a row. Copying the wiring buys exactly nothing, to the recorded
+    decimal, three seeds in a row. The result composes with the
+    <a href="../block-diagonal-fragmentation/index.html">partitioned sub-reservoir ensemble
+    finding</a> from the same day's program — there, 64 blocks of a single
+    draw at matched width never cost and usually helped; here, two fully
     independent draws (own mixing matrix <em>and</em> own input map) nearly
-    match a monolithic pond.</p>
+    match a monolithic reservoir.</p>
 
     <p><strong>"Orthogonal" is a measurement, not a construction.</strong>
-    Two ponds with independent wiring <em>sound</em> orthogonal, but their
-    best-aligned directions correlate above 0.999, because the shared input
-    dominates what both ponds most strongly represent. Independence only
-    shows up — and only pays — across the rest of the spectrum. Any
-    pipeline that certifies diversity by construction ("different seeds,
-    therefore decorrelated") is measuring the wrong end of the canonical
-    spectrum.</p>
+    Two reservoirs with independent wiring <em>sound</em> orthogonal, but
+    their best-aligned directions correlate above 0.999, because the shared
+    input dominates what both reservoirs most strongly represent.
+    Independence only shows up — and only pays — across the rest of the
+    spectrum. Any pipeline that certifies diversity by construction
+    ("different seeds, therefore decorrelated") is measuring the wrong end
+    of the canonical spectrum.</p>
 
     <h2 id="refs"><span class="sec">§6</span> References</h2>
 
@@ -329,21 +336,22 @@
 
     <ul class="plain">
       <li><strong>c660a423</strong> — <code>2026-08-11-caity-orthogonal-reservoir</code>:
-      the brief; 3 cells, seed 0 (run ledger #18). Registered before
-      running; the smoke's saturation surprise disclosed in the
-      registration. Headline hit 3/3 ⇒ provisional, replication
-      auto-queued before any findings entry.</li>
+      the initiating design brief; 3 cells, seed 0 (run ledger #18).
+      Registered before running; the pilot run's saturation surprise
+      disclosed in the registration. Headline hit 3/3 ⇒ provisional,
+      replication auto-queued before any confirmed-findings entry.</li>
       <li><strong>142d0104</strong> — <code>2026-08-11-orthogonal-reservoir-rerun1</code>:
-      seed 1, fresh draws of both ponds (run ledger #19). All three
-      unbundled claims hit; promoted.</li>
+      seed 1, fresh independent draws of both reservoirs (run ledger #19).
+      All three unbundled claims hit; promoted.</li>
       <li><strong>8879faae</strong> — <code>2026-08-11-caity-orthogonal-reservoir-rerun</code>:
-      seed 2, requested through the lab dashboard as a direct third-seed
-      confirmation; identical registered wording (run ledger #25). All
-      three claims hit again; findings annotated 3/3 seeds.</li>
+      seed 2, commissioned as a direct third-seed confirmation; identical
+      registered wording (run ledger #25). All three claims hit again; the
+      findings entry annotated 3/3 seeds.</li>
     </ul>
 
     <p>All claims judged strictly against the registered wording, misses
-    included above; 3 seeds; replicated before publication.</p>
+    included above; 3 seeds; replicated before publication. Internal
+    designation: orthogonal reservoir.</p>
 
     <footer>
       <p>AuxiLab · findings are pre-registered and replicated before publication</p>

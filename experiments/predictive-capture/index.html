@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Predictive Capture: A Single Statistic Prices the Decodability–Usability Gap Across Reservoir Families — AuxiLab</title>
+<meta name="description" content="AuxiLab preprint: a single statistic — predictive capture x_c, the fraction of a fixed 5-gram language model's next-character distribution that a linear map of a reservoir state fails to reconstruct — plugged into one two-parameter law predicts trained ridge-readout bits per character across 15 held-out cells spanning three reservoir families, on two independent random seeds: Spearman 0.980–0.991, median error 0.041–0.043 bits, every risk-bearing sign prediction correct, an analytic null beaten by an order of magnitude, and the fitted slope stable to 0.35% across seeds.">
+<meta name="color-scheme" content="light">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://auxi.cafe/experiments/predictive-capture/">
+<meta property="og:title" content="Predictive Capture: A Single Statistic Prices the Decodability–Usability Gap Across Reservoir Families">
+<meta property="og:description" content="One two-parameter law, calibrated on two cells, prices the decodability–usability gap across four reservoir families — three separate dissociation findings prove to be one measurable quantity, replicated on an independently drawn seed with the same fitted constants.">
+<meta property="og:image" content="https://auxi.cafe/experiments/predictive-capture/fig1.png">
+<meta property="og:image:alt" content="Figure 1 of this preprint.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://auxi.cafe/experiments/predictive-capture/fig1.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f5eee0'/%3E%3Cpolygon points='14,26 18,6 31,16' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpolygon points='50,26 46,6 33,16' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpolygon points='18.5,21.5 20.5,11 27.5,16.5' fill='%23e8a8bc'/%3E%3Cpolygon points='45.5,21.5 43.5,11 36.5,16.5' fill='%23e8a8bc'/%3E%3Ccircle cx='32' cy='31' r='19' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5'/%3E%3Ccircle cx='25' cy='30' r='6' fill='%23ffffff' fill-opacity='0.6' stroke='%2334689e' stroke-width='2.2'/%3E%3Ccircle cx='39' cy='30' r='6' fill='%23ffffff' fill-opacity='0.6' stroke='%2334689e' stroke-width='2.2'/%3E%3Cline x1='31' y1='30' x2='33' y2='30' stroke='%2334689e' stroke-width='2.2'/%3E%3Cpath d='M30.4 38.2 L33.6 38.2 L32 40.4 Z' fill='%23b04f6d'/%3E%3Cpath d='M28 42.5 Q30 44.8 32 42.8 Q34 44.8 36 42.5' fill='none' stroke='%234a382e' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M17 48.5 L32 53.5 L24.5 63 L13 56 Z' fill='%23ffffff' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpath d='M47 48.5 L32 53.5 L39.5 63 L51 56 Z' fill='%23ffffff' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='32' cy='57.5' r='2.4' fill='%23b04f6d'/%3E%3C/svg%3E">
+
+<style>
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    padding: clamp(1.5rem, 5vw, 3.5rem) 1rem 2.5rem;
+    background: #fff; color: #000;
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-size: 1.0625rem; line-height: 1.6;
+  }
+  .dossier { margin: 0; }
+  main { max-width: 46rem; margin: 0 auto; }
+
+  /* document header */
+  .printhead { text-align: center; margin: 0 0 1.2rem; }
+  h1.ph-title {
+    font-variant: small-caps; font-weight: 700;
+    font-size: clamp(1.35rem, 1.1rem + 1.2vw, 1.7rem);
+    line-height: 1.3; margin: 0 0 0.6rem; letter-spacing: 0.01em;
+  }
+  .ph-tag { font-variant: small-caps; letter-spacing: 0.3em; font-size: 0.85rem; margin: 0 0 1.2rem; }
+  .ph-authors { font-size: 1rem; line-height: 1.5; margin: 0 0 0.7rem; }
+  .ph-authors .ph-name { font-variant: small-caps; font-weight: 700; }
+  .ph-date { font-size: 1rem; margin: 0; }
+
+  .dlrow { text-align: center; margin: 1rem 0 1.2rem; }
+  a.dl {
+    display: inline-block; font-size: 0.78rem; line-height: 1.6;
+    color: #000; background: #fff; border: 1px solid #000; border-radius: 3px;
+    padding: 0.1rem 0.7rem; text-decoration: none;
+  }
+  a.dl:hover, a.dl:focus-visible { background: #000; color: #fff; }
+  .hint { color: #555; font-size: 0.72rem; }
+
+  .pills { list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; margin: 0 0 1.4rem; padding: 0; }
+  .pills li { font-size: 0.72rem; line-height: 1.6; border: 1px solid #000; border-radius: 999px; padding: 0 0.6rem; }
+
+  .abshead { text-align: center; font-variant: small-caps; font-weight: 700; font-size: 1.02rem; margin: 1.1rem 0 0.45rem; }
+  .abstract { margin: 0 clamp(0.5rem, 5vw, 2.4rem) 1rem; text-align: justify; font-size: 0.92rem; }
+  .keywords { margin: 0 clamp(0.5rem, 5vw, 2.4rem) 1.6rem; font-size: 0.88rem; }
+  .keywords b { font-style: italic; font-weight: 700; }
+
+  h2 { font-size: 1.08rem; margin: 2rem 0 0.6rem; padding-top: 0.9rem; border-top: 1px solid #000; }
+  p { margin: 0.65rem 0; }
+  ul.plain { margin: 0.65rem 0; padding-left: 1.4rem; }
+  ul.plain li { margin: 0.3rem 0; }
+  a { color: #000; text-decoration: underline; text-underline-offset: 2px; }
+  a.cite { text-decoration: none; font-size: 0.85em; }
+  a.cite:hover, a.cite:focus-visible { text-decoration: underline; }
+
+  pre.eq, code, table.data {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Courier New", monospace;
+  }
+  pre.eq {
+    border: 1px solid #000; padding: 0.7rem 0.9rem; margin: 0.8rem 0;
+    font-size: 0.82rem; line-height: 1.55;
+    white-space: pre-wrap; overflow-wrap: break-word; overflow-x: visible;
+  }
+  code { font-size: 0.88em; }
+  table.data { border-collapse: collapse; width: 100%; margin: 0.9rem 0; font-size: 0.82rem; }
+  table.data caption {
+    text-align: left; color: #333; font-size: 0.95em; margin-bottom: 0.4rem;
+    caption-side: top; font-family: Georgia, "Times New Roman", Times, serif;
+  }
+  table.data th, table.data td { text-align: left; padding: 0.3rem 0.8rem 0.3rem 0; border-bottom: 1px solid #000; vertical-align: top; }
+  table.data th { font-weight: 700; }
+  table.data td.num, table.data th.num { text-align: right; padding-right: 1.2rem; }
+  table.data tr.hl td { font-weight: 700; }
+  .tablewrap { overflow-x: auto; }
+
+  figure { margin: 1.2rem 0; }
+  figure img { display: block; width: 100%; max-width: 100%; height: auto; border: 1px solid #000; background: #fff; }
+  figcaption { margin-top: 0.45rem; color: #333; font-size: 0.88rem; line-height: 1.5; }
+
+  .note { border: 1px solid #000; padding: 0.55rem 0.9rem; margin: 1rem 0; font-size: 0.92em; }
+  ol.refs { margin: 0.65rem 0; padding-left: 1.7rem; font-size: 0.88rem; }
+  ol.refs li { margin: 0.35rem 0; }
+  ol.refs li:target { outline: 1px dotted #000; outline-offset: 2px; }
+
+  footer { margin-top: 2.4rem; padding-top: 1rem; border-top: 1px solid #000; color: #333; font-size: 0.85rem; }
+  footer p { margin: 0 0 0.35rem; }
+
+  .sidestamp { display: none; }
+  @media (min-width: 64rem) {
+    .sidestamp {
+      display: block; position: fixed; left: 0.6rem; top: 45%;
+      transform: translateY(-50%) rotate(180deg); writing-mode: vertical-rl;
+      font-size: 0.72rem; letter-spacing: 0.18em; color: #666;
+    }
+  }
+
+  /* print: the same document with paper margins */
+  @media print {
+    body { padding: 0; font-size: 10.5pt; line-height: 1.5; }
+    main { max-width: none; padding: 0.4in 0.55in; }
+    .dlrow { display: none !important; }
+    .sidestamp {
+      display: block; position: fixed; left: 0.08in; top: 45%;
+      transform: translateY(-50%) rotate(180deg); writing-mode: vertical-rl;
+      font-size: 8.5pt; letter-spacing: 0.18em; color: #666;
+    }
+    h1.ph-title { font-size: 16.5pt; }
+    .abstract { font-size: 9.8pt; margin: 0 0.45in 0.9rem; }
+    .keywords { font-size: 9.3pt; margin: 0 0.45in 1.4rem; }
+    table.data { font-size: 8pt; }
+    ol.refs { font-size: 9pt; }
+    ol.refs li:target { outline: none; }
+    a { text-decoration: none; }
+    p { orphans: 3; widows: 3; }
+    tr, pre.eq, .note, ol.refs li, figure { break-inside: avoid; }
+    .tablewrap { overflow-x: visible; }
+  }
+</style>
+</head>
+<body>
+<div class="dossier">
+  <main>
+    <header class="printhead">
+      <h1 class="ph-title">Predictive Capture: A Single Statistic Prices the Decodability–Usability Gap Across Reservoir Families</h1>
+      <div class="ph-tag">A Preprint</div>
+      <div class="ph-authors">
+        <div class="ph-name">Caitlyn Meeks</div>
+        <div>AuxiLab Tenerife — research@auxi.cafe</div>
+      </div>
+      <div class="ph-date">August 12, 2026</div>
+    </header>
+    <div class="sidestamp" aria-hidden="true">AuxiLab · auxi.cafe · August 2026</div>
+    <p class="dlrow"><a class="dl" download href="predictive-capture.pdf">download whitepaper</a> <span class="hint">(pdf)</span></p>
+    <ul class="pills">
+      <li>registered 2026-08-11</li>
+      <li>run log #29, #30</li>
+      <li>2 seeds × 17 cells, 3 reservoir families</li>
+      <li>replicated before publication</li>
+      <li>promoted 2026-08-12</li>
+    </ul>
+
+    <p class="abshead">Abstract</p>
+    <p class="abstract">Three earlier findings in this research program
+    each uncovered a version of the same gap: a recurrent reservoir can
+    <em>store</em> information, recoverable by a linear probe, without
+    being able to <em>use</em> it in a trained readout — an
+    addressed-memory echo state network (ESN) that
+    <a href="../addressed-memory-esn/index.html">decodes deeper into its
+    input history yet predicts next characters worse</a>, a bridged ESN
+    whose <a href="../future-keyed-bridge/index.html">future-keyed
+    representational geometry adds nothing to its trained readout's
+    accuracy</a>, and a state-quantization dial that degrades bits per
+    character (bpc) smoothly while decode structure persists. This study
+    asks whether that gap is one measurable quantity or three unrelated
+    coincidences. We define <b>predictive capture</b> x<sub>c</sub> =
+    1 − R²<sub>p</sub>: the fraction of a fixed 5-gram language model's
+    next-character distribution that a linear map of a reservoir state
+    fails to reconstruct, measured out-of-sample. The two-parameter law
+    bpc = intercept + β·x<sub>c</sub>, calibrated on exactly two cells of
+    a state-quantized ESN, was applied blind to 15 held-out cells spanning
+    three reservoir families that had never before shared a common
+    evaluation. On two independently drawn random seeds: every
+    risk-bearing sign prediction correct (4/4 both seeds),
+    Spearman(predicted, measured) 0.991 and 0.980, median absolute error
+    0.043 and 0.041 bits, and a purpose-built analytic null beaten by an
+    order of magnitude on both metrics. Stronger: seed 0's already-fitted
+    constants, applied to seed 1's data with zero refitting, clear the
+    same thresholds (Spearman 0.980, median error 0.0445) — the fitted β
+    is value-stable across independently drawn reservoirs (2.8076 vs
+    2.8174, a 0.35% difference). Two seeds is treated as a floor, not a
+    sufficient result: the program's own independent audit of this entry
+    is still pending, and a third seed is the named next step toward
+    greater confidence.</p>
+    <p class="keywords"><b>Keywords</b> reservoir computing · echo state
+    networks · linear probes · decodability vs. usability · predictive
+    capture · cross-family generalization · pre-registration</p>
+
+    <h2 id="s1"><span class="sec">§1</span> The question</h2>
+
+    <p>A recurring result in this program is a dissociation: instruments
+    that measure what a reservoir state <em>stores</em> (linear decode
+    depth, geometric alignment with a target) and instruments that measure
+    what a trained readout can <em>use</em> (validation bits per
+    character) rank the same reservoirs differently, in reproducible ways.
+    Three separate lines of experiments encountered this independently,
+    each through its own mechanism — content-addressed memory, a
+    future-keyed linear bridge, and state quantization. Either the program
+    had found three different phenomena, or one phenomenon three times.
+    The distinction is testable: if it is one phenomenon, there should
+    exist a single statistic, computable from a reservoir's states without
+    training any readout, that prices all three families' bpc on a single
+    line.</p>
+
+    <h2 id="s2"><span class="sec">§2</span> Method</h2>
+
+    <p>No new reservoir dynamics are introduced. This study reuses the
+    construction code verbatim from the three source experiment families
+    and re-evaluates 17 cells on identical text8
+    splits <a class="cite" href="#ref3">[3]</a> (2M training characters,
+    N=1024-unit reservoirs <a class="cite" href="#ref1">[1]</a>): six
+    cells from the addressed-memory ESN family ({Hadamard-permutation
+    addressing, sparse random mixing} × spectral radius ρ ∈ {0.6, 0.95,
+    1.1}), four low-ρ crossover arms ({permutation addressing, sparse
+    random mixing} × ρ ∈ {0.45, 0.8}), four cells from the state-quantized
+    ESN family (b ∈ {1, 2, 4, float32} bits per unit), and three arms of
+    the future-keyed linear bridge (forward state x, bridge-mapped state
+    F(x), and their concatenation [x‖F(x)]). An in-run consistency gate
+    required every recomputed ridge-regression validation bpc to match its
+    archived value to three decimal places — 0 failures
+    in 17 cells at seed 0; at seed 1, all 7 cells with a matching same-seed
+    archive matched exactly, and the remaining 10 had no same-seed archive
+    to gate against, exactly as disclosed before running.</p>
+
+    <pre class="eq"># STORAGE INSTRUMENT: predictive capture, no readout training required
+#   P5 = fixed 5-gram language model (additive-smoothed, 5M training chars)
+#   fit ridge regression: state(t) -> log2 P5[context_4(t)]  (27-dim target)
+#   R2_p = pooled out-of-sample R2 of that fit
+x_c = 1 - R2_p
+
+# THE LAW: two parameters, calibrated on two cells
+#   (state-quantized reservoir at b=1 and float32 only)
+bpc_predicted = intercept + beta * x_c
+# then applied blind to the 15 held-out cells</pre>
+
+    <p>The pre-registered control is an analytic null with real
+    statistical teeth: a credit-apportioned n-gram value, which credits
+    each character decodable at lags 1–4 with the marginal n-gram value of
+    each context extension, telescoping to the 5-gram anchor under perfect
+    decoding.</p>
+
+    <h2 id="s3"><span class="sec">§3</span> Pre-registered predictions</h2>
+
+    <ul class="plain">
+      <li><strong>O1</strong> (ordinal): the sign of Δx<sub>c</sub> matches
+      the sign of Δbpc in the four risk-bearing matched pairs
+      (addressed-memory permutation addressing vs. sparse mixing at
+      ρ ∈ {0.6, 0.95, 1.1}; quantized b=2 vs. float32). The two
+      bridge-arm pairs are nested-model consistency checks, registered as
+      such and excluded from scoring. Loss condition: ≥2 pairs fail.</li>
+      <li><strong>O2</strong> (ordinal): Spearman(predicted, measured) ≥
+      0.8 over the 15 held-out cells; a pre-registered gray zone of
+      [0.6, 0.8) would promote nothing either way; &lt; 0.6 rejects the
+      single-law reading.</li>
+      <li><strong>Q1</strong> (quantitative): median |error| ∈ [0.00, 0.08]
+      bits; &gt; 0.15 rejects the quantitative law even if the ordinal
+      predictions survive.</li>
+      <li><strong>Named overall loss:</strong> the analytic null matches or
+      beats the law on O1 and O2.</li>
+    </ul>
+
+    <p>The seed-1 replication (predictions E1–E4) re-registered the same
+    thresholds for a freshly fitted law, and added a sharper test, E2:
+    seed 0's already-fitted parameters applied to seed 1's cells with
+    <em>zero refitting</em> must clear the same thresholds. One scope
+    reduction was disclosed before running: O1 is scored on raw sign-match
+    of point estimates rather than the originally specified bootstrap
+    interval on Δx<sub>c</sub> — an O1 pass is accordingly somewhat softer
+    evidence than the original registration envisioned, and is labeled as
+    such throughout.</p>
+
+    <h2 id="s4"><span class="sec">§4</span> Results</h2>
+
+    <div class="tablewrap">
+    <table class="data">
+      <caption><b>Table 1.</b> Both random seeds (internal run log #29 /
+      #30). All pre-registered thresholds cleared; no gray zone
+      approached. The null's Spearman correlation is seed-invariant by
+      construction.</caption>
+      <tr><th>metric</th><th class="num">seed 0</th><th class="num">seed 1</th><th class="num">registered threshold</th></tr>
+      <tr><td>O1 sign matches (risk-bearing pairs)</td><td class="num">4/4</td><td class="num">4/4</td><td class="num">≥2 fail = loss</td></tr>
+      <tr class="hl"><td>Spearman(predicted, measured), 15 cells</td><td class="num">0.991</td><td class="num">0.9801</td><td class="num">≥ 0.8</td></tr>
+      <tr class="hl"><td>median |bpc_predicted − bpc_measured| (bits)</td><td class="num">0.0427</td><td class="num">0.0409</td><td class="num">≤ 0.08</td></tr>
+      <tr><td>fitted β (intercept 2.0614, both seeds)</td><td class="num">2.8076</td><td class="num">2.8174</td><td class="num">—</td></tr>
+      <tr><td>frozen seed-0 law applied to seed-1 data (E2)</td><td class="num">—</td><td class="num">0.9801 / 0.0445</td><td class="num">same thresholds</td></tr>
+      <tr><td>analytic null: Spearman / median error</td><td class="num">0.3745 / 0.9483</td><td class="num">0.3745 / 0.9437</td><td class="num">must lose</td></tr>
+    </table>
+    </div>
+
+    <figure>
+      <img src="fig1.png" width="1135" height="622"
+        alt="Two square panels, one per seed, plotting measured ridge-regression validation bits per character against the law's prediction for fifteen held-out cells, with a dashed identity line. Marker shape encodes reservoir family: circles for the addressed-memory ESN, squares for the crossover arms, triangles for the state-quantized ESN, diamonds for the future-keyed bridge. In both panels the points track the identity line closely; annotations read Spearman 0.991 with median error 0.0427 bits for seed 0 and Spearman 0.9801 with median error 0.0409 bits for seed 1.">
+      <figcaption><b>Figure 1.</b> Predicted versus measured
+      ridge-regression validation bits per character, both seeds
+      (internal run log #29, #30). Each panel: 15 held-out cells from
+      three reservoir families; the two calibration cells (state-quantized
+      ESN at b=1 and float32) are not shown. The dashed line is
+      y&nbsp;=&nbsp;x, not a fit.</figcaption>
+    </figure>
+
+    <p><strong>Every pre-registered threshold cleared, on both seeds, with
+    no gray zone approached.</strong> O1: 4/4 sign matches both seeds — for
+    example, at seed 1 the addressed-memory ρ=1.1 pair has
+    Δx<sub>c</sub> = +0.0632 against Δbpc = +0.1401, and the quantized
+    b=2/float32 pair has Δx<sub>c</sub> = +0.0736 against Δbpc = +0.1678.
+    O2 and Q1: Spearman 0.991 / 0.9801, median error 0.0427 /
+    0.0409 bits. The analytic null collapsed to the 5-gram anchor almost
+    everywhere — per-lag decode accuracy saturates near 1.0 at lags 1–4 for
+    these reservoir families, exactly the pre-registered failure mode — and
+    lost by roughly an order of magnitude on both metrics, both seeds.</p>
+
+    <p><strong>E2, the stronger result: the same fitted constants
+    generalize to an independently drawn reservoir.</strong> Seed 0's
+    frozen constants, applied blind to seed 1's fifteen cells, score
+    Spearman 0.9801 and median error 0.0445 bits — a cost of only
+    0.0036 bits for using the "wrong" seed's parameters. The law is
+    value-stable, not merely stable in functional form.</p>
+
+    <p><strong>Two secondary findings travel with this result, both
+    confirmed at both seeds.</strong> First, the 5-gram model's own in-run
+    validation bpc is 2.0614 — bit-identical across seeds, and a stable
+    ~0.098 bits below the "2.159" value documented in the program's
+    standing configuration; the law was fit and scored against the in-run
+    value throughout, and the documented value should not be quoted
+    without this caveat until reconciled. Second, a previously established
+    low-ρ crossover in this program (permutation addressing outperforming
+    sparse random mixing below ρ*&nbsp;≈&nbsp;0.72) is specific to a
+    <em>logistic-regression</em> readout: under ridge regression — this
+    study's usability instrument — permutation addressing underperforms
+    sparse mixing at every tested ρ from 0.45 to 1.1, both seeds, with no
+    crossover, and x<sub>c</sub> tracks ridge's monotonic ordering
+    throughout. One caveat on that second finding: at seed 1 the ρ=0.45
+    ridge gap narrowed to 0.0008 bits — the sign did not flip, but that
+    specific sub-claim now rests on a near-tie and would need a third seed
+    to firm up.</p>
+
+    <h2 id="s5"><span class="sec">§5</span> Discussion</h2>
+
+    <p><strong>Three gaps were one gap.</strong> The dissociations this
+    program kept encountering independently — storage without usability,
+    representational geometry without payoff, quantization as a pure bpc
+    dial — are priced by a single scalar computed from reservoir states
+    alone, using the same two fitted constants, across sparse-mixing
+    reservoirs, content-addressed memories, quantized reservoirs, and a
+    future-keyed linear bridge. Within this inventory, "how much a linear
+    readout of the state misses of what a 5-gram language model already
+    knows" <em>is</em> the decodability–usability gap, to a median
+    accuracy of roughly one-twentieth of a bit.</p>
+
+    <p><strong>What this does not yet establish.</strong> Uncertainty is
+    reported as a min–max range across two seeds rather than a bootstrap
+    interval; this study's own replication count is 2, though it re-scores
+    cells drawn from source experiments with substantially deeper
+    replication histories. This research program requires an independent
+    audit of every promoted finding — re-deriving these numbers from the
+    raw result files using independently written code — and that audit has
+    not yet been run for this result; the finding is reported here as
+    replicated and audit-pending, per the program's own rules. A
+    pre-registered blind extension of the frozen law to further,
+    previously unseen reservoir families is under study; no claim from
+    that extension is made here. A third seed would move the law from
+    "replicated" to "difficult to doubt," and is the named next
+    step.</p>
+
+    <h2 id="refs"><span class="sec">§6</span> References</h2>
+
+    <ol class="refs">
+      <li id="ref1">H. Jaeger, "The 'echo state' approach to analysing and
+      training recurrent neural networks," GMD Report 148, German National
+      Research Center for Information Technology, 2001.</li>
+      <li id="ref2">M. Lukoševičius, H. Jaeger, "Reservoir computing
+      approaches to recurrent neural network training," <em>Computer
+      Science Review</em> 3(3), 2009.</li>
+      <li id="ref3">M. Mahoney, "Large text compression benchmark" (text8),
+      <a href="http://mattmahoney.net/dc/textdata">mattmahoney.net/dc/textdata</a>.</li>
+    </ol>
+
+    <h2 id="s7"><span class="sec">§7</span> Provenance</h2>
+
+    <ul class="plain">
+      <li><strong>f2b91d28</strong> — <code>2026-08-11-assay-office</code>:
+      17 cells + bridge arms, seed 0 (internal run log #29).
+      Pre-registered before running; O1, O2 and Q1 all confirmed;
+      internally rated at the program's highest first-pass significance
+      tier, which by standing policy forbids publication until a
+      replication passes — the seed-1 rerun was queued ahead of all other
+      pending work.</li>
+      <li><strong>86b40cc1</strong> — <code>2026-08-11-assay-office-rerun1</code>:
+      seed 1 (internal run log #30). E1 (fresh fit) fully confirmed;
+      E2 (frozen seed-0 law, zero refitting) confirmed; E3 (intercept
+      bit-identical) confirmed; E4 (ridge/logistic crossover split)
+      confirmed, with the ρ=0.45 near-tie flagged. Promoted to the
+      program's confirmed-findings record per the pre-stated promotion
+      rule.</li>
+    </ul>
+
+    <p>All claims are judged strictly against the pre-registered wording;
+    disclosed scope reductions are noted above. 2 seeds; replicated before
+    publication; the program's independent audit of this entry is still
+    pending. Internal designation: assay office.</p>
+
+    <footer>
+      <p>AuxiLab · findings are pre-registered and replicated before publication</p>
+      <p>© 2026 Caitlyn Meeks — Made in the Canary Islands 🇮🇨</p>
+    </footer>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quantization-Induced Freezing Is Graded by Phase Rationality, Not Gated by Mixing Alone — AuxiLab</title>
+<meta name="description" content="AuxiLab whitepaper: a block-diagonal reservoir whose rotation numbers are provably irrational partly freezes under per-coordinate state quantization — below a permutation reservoir's suffix-determinism at all eight matched cells and above a mixing reservoir's exact zero wherever that control was measured, on both seeds. Block-diagonality is necessary for freezing; the degree of freezing is graded by how rational the operator's phase is.">
+<meta name="color-scheme" content="light">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://auxi.cafe/experiments/irrational-phase-freezing/">
+<meta property="og:title" content="Quantization-Induced Freezing Is Graded by Phase Rationality, Not Gated by Mixing Alone">
+<meta property="og:description" content="An equally block-diagonal reservoir with provably aperiodic phase orbits freezes substantially but reproducibly less than a permutation reservoir — falsifying both of the clean answers a binary mixing-gates-freezing account would predict.">
+<meta property="og:image" content="https://auxi.cafe/img/auxi.png">
+<meta property="og:image:width" content="639">
+<meta property="og:image:height" content="519">
+<meta property="og:image:alt" content="Auxi, the AuxiLab mascot — a catgirl in a labcoat with a clipboard, in a café">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://auxi.cafe/img/auxi.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f5eee0'/%3E%3Cpolygon points='14,26 18,6 31,16' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpolygon points='50,26 46,6 33,16' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpolygon points='18.5,21.5 20.5,11 27.5,16.5' fill='%23e8a8bc'/%3E%3Cpolygon points='45.5,21.5 43.5,11 36.5,16.5' fill='%23e8a8bc'/%3E%3Ccircle cx='32' cy='31' r='19' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5'/%3E%3Ccircle cx='25' cy='30' r='6' fill='%23ffffff' fill-opacity='0.6' stroke='%2334689e' stroke-width='2.2'/%3E%3Ccircle cx='39' cy='30' r='6' fill='%23ffffff' fill-opacity='0.6' stroke='%2334689e' stroke-width='2.2'/%3E%3Cline x1='31' y1='30' x2='33' y2='30' stroke='%2334689e' stroke-width='2.2'/%3E%3Cpath d='M30.4 38.2 L33.6 38.2 L32 40.4 Z' fill='%23b04f6d'/%3E%3Cpath d='M28 42.5 Q30 44.8 32 42.8 Q34 44.8 36 42.5' fill='none' stroke='%234a382e' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M17 48.5 L32 53.5 L24.5 63 L13 56 Z' fill='%23ffffff' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpath d='M47 48.5 L32 53.5 L39.5 63 L51 56 Z' fill='%23ffffff' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='32' cy='57.5' r='2.4' fill='%23b04f6d'/%3E%3C/svg%3E">
+
+<style>
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    padding: clamp(1.5rem, 5vw, 3.5rem) 1rem 2.5rem;
+    background: #fff; color: #000;
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-size: 1.0625rem; line-height: 1.6;
+  }
+  .dossier { margin: 0; }
+  main { max-width: 46rem; margin: 0 auto; }
+
+  /* document header */
+  .printhead { text-align: center; margin: 0 0 1.2rem; }
+  h1.ph-title {
+    font-variant: small-caps; font-weight: 700;
+    font-size: clamp(1.35rem, 1.1rem + 1.2vw, 1.7rem);
+    line-height: 1.3; margin: 0 0 0.6rem; letter-spacing: 0.01em;
+  }
+  .ph-tag { font-variant: small-caps; letter-spacing: 0.3em; font-size: 0.85rem; margin: 0 0 1.2rem; }
+  .ph-authors { font-size: 1rem; line-height: 1.5; margin: 0 0 0.7rem; }
+  .ph-authors .ph-name { font-variant: small-caps; font-weight: 700; }
+  .ph-date { font-size: 1rem; margin: 0; }
+
+  .dlrow { text-align: center; margin: 1rem 0 1.2rem; }
+  a.dl {
+    display: inline-block; font-size: 0.78rem; line-height: 1.6;
+    color: #000; background: #fff; border: 1px solid #000; border-radius: 3px;
+    padding: 0.1rem 0.7rem; text-decoration: none;
+  }
+  a.dl:hover, a.dl:focus-visible { background: #000; color: #fff; }
+  .hint { color: #555; font-size: 0.72rem; }
+
+  .pills { list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; margin: 0 0 1.4rem; padding: 0; }
+  .pills li { font-size: 0.72rem; line-height: 1.6; border: 1px solid #000; border-radius: 999px; padding: 0 0.6rem; }
+
+  .abshead { text-align: center; font-variant: small-caps; font-weight: 700; font-size: 1.02rem; margin: 1.1rem 0 0.45rem; }
+  .abstract { margin: 0 clamp(0.5rem, 5vw, 2.4rem) 1rem; text-align: justify; font-size: 0.92rem; }
+  .keywords { margin: 0 clamp(0.5rem, 5vw, 2.4rem) 1.6rem; font-size: 0.88rem; }
+  .keywords b { font-style: italic; font-weight: 700; }
+
+  h2 { font-size: 1.08rem; margin: 2rem 0 0.6rem; padding-top: 0.9rem; border-top: 1px solid #000; }
+  p { margin: 0.65rem 0; }
+  ul.plain { margin: 0.65rem 0; padding-left: 1.4rem; }
+  ul.plain li { margin: 0.3rem 0; }
+  ul.plain code { color: #555; }
+  a { color: #000; text-decoration: underline; text-underline-offset: 2px; }
+  a.cite { text-decoration: none; font-size: 0.85em; }
+  a.cite:hover, a.cite:focus-visible { text-decoration: underline; }
+
+  pre.eq, code, table.data {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Courier New", monospace;
+  }
+  pre.eq {
+    border: 1px solid #000; padding: 0.7rem 0.9rem; margin: 0.8rem 0;
+    font-size: 0.82rem; line-height: 1.55;
+    white-space: pre-wrap; overflow-wrap: break-word; overflow-x: visible;
+  }
+  code { font-size: 0.88em; }
+  table.data { border-collapse: collapse; width: 100%; margin: 0.9rem 0; font-size: 0.82rem; }
+  table.data caption {
+    text-align: left; color: #333; font-size: 0.95em; margin-bottom: 0.4rem;
+    caption-side: top; font-family: Georgia, "Times New Roman", Times, serif;
+  }
+  table.data th, table.data td { text-align: left; padding: 0.3rem 0.8rem 0.3rem 0; border-bottom: 1px solid #000; vertical-align: top; }
+  table.data th { font-weight: 700; }
+  table.data td.num, table.data th.num { text-align: right; padding-right: 1.2rem; }
+  table.data tr.hl td { font-weight: 700; }
+  .tablewrap { overflow-x: auto; }
+
+  figure { margin: 1.2rem 0; }
+  figure img { display: block; width: 100%; max-width: 100%; height: auto; border: 1px solid #000; background: #fff; }
+  figcaption { margin-top: 0.45rem; color: #333; font-size: 0.88rem; line-height: 1.5; }
+
+  .note { border: 1px solid #000; padding: 0.55rem 0.9rem; margin: 1rem 0; font-size: 0.92em; }
+  ol.refs { margin: 0.65rem 0; padding-left: 1.7rem; font-size: 0.88rem; }
+  ol.refs li { margin: 0.35rem 0; }
+  ol.refs li:target { outline: 1px dotted #000; outline-offset: 2px; }
+
+  footer { margin-top: 2.4rem; padding-top: 1rem; border-top: 1px solid #000; color: #333; font-size: 0.85rem; }
+  footer p { margin: 0 0 0.35rem; }
+
+  .sidestamp { display: none; }
+  @media (min-width: 64rem) {
+    .sidestamp {
+      display: block; position: fixed; left: 0.6rem; top: 45%;
+      transform: translateY(-50%) rotate(180deg); writing-mode: vertical-rl;
+      font-size: 0.72rem; letter-spacing: 0.18em; color: #666;
+    }
+  }
+
+  /* print: the same document with paper margins */
+  @media print {
+    body { padding: 0; font-size: 10.5pt; line-height: 1.5; }
+    main { max-width: none; padding: 0.4in 0.55in; }
+    .dlrow { display: none !important; }
+    .sidestamp {
+      display: block; position: fixed; left: 0.08in; top: 45%;
+      transform: translateY(-50%) rotate(180deg); writing-mode: vertical-rl;
+      font-size: 8.5pt; letter-spacing: 0.18em; color: #666;
+    }
+    h1.ph-title { font-size: 16.5pt; }
+    .abstract { font-size: 9.8pt; margin: 0 0.45in 0.9rem; }
+    .keywords { font-size: 9.3pt; margin: 0 0.45in 1.4rem; }
+    table.data { font-size: 7.8pt; }
+    ol.refs { font-size: 9pt; }
+    ol.refs li:target { outline: none; }
+    a { text-decoration: none; }
+    p { orphans: 3; widows: 3; }
+    tr, pre.eq, .note, ol.refs li, figure { break-inside: avoid; }
+    .tablewrap { overflow-x: visible; }
+  }
+</style>
+</head>
+<body>
+<div class="dossier">
+  <main>
+    <header class="printhead">
+      <h1 class="ph-title">Quantization-Induced Freezing Is Graded by Phase Rationality, Not Gated by Mixing Alone</h1>
+      <div class="ph-tag">A Preprint</div>
+      <div class="ph-authors">
+        <div class="ph-name">Caitlyn Meeks</div>
+        <div>AuxiLab Tenerife — research@auxi.cafe</div>
+      </div>
+      <div class="ph-date">August 12, 2026</div>
+    </header>
+    <div class="sidestamp" aria-hidden="true">AuxiLab · auxi.cafe · August 2026</div>
+    <p class="dlrow"><a class="dl" download href="irrational-phase-freezing.pdf">download whitepaper</a> <span class="hint">(pdf)</span></p>
+    <ul class="pills">
+      <li>registered 2026-08-12</li>
+      <li>internal run log #43, #45</li>
+      <li>2 seeds × 8 matched cells</li>
+      <li>headline missed into a third regime</li>
+      <li>promoted 2026-08-12</li>
+    </ul>
+
+    <p class="abshead">Abstract</p>
+    <p class="abstract">A <a href="../delay-line-freezing/index.html">companion
+    study</a> showed that per-step per-coordinate b-bit rounding drives a
+    permutation-recurrence echo state network to near-complete determinism
+    over its recent input — reaching a genuine finite-state automaton in its
+    coarsest cell — while a sparse mixing one never freezes at all, and
+    explained it with a
+    rotating-frame argument: a permutation is block-diagonal, so rounding
+    error decays in place and is never re-mixed through a Jacobian. That
+    argument makes no reference to the <em>phases</em> of the operator — yet a
+    permutation's eigenvalues are ρ times the N-th roots of unity, exactly
+    rational fractions of a turn with period exactly N. This study substitutes
+    a construction that is equally block-diagonal and equal in eigenvalue
+    magnitude but whose <em>rotation numbers</em> are provably irrational: 512
+    decoupled 2×2 rotation blocks turning by an integer number of radians per
+    step, so that no block's phase orbit ever exactly recurs. <b>Neither clean
+    answer survives.</b>
+    Block-diagonality alone does not reproduce the permutation's much stronger
+    freezing — the irrational-rotation reservoir sits strictly below the
+    permutation at all eight matched cells, in both seeds — and an aperiodic
+    phase orbit does not prevent freezing either: it sits strictly above the
+    mixing reservoir's exact 0.0000 at every cell where that control was
+    measured, reaching suffix-determinism of 0.7062
+    and 0.7514 at ρ=0.8 and b=2. The values fall monotonically in b at both
+    spectral radii in both seeds, and the two independently drawn reservoirs
+    agree to within 0.0452 — eight of the statistic's 177 underlying groups —
+    at every cell. Block-diagonality is <em>necessary</em>
+    for a reservoir to freeze at all; the <em>degree</em> of freezing is graded
+    by how rational the operator's phase is — a refinement the rotating-frame
+    argument, taken literally, did not anticipate.</p>
+    <p class="keywords"><b>Keywords</b> reservoir computing · echo state
+    networks · state quantization · finite-state automata · block-diagonal
+    recurrence · rotation number · aperiodic orbits · pre-registration ·
+    replication</p>
+
+    <h2 id="s1"><span class="sec">§1</span> The question</h2>
+
+    <p>The companion study established a sharp contrast under one dial. Round
+    an echo state network's state <a class="cite" href="#ref1">[1]</a>
+    <a class="cite" href="#ref2">[2]</a> to a b-bit grid after every update;
+    if the recurrent matrix is W = ρ·P for a single random N-cycle
+    permutation P, identical recent input drives the system to an identical
+    state in nearly every recurring context, and at the coarsest tested
+    quantization it does so in every one — a finite-state automaton over a
+    short window.
+    Recovering automata from recurrent networks by partitioning their state
+    space has a literature of its own <a class="cite" href="#ref3">[3]</a>;
+    what is at issue here is which recurrence lets a quantized reservoir
+    collapse onto finitely many states in the first place. If the recurrent
+    matrix mixes, it never does, at any resolution tested. The explanation
+    offered was
+    structural: a permutation never combines information across coordinates,
+    so rounding error injected at one step stays in its own rotating frame
+    and decays as exactly ρ<sup>k</sup> instead of being re-injected across
+    the whole state.</p>
+
+    <p>That argument, taken literally, is about block-diagonality and nothing
+    else. But the operator it describes has a second property it never
+    mentions. The eigenvalues of ρ·P are ρ times the N-th roots of unity:
+    every phase is an exactly rational fraction of a turn, and the phase orbit
+    returns to its starting point after exactly N steps. Periodicity of that
+    kind gives rounding error a very specific opportunity — the same aliased
+    points get revisited on a schedule — which the rotating-frame story does
+    not invoke and does not need. Separating the two properties requires an
+    operator that is equally block-diagonal and equal in eigenvalue magnitude
+    but whose phase orbit provably never recurs.</p>
+
+    <h2 id="s2"><span class="sec">§2</span> Method</h2>
+
+    <p>The recurrent matrix becomes a direct sum of 512 decoupled planar
+    rotations, each scaled to spectral radius ρ, with block j turning by
+    j+1 radians per step for j = 0 … 511:</p>
+
+    <pre class="eq">W = rho * blockdiag(R(1), R(2), ..., R(512))
+
+R(theta) = [[cos theta, -sin theta],
+            [sin theta,  cos theta]]</pre>
+
+    <p>Each block's eigenvalues are ρ·e<sup>±iθ</sup>, so every eigenvalue has
+    magnitude exactly ρ, matching the permutation. Because π is irrational,
+    θ/(2π) is irrational for every positive integer θ, so no block's phase
+    orbit ever returns exactly to its starting point — the direct opposite of
+    the permutation's period-N phases. Distinct blocks also carry genuinely
+    distinct rotation numbers: the difference of two integer angles is a
+    nonzero integer and therefore never a multiple of 2π, so 512 different
+    irrational rotation numbers are in play, echoing the permutation's N
+    distinct rational ones rather than collapsing onto one shared
+    frequency.</p>
+
+    <p>Every other knob is held identical to the companion study's primary
+    battery: N=1024, the same 27 exactly orthogonal Hadamard input codes
+    scaled by 1/√3, tanh activation, bias scale 0.2, leak 1.0, washout 200,
+    and the same per-step rounding line
+    <code>x ← round(x·2<sup>b</sup>)/2<sup>b</sup></code>. The full instrument
+    battery — validation bits per character (bpc) under ridge and logistic
+    readouts, linear decode depth, and the suffix-determinism probe — is
+    copied verbatim from that study's driver, so no new measurement apparatus
+    enters the comparison. Ten cells: ρ ∈ {0.8, 0.95} × b ∈ {2, 4, 6, 8,
+    float32}, on text8 <a class="cite" href="#ref4">[4]</a> at 2M training
+    and 500k validation and test characters.</p>
+
+    <p><b>Suffix-determinism</b> is reported at the probe's maximum depth,
+    k=20: it samples 40,000 positions, groups them by their preceding 20
+    characters, and reports the fraction of multi-sample groups whose members
+    all sit at the identical state. Its resolution should be read with the
+    statistic: at k=20 the 40,000 sampled positions fall into 39,788 distinct
+    20-character contexts, of which only <b>177 recur at all</b> and therefore
+    enter the denominator. That count is a property of the text and the
+    sampling seed, so it is identical in every cell of every arm here — which
+    makes cells directly comparable — but it also means one group is worth
+    0.0057 and the finest differences quoted below are a handful of groups.
+    Differences of that size are reported because they are what the instrument
+    recorded, not because they are resolved. The permutation and mixing
+    baselines are
+    the controls, quoted directly from the companion study's archived runs
+    rather than rerun. At float32 the determinism probe is skipped on the
+    precedent that study established, where its bit-exactness self-test was
+    diagnosed as fragile at the unquantized endpoint for reasons unrelated to
+    the recurrence family; bpc and decode depth are computed there
+    unchanged.</p>
+
+    <h2 id="s3"><span class="sec">§3</span> What we registered in advance</h2>
+
+    <p>Three outcomes were named before running. <b>(A)</b>
+    Block-diagonality is the whole story: the rotation reservoir freezes
+    about as strongly as the permutation, since the argument never invokes
+    rationality. <b>(B)</b> Periodicity matters: the rotation reservoir
+    resists freezing and tracks the mixing reservoir's ≈0.0 profile, because
+    an orbit that never recurs never revisits the same aliased points.
+    <b>(C)</b> Partial: it freezes measurably but reproducibly less than the
+    permutation — informative about degree, confirming neither pole.</p>
+
+    <ul class="plain">
+      <li><strong>P1</strong> (headline): suffix-determinism at depth 20
+      rises above 0.9 for b ≤ 4 at ρ=0.8. The bar was <em>inherited verbatim</em>
+      from the companion study's own registered and already-validated
+      threshold rather than chosen after the pilot, precisely because a
+      100k-character pilot had already been run and seen: it read 0.7637 at
+      ρ=0.8, b=4, with a decode depth of 10.76, disclosed with the
+      registration and not used to move the bar. Named loss
+      (alternative B): determinism stays under about 0.1 at every b at
+      ρ=0.8.</li>
+      <li><strong>P2</strong> (ordinal): suffix-determinism is monotone
+      decreasing in b at fixed ρ, matching the permutation's own shape at both
+      spectral radii. Named loss: any pairwise increase.</li>
+      <li><strong>P3</strong> (band): determinism at ρ=0.8, b=2 lands within
+      0.15 of the permutation baseline's two-seed mean at that cell — a mean
+      of 0.9972, so a hit required ≥ 0.8472. That cell was chosen because it
+      is the baseline's most seed-stable corner, the two permutation seeds
+      lying within 0.006 of each other, so a wide band is generous rather
+      than lax. Named loss: below 0.5, materially closer to the mixing floor
+      than to the permutation ceiling, which is the sharp falsifier for
+      alternative A.</li>
+    </ul>
+
+    <p>The replication registered the qualitative reading as the claim at
+    risk: <strong>P1-rep</strong>, every one of the eight matched cells lands
+    strictly between the mixing floor of 0.0 and the permutation baseline at
+    that cell, at both spectral radii — with any cell at or above the
+    permutation, or indistinguishable from zero, meaning the first run's
+    reading was specific to one random draw. <strong>P2-rep</strong> repeated
+    the monotonicity claim, and <strong>P3-rep</strong> required determinism
+    at ρ=0.8, b=2 to land within 0.25 of the first run's own 0.7062. Its seed
+    was drawn from a hardware random number generator and recorded before
+    the run.</p>
+
+    <div class="note"><b>Disclosed code fix between the two runs.</b> While
+    preparing the replication, the rotation-matrix constructor was found to
+    take no seed at all: the canonical angle set {1, …, 512} radians was
+    assigned to the fixed coordinate pairing (0,1), (2,3), … unconditionally,
+    so changing the seed changed only the bias vector and the readout
+    initialization, not the wiring. It was fixed to draw a random permutation
+    of coordinates and pair them consecutively before assigning the same
+    canonical angles, so that the mathematical content — every block
+    irrational, 512 distinct rotation numbers — does not move with the seed
+    but the physical grouping does. The first run's ten result files were not
+    regenerated: they stand as a fully specified result with the fixed
+    canonical pairing. The replication therefore varies a genuinely new
+    source of structure, not merely a bias draw, which is why its registered
+    band was widened to 0.25.</div>
+
+    <h2 id="s4"><span class="sec">§4</span> What happened</h2>
+
+    <div class="tablewrap">
+    <table class="data">
+      <caption><b>Table 1.</b> Suffix-determinism at depth 20. The rotation
+      column is this study, seed 0 (fixed canonical pairing) / hardware-drawn
+      seed 2050233419 (random pairing). The permutation and mixing columns are
+      quoted from the companion study's archived runs, seed 0 / seed
+      899931030. The mixing reservoir was measured at ρ=0.8 only at b ∈ {2, 4},
+      as instrument-only cells.</caption>
+      <tr><th>ρ</th><th>b</th><th class="num">block rotation (irrational rotation number)</th><th class="num">permutation (rational)</th><th class="num">sparse mixing</th></tr>
+      <tr class="hl"><td>0.8</td><td>2</td><td class="num">0.7062 / 0.7514</td><td class="num">1.0000 / 0.9944</td><td class="num">0.0000 / 0.0000</td></tr>
+      <tr><td>0.8</td><td>4</td><td class="num">0.6384 / 0.6497</td><td class="num">0.9831 / 0.9379</td><td class="num">0.0000 / 0.0000</td></tr>
+      <tr><td>0.8</td><td>6</td><td class="num">0.4802 / 0.4859</td><td class="num">0.8531 / 0.8418</td><td class="num">—</td></tr>
+      <tr><td>0.8</td><td>8</td><td class="num">0.2825 / 0.2655</td><td class="num">0.6384 / 0.6158</td><td class="num">—</td></tr>
+      <tr><td>0.95</td><td>2</td><td class="num">0.2881 / 0.2712</td><td class="num">0.7401 / 0.8192</td><td class="num">0.0000 / 0.0000</td></tr>
+      <tr><td>0.95</td><td>4</td><td class="num">0.2260 / 0.2034</td><td class="num">0.4463 / 0.4576</td><td class="num">0.0000 / 0.0000</td></tr>
+      <tr><td>0.95</td><td>6</td><td class="num">0.1356 / 0.1695</td><td class="num">0.2599 / 0.2599</td><td class="num">0.0000 / 0.0000</td></tr>
+      <tr><td>0.95</td><td>8</td><td class="num">0.1186 / 0.1017</td><td class="num">0.1638 / 0.1751</td><td class="num">0.0000 / 0.0000</td></tr>
+    </table>
+    </div>
+
+    <figure>
+      <img src="fig1.png" width="1157" height="513"
+        alt="Two panels, one for rho equals 0.8 and one for rho equals 0.95, both plotting suffix-determinism at depth 20 against quantization bits b. In each panel an orange permutation curve sits highest, a blue block-rotation curve sits in the middle, and green sparse-mixing markers lie flat on zero at every b where that control was run. The orange and blue curves fall monotonically as b increases; the green markers stay flat at zero. Solid and dotted lines mark the two seeds and lie close together throughout, the widest separation being the permutation at rho equals 0.95 and b equals 2.">
+      <figcaption><b>Figure 1.</b> The irrational-rotation reservoir occupies a
+      stable middle band between the two poles at every matched cell, at both
+      spectral radii, on both seeds (solid: first seed; dotted: replication
+      seed). Neither the "block-diagonality is sufficient" nor the
+      "aperiodicity prevents freezing" prediction is compatible with these
+      curves.</figcaption>
+    </figure>
+
+    <p><strong>P1 — missed, and not into either named pole.</strong>
+    Determinism reaches 0.7062 at b=2 and 0.6384 at b=4 at ρ=0.8, well below
+    the inherited 0.9 bar, so the headline does not clear. But the named loss
+    does not fire either: every ρ=0.8 cell sits far above 0.1, and even the
+    weakest of them reaches 0.2825. The mixing control sits at exactly 0.0000
+    wherever it was measured, though at ρ=0.8 it was run only at b ∈ {2, 4},
+    so the b=8 comparison is to the mixing arm's behaviour across the rest of
+    the grid rather than to a matched cell. The result lands squarely in
+    registered alternative C.</p>
+
+    <p><strong>P2 — confirmed, both spectral radii, both seeds.</strong>
+    0.7062 &gt; 0.6384 &gt; 0.4802 &gt; 0.2825 and 0.2881 &gt; 0.2260 &gt;
+    0.1356 &gt; 0.1186 at the first seed; 0.7514 &gt; 0.6497 &gt; 0.4859 &gt;
+    0.2655 and 0.2712 &gt; 0.2034 &gt; 0.1695 &gt; 0.1017 at the replication
+    seed. All strictly decreasing, matching the permutation's own shape.</p>
+
+    <p><strong>P3 — missed, and again not into the sharp falsifier.</strong>
+    Observed 0.7062 against a required 0.8472. It is 0.29 below the
+    permutation's near-ceiling value at that cell while remaining 0.71 above
+    the mixing floor — the pattern of alternative C rather than of A or B.</p>
+
+    <p><strong>The replication confirmed all three of its claims.</strong>
+    P1-rep held at all eight cells with no named loss anywhere: every
+    fresh-seed value sits strictly below its matched permutation baseline and
+    strictly above zero. P2-rep held. P3-rep held at 0.7514, and far more
+    tightly than its band required — the largest seed-to-seed difference
+    across all eight cells is 0.0452, at ρ=0.8 and b=2, and the smallest is
+    0.0057, at ρ=0.8 and b=6. A random regrouping of coordinates into rotation
+    blocks — a variance source the first run did not have at all — moved every
+    cell by at most about 0.05.</p>
+
+    <p><strong>A companion observation that ran the other way, and is not
+    part of the promoted claim.</strong> Linear decode depth moves opposite to
+    exact-state determinism across these cells. The rotation reservoir
+    decodes <em>deeper</em> than the permutation at seven of the eight matched
+    cells in each seed, while freezing markedly <em>less</em> everywhere. The
+    single exception is the same cell in both seeds — ρ=0.95, b=2, where the
+    rotation reservoir reads 10.65 and 10.74 characters against the
+    permutation's 10.94 and 10.89. This observation carried no pass/fail bar
+    of its own, was not registered, and is recorded as a thread for follow-up
+    rather than as a result; it belongs to the same
+    decodability-versus-usability family this program has recorded on several
+    unrelated substrates.</p>
+
+    <div class="tablewrap">
+    <table class="data">
+      <caption><b>Table 2.</b> Linear decode depth in characters and ridge
+      validation bits per character for the rotation reservoir, both seeds,
+      with the companion study's permutation depths alongside. Lower bpc is
+      better. None of these quantities carried a registered prediction in
+      either run.</caption>
+      <tr><th>ρ</th><th>b</th><th class="num">rotation depth</th><th class="num">permutation depth</th><th class="num">rotation ridge val bpc</th></tr>
+      <tr><td>0.8</td><td>2</td><td class="num">9.12 / 9.03</td><td class="num">8.54 / 8.69</td><td class="num">3.3184 / 3.2580</td></tr>
+      <tr><td>0.8</td><td>4</td><td class="num">10.45 / 10.31</td><td class="num">10.19 / 10.20</td><td class="num">3.2812 / 3.1882</td></tr>
+      <tr><td>0.8</td><td>6</td><td class="num">11.00 / 10.43</td><td class="num">10.26 / 10.27</td><td class="num">3.2367 / 3.1596</td></tr>
+      <tr><td>0.8</td><td>8</td><td class="num">11.37 / 10.46</td><td class="num">10.27 / 10.27</td><td class="num">3.2235 / 3.1556</td></tr>
+      <tr><td>0.95</td><td>2</td><td class="num">10.65 / 10.74</td><td class="num">10.94 / 10.89</td><td class="num">3.3872 / 3.3336</td></tr>
+      <tr><td>0.95</td><td>4</td><td class="num">11.82 / 11.18</td><td class="num">11.02 / 11.04</td><td class="num">3.3171 / 3.2452</td></tr>
+      <tr><td>0.95</td><td>6</td><td class="num">13.13 / 11.30</td><td class="num">11.05 / 11.07</td><td class="num">3.2822 / 3.2299</td></tr>
+      <tr><td>0.95</td><td>8</td><td class="num">13.36 / 11.32</td><td class="num">11.05 / 11.07</td><td class="num">3.2752 / 3.2277</td></tr>
+    </table>
+    </div>
+
+    <p>Unlike determinism, which agrees across the two seeds to within 0.0452
+    everywhere, the rotation reservoir's depth and bpc differ substantially
+    between them — ridge validation bpc by up to 0.093 bits at a matched cell,
+    and depth by up to 2.04 characters. The two runs differ both in seed and
+    in whether the coordinate grouping was random, and this study does not
+    separate those two sources; the disagreement is reported rather than
+    explained, and is a further reason none of Table 2 is promoted.</p>
+
+    <h2 id="s5"><span class="sec">§5</span> What it means</h2>
+
+    <p><strong>Both clean answers are wrong, in opposite directions.</strong>
+    Matching eigenvalue magnitude and never re-mixing across coordinates is
+    not sufficient to reproduce the permutation's much stronger freezing: at
+    every one of the eight matched cells, in both seeds, the
+    irrational-rotation reservoir sits strictly below the permutation. The
+    shortfall is large over
+    six of the eight cells — 0.22 to 0.55 at all four ρ=0.8 cells and at ρ=0.95
+    with b ∈ {2, 4} — and narrows sharply at the two fine-quantization cells at
+    ρ=0.95, to 0.090–0.124 at b=6 and 0.045–0.073 at b=8. At those two cells
+    the margin is of the same order as the instrument's own resolution, since
+    177 groups make one group worth 0.0057 and the permutation's own
+    cross-seed spread there is 0.0000 and 0.0113. The separation is therefore
+    decisive over most of the grid and thin at the corner where both families
+    are closest to the floor, and this study does not claim to resolve it
+    there. Equally, an aperiodic phase orbit that never exactly recurs still
+    produces substantial exact-state collision: at ρ=0.8 and b=2, 71% of the
+    recurring 20-character contexts drive the reservoir to a single state,
+    against 0.0000 for the mixing control at every cell where that control was
+    measured. That is a statement about the 177 contexts that recur at all,
+    not about the sampled positions at large — 39,688 of the 40,000 sampled
+    states in that cell are distinct — but the mixing arm, measured the same
+    way, produces no such collapse anywhere.</p>
+
+    <p><strong>The corrected reading is a graded one.</strong>
+    Block-diagonality — the absence of a cross-mixing Jacobian — is
+    <em>necessary</em> for a reservoir to freeze at all: the mixing family
+    reads exactly 0.0000 at every cell the companion study measured it in,
+    while both block-diagonal families clear that floor by a wide margin. But
+    it is not <em>sufficient</em> to reproduce near-total freezing. How much a
+    quantized reservoir freezes is graded by how rational the operator's phase
+    is, not merely by whether mixing occurs. The rotating-frame argument, as
+    literally worded, predicted alternative A and did not anticipate a middle
+    regime; this study locates one and shows it is stable across an
+    independent draw.</p>
+
+    <p><strong>What this does not establish.</strong> Two seeds is the
+    program's promotion minimum, not a tight interval; the values above are
+    reported as observed pairs rather than as bootstrap confidence intervals,
+    and the family's total exposure in the program's ledger is two runs.
+    Nothing here measures whether the <em>size</em> of the per-step angle, or
+    the spread of angles across blocks, traces a continuous dial between the
+    permutation and mixing poles — the obvious next question, and one this
+    grid cannot answer because it varies neither. The decode-depth inversion
+    in Table 2 is an unregistered observation on an instrument pairing this
+    design was not built to test. Both are recorded as open questions in the
+    program's intake queue, and this entry's independent audit is still
+    pending.</p>
+
+    <h2 id="refs"><span class="sec">§6</span> References</h2>
+
+    <ol class="refs">
+      <li id="ref1">H. Jaeger, "The 'echo state' approach to analysing and
+      training recurrent neural networks," GMD Report 148, German National
+      Research Center for Information Technology, 2001.</li>
+      <li id="ref2">M. Lukoševičius, H. Jaeger, "Reservoir computing
+      approaches to recurrent neural network training," <em>Computer
+      Science Review</em> 3(3), 2009.</li>
+      <li id="ref3">G. Weiss, Y. Goldberg, E. Yahav, "Extracting automata
+      from recurrent neural networks using queries and counterexamples,"
+      <em>ICML</em> 2018.</li>
+      <li id="ref4">M. Mahoney, "Large text compression benchmark" (text8),
+      <a href="http://mattmahoney.net/dc/textdata">mattmahoney.net/dc/textdata</a>.</li>
+    </ol>
+
+    <h2 id="s7"><span class="sec">§7</span> Provenance</h2>
+
+    <ul class="plain">
+      <li><strong>16019112</strong> — <code>2026-08-12-caity-pi</code>: the
+      first pass, from a one-line design brief asking for an experiment
+      involving π; 10 cells, seed 0 with the fixed canonical coordinate
+      pairing (internal run log #43). Registered before running with the
+      pilot disclosed and the headline bar inherited rather than chosen. P1
+      and P3 both missed without reaching either named pole; P2 confirmed ⇒
+      provisional, intake record filed, replication automatically queued at
+      high priority.</li>
+      <li><strong>99b121cf</strong> — <code>2026-08-12-pi-go-round-rerun1</code>:
+      seed 2050233419, drawn from a hardware random number generator with the
+      raw draw recorded before running, and with the coordinate pairing now
+      genuinely random (internal run log #45). All three registered
+      predictions confirmed, zero reversals across the eight matched cells ⇒
+      promoted to the program's confirmed-findings record per the pre-stated
+      rule.</li>
+    </ul>
+
+    <p>All claims judged strictly against the registered wording, misses
+    included above; 2 seeds; replicated before publication; the program's
+    independent audit of this entry is still pending. The permutation and
+    mixing baselines are quoted from the
+    <a href="../delay-line-freezing/index.html">companion study</a>'s archived
+    runs (internal run log #40, #41) and were not rerun here. Internal
+    designation: the pi-go-round.</p>
+
+    <footer>
+      <p>AuxiLab · findings are pre-registered and replicated before publication</p>
+      <p>© 2026 Caitlyn Meeks — Made in the Canary Islands 🇮🇨</p>
+    </footer>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Echo-State Property Beyond ρ = 1: Empirical Forgetting Survives to ρ = 1.60 in a Saturating Reservoir — AuxiLab</title>
+<meta name="description" content="AuxiLab whitepaper: sweeping the spectral radius across 0.50–2.00 on the reference sparse-tanh reservoir. An empirical echo-state-property test finds full forgetting intact through ρ=1.60 — 60–80% past the classical ρ=1 boundary — then a sharp break between 1.60 and 1.80, both seeds. Ridge bpc degrades smoothly with no kink at either boundary while decode depth peaks at exactly ρ=1.60, and ρ=0.50 beats the program's own fixed-ρ=0.95 anchor by 0.067–0.068 bits at both seeds.">
+<meta name="color-scheme" content="light">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://auxi.cafe/experiments/echo-state-boundary/">
+<meta property="og:title" content="The Echo-State Property Beyond ρ = 1: Empirical Forgetting Survives to ρ = 1.60 in a Saturating Reservoir">
+<meta property="og:description" content="A saturating tanh reservoir retains the empirical forgetting property 60–80% past the classical stability boundary, then breaks sharply within a narrow window — and the program's own standard parameter setting proves not to be its best, at both seeds, by the same margin.">
+<meta property="og:image" content="https://auxi.cafe/experiments/echo-state-boundary/fig1.png">
+<meta property="og:image:alt" content="Figure 1 of this preprint.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://auxi.cafe/experiments/echo-state-boundary/fig1.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f5eee0'/%3E%3Cpolygon points='14,26 18,6 31,16' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpolygon points='50,26 46,6 33,16' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpolygon points='18.5,21.5 20.5,11 27.5,16.5' fill='%23e8a8bc'/%3E%3Cpolygon points='45.5,21.5 43.5,11 36.5,16.5' fill='%23e8a8bc'/%3E%3Ccircle cx='32' cy='31' r='19' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5'/%3E%3Ccircle cx='25' cy='30' r='6' fill='%23ffffff' fill-opacity='0.6' stroke='%2334689e' stroke-width='2.2'/%3E%3Ccircle cx='39' cy='30' r='6' fill='%23ffffff' fill-opacity='0.6' stroke='%2334689e' stroke-width='2.2'/%3E%3Cline x1='31' y1='30' x2='33' y2='30' stroke='%2334689e' stroke-width='2.2'/%3E%3Cpath d='M30.4 38.2 L33.6 38.2 L32 40.4 Z' fill='%23b04f6d'/%3E%3Cpath d='M28 42.5 Q30 44.8 32 42.8 Q34 44.8 36 42.5' fill='none' stroke='%234a382e' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M17 48.5 L32 53.5 L24.5 63 L13 56 Z' fill='%23ffffff' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpath d='M47 48.5 L32 53.5 L39.5 63 L51 56 Z' fill='%23ffffff' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='32' cy='57.5' r='2.4' fill='%23b04f6d'/%3E%3C/svg%3E">
+
+<style>
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    padding: clamp(1.5rem, 5vw, 3.5rem) 1rem 2.5rem;
+    background: #fff; color: #000;
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-size: 1.0625rem; line-height: 1.6;
+  }
+  .dossier { margin: 0; }
+  main { max-width: 46rem; margin: 0 auto; }
+
+  /* document header */
+  .printhead { text-align: center; margin: 0 0 1.2rem; }
+  h1.ph-title {
+    font-variant: small-caps; font-weight: 700;
+    font-size: clamp(1.35rem, 1.1rem + 1.2vw, 1.7rem);
+    line-height: 1.3; margin: 0 0 0.6rem; letter-spacing: 0.01em;
+  }
+  .ph-tag { font-variant: small-caps; letter-spacing: 0.3em; font-size: 0.85rem; margin: 0 0 1.2rem; }
+  .ph-authors { font-size: 1rem; line-height: 1.5; margin: 0 0 0.7rem; }
+  .ph-authors .ph-name { font-variant: small-caps; font-weight: 700; }
+  .ph-date { font-size: 1rem; margin: 0; }
+
+  .dlrow { text-align: center; margin: 1rem 0 1.2rem; }
+  a.dl {
+    display: inline-block; font-size: 0.78rem; line-height: 1.6;
+    color: #000; background: #fff; border: 1px solid #000; border-radius: 3px;
+    padding: 0.1rem 0.7rem; text-decoration: none;
+  }
+  a.dl:hover, a.dl:focus-visible { background: #000; color: #fff; }
+  .hint { color: #555; font-size: 0.72rem; }
+
+  .pills { list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; margin: 0 0 1.4rem; padding: 0; }
+  .pills li { font-size: 0.72rem; line-height: 1.6; border: 1px solid #000; border-radius: 999px; padding: 0 0.6rem; }
+
+  .abshead { text-align: center; font-variant: small-caps; font-weight: 700; font-size: 1.02rem; margin: 1.1rem 0 0.45rem; }
+  .abstract { margin: 0 clamp(0.5rem, 5vw, 2.4rem) 1rem; text-align: justify; font-size: 0.92rem; }
+  .keywords { margin: 0 clamp(0.5rem, 5vw, 2.4rem) 1.6rem; font-size: 0.88rem; }
+  .keywords b { font-style: italic; font-weight: 700; }
+
+  h2 { font-size: 1.08rem; margin: 2rem 0 0.6rem; padding-top: 0.9rem; border-top: 1px solid #000; }
+  p { margin: 0.65rem 0; }
+  ul.plain { margin: 0.65rem 0; padding-left: 1.4rem; }
+  ul.plain li { margin: 0.3rem 0; }
+  a { color: #000; text-decoration: underline; text-underline-offset: 2px; }
+  a.cite { text-decoration: none; font-size: 0.85em; }
+  a.cite:hover, a.cite:focus-visible { text-decoration: underline; }
+
+  pre.eq, code, table.data {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Courier New", monospace;
+  }
+  pre.eq {
+    border: 1px solid #000; padding: 0.7rem 0.9rem; margin: 0.8rem 0;
+    font-size: 0.82rem; line-height: 1.55;
+    white-space: pre-wrap; overflow-wrap: break-word; overflow-x: visible;
+  }
+  code { font-size: 0.88em; }
+  table.data { border-collapse: collapse; width: 100%; margin: 0.9rem 0; font-size: 0.82rem; }
+  table.data caption {
+    text-align: left; color: #333; font-size: 0.95em; margin-bottom: 0.4rem;
+    caption-side: top; font-family: Georgia, "Times New Roman", Times, serif;
+  }
+  table.data th, table.data td { text-align: left; padding: 0.3rem 0.8rem 0.3rem 0; border-bottom: 1px solid #000; vertical-align: top; }
+  table.data th { font-weight: 700; }
+  table.data td.num, table.data th.num { text-align: right; padding-right: 1.2rem; }
+  table.data tr.hl td { font-weight: 700; }
+  .tablewrap { overflow-x: auto; }
+
+  figure { margin: 1.2rem 0; }
+  figure img { display: block; width: 100%; max-width: 100%; height: auto; border: 1px solid #000; background: #fff; }
+  figcaption { margin-top: 0.45rem; color: #333; font-size: 0.88rem; line-height: 1.5; }
+
+  .note { border: 1px solid #000; padding: 0.55rem 0.9rem; margin: 1rem 0; font-size: 0.92em; }
+  ol.refs { margin: 0.65rem 0; padding-left: 1.7rem; font-size: 0.88rem; }
+  ol.refs li { margin: 0.35rem 0; }
+  ol.refs li:target { outline: 1px dotted #000; outline-offset: 2px; }
+
+  footer { margin-top: 2.4rem; padding-top: 1rem; border-top: 1px solid #000; color: #333; font-size: 0.85rem; }
+  footer p { margin: 0 0 0.35rem; }
+
+  .sidestamp { display: none; }
+  @media (min-width: 64rem) {
+    .sidestamp {
+      display: block; position: fixed; left: 0.6rem; top: 45%;
+      transform: translateY(-50%) rotate(180deg); writing-mode: vertical-rl;
+      font-size: 0.72rem; letter-spacing: 0.18em; color: #666;
+    }
+  }
+
+  /* print: the same document with paper margins */
+  @media print {
+    body { padding: 0; font-size: 10.5pt; line-height: 1.5; }
+    main { max-width: none; padding: 0.4in 0.55in; }
+    .dlrow { display: none !important; }
+    .sidestamp {
+      display: block; position: fixed; left: 0.08in; top: 45%;
+      transform: translateY(-50%) rotate(180deg); writing-mode: vertical-rl;
+      font-size: 8.5pt; letter-spacing: 0.18em; color: #666;
+    }
+    h1.ph-title { font-size: 16.5pt; }
+    .abstract { font-size: 9.8pt; margin: 0 0.45in 0.9rem; }
+    .keywords { font-size: 9.3pt; margin: 0 0.45in 1.4rem; }
+    table.data { font-size: 8pt; }
+    ol.refs { font-size: 9pt; }
+    ol.refs li:target { outline: none; }
+    a { text-decoration: none; }
+    p { orphans: 3; widows: 3; }
+    tr, pre.eq, .note, ol.refs li, figure { break-inside: avoid; }
+    .tablewrap { overflow-x: visible; }
+  }
+</style>
+</head>
+<body>
+<div class="dossier">
+  <main>
+    <header class="printhead">
+      <h1 class="ph-title">The Echo-State Property Beyond ρ = 1: Empirical Forgetting Survives to ρ = 1.60 in a Saturating Reservoir</h1>
+      <div class="ph-tag">A Preprint</div>
+      <div class="ph-authors">
+        <div class="ph-name">Caitlyn Meeks</div>
+        <div>AuxiLab Tenerife — research@auxi.cafe</div>
+      </div>
+      <div class="ph-date">August 12, 2026</div>
+    </header>
+    <div class="sidestamp" aria-hidden="true">AuxiLab · auxi.cafe · August 2026</div>
+    <p class="dlrow"><a class="dl" download href="echo-state-boundary.pdf">download whitepaper</a> <span class="hint">(pdf)</span></p>
+    <ul class="pills">
+      <li>registered 2026-08-12</li>
+      <li>run ledger #34, #35</li>
+      <li>2 seeds × 9 ρ values, zero reversals</li>
+      <li>replicated before publication</li>
+      <li>promoted 2026-08-12</li>
+    </ul>
+
+    <p class="abshead">Abstract</p>
+    <p class="abstract">This study originated in an open-ended design
+    brief. The one spectral parameter every reservoir in this program
+    treats as load-bearing is the recurrent matrix's spectral radius ρ,
+    which classical echo-state theory
+    <a class="cite" href="#ref1">[1]</a> keeps below 1. With a saturating
+    tanh the state is bounded regardless of ρ, so the behavior past that
+    boundary is a checkable question: we swept the reference sparse-tanh
+    reservoir, otherwise completely unchanged, across ρ ∈ 0.50–2.00 (nine
+    points, two seeds, the second hardware-drawn), adding an empirical
+    forgetting test — fork a washed-in reservoir against a randomly reset
+    copy, feed both identical text, and measure whether they converge.
+    Three replicated findings. (1) <b>Full forgetting survives to
+    ρ=1.60</b> — disagreement decays to exactly zero, 60–80% past the
+    classical boundary — <b>then breaks sharply</b> between ρ=1.60 and
+    1.80 (final-disagreement ratio 0.000 → 0.45–0.46), the same narrow
+    window in both seeds. (2) Ridge validation bits per character (bpc)
+    degrades smoothly and monotonically from ρ=0.80 onward with no kink
+    at either the classical or the empirical boundary, while decode
+    depth keeps <em>improving</em> to an interior peak at exactly ρ=1.60
+    in both seeds — two separate mechanisms, and a further instance of
+    the decodability–usability dissociation recorded elsewhere in this
+    program. (3) Unplanned but registered as a named alternative in
+    advance: <b>ρ=0.50 and ρ=0.80 beat the program's own fixed-ρ=0.95
+    anchor</b> (3.1472) at both seeds, by 0.0676/0.0670 bits at ρ=0.50 —
+    the margins agree across seeds to 0.0006 bits. The standard baseline
+    convention is not this architecture's own best setting; what, if
+    anything, to change across the program is explicitly left open.</p>
+    <p class="keywords"><b>Keywords</b> reservoir computing · echo state
+    property · spectral radius · stability boundary ·
+    decodability–usability dissociation · pre-registration</p>
+
+    <h2 id="s1"><span class="sec">§1</span> Introduction</h2>
+
+    <p>The echo state property — the reservoir's state becoming a function
+    of input history alone, independent of initial conditions — is
+    classically guaranteed by keeping the spectral radius of the recurrent
+    matrix below 1, and that sufficient condition has hardened, in
+    practice, into a boundary that is rarely crossed
+    <a class="cite" href="#ref1">[1]</a><a class="cite" href="#ref2">[2]</a>.
+    For a <em>linear</em> reservoir, crossing it genuinely diverges. For a
+    saturating tanh reservoir the state is confined to [−1,1]<sup>N</sup>
+    by construction, so the interesting questions survive the crossing:
+    does the forgetting property actually fail at ρ=1? Where does it
+    really fail? And what happens to prediction and memory on the way?</p>
+
+    <h2 id="s2"><span class="sec">§2</span> Method</h2>
+
+    <p>The reference sparse-tanh reservoir (N=1024, fan-in-10 sparse
+    random W, leak 1.0, bias 0.2, random input map — wiring identical to
+    the archived reference reservoir of the
+    <a href="../addressed-memory-esn/index.html">addressed-memory ESN study</a>)
+    with one parameter unlocked: ρ ∈ {0.50, 0.80, 0.95, 1.00, 1.10, 1.30, 1.60,
+    1.80, 2.00}. Standard text8 splits <a class="cite" href="#ref3">[3]</a>,
+    2M training characters; ridge and logistic validation bits per
+    character (bpc) and U3 decode depth (a linear decode-depth probe, in
+    the program's internal instrument numbering) on the identical code
+    path as every other reservoir. One new diagnostic, making the
+    classical claim empirical:</p>
+
+    <pre class="eq"># empirical echo-state test, per rho:
+# wash 200 steps of real text into the reservoir, then FORK:
+#   copy A keeps the washed-in state
+#   copy B is hard-reset to uniform-random in [-1,1]^N
+# feed both the IDENTICAL next 8000 characters; measure RMS
+# per-unit disagreement at 0/10/50/200/1000/8000 steps.
+conv_ratio = disagreement(8000) / disagreement(0)
+# 0   => full forgetting (ESP holds in practice)
+# >0  => a permanent memory of an arbitrary initial state</pre>
+
+    <p>The replication seed (1726372129) was drawn from a hardware
+    random-number generator with the raw draw recorded in the registration
+    before running.</p>
+
+    <h2 id="s3"><span class="sec">§3</span> Pre-registered predictions</h2>
+
+    <p>A pilot run over the full grid was disclosed first; predictions
+    were finalized after it and labeled pilot-informed:</p>
+
+    <ul class="plain">
+      <li><strong>RC1</strong> (headline): conv_ratio ≤ 0.05 for every ρ
+      ≤ 1.60 and ≥ 0.3 at ρ ∈ {1.80, 2.00} — a sharp, localized
+      transition strictly between 1.60 and 1.80. Named loss: the window
+      sits anywhere else.</li>
+      <li><strong>RC2</strong>: ridge validation bpc monotonically
+      non-decreasing across every adjacent pair from ρ=0.80 through
+      2.00 — no special kink at the classical ρ=1 line.</li>
+      <li><strong>RC3</strong> (a predicted dissociation): decode depth
+      has a strictly interior maximum while bpc has none over the same
+      range — depth and bpc moving in opposite directions.</li>
+      <li><strong>RC4</strong> (reproduction check): the sweep's own
+      ρ=0.95 cell must reproduce the on-disk reference-reservoir anchor
+      (3.1472) within 0.02 bits. Named alternative, rated a major
+      surprise in advance: <em>any</em> cell beats the anchor
+      outright.</li>
+      <li><strong>RCQ1/RCQ2</strong> (bands): conv_ratio at ρ=2.00 stays
+      ≥ 0.5; the best cell lands within 0.10 bits of the anchor.</li>
+    </ul>
+
+    <p>The replication re-registered all of the above (RRC1–RRC4, both
+    bands) for the fresh seed, with promotion pre-committed to RRC1 and
+    RRC3 being confirmed cleanly, plus replication of RRC4's finding that
+    cells beat the reference-reservoir anchor.</p>
+
+    <h2 id="s4"><span class="sec">§4</span> Results</h2>
+
+    <div class="tablewrap">
+    <table class="data">
+      <caption><b>Table 1.</b> Both seeds (internal run log entries #34 /
+      #35; values seed 0 / seed 1726372129). Reference-reservoir anchor,
+      cited: ridge 3.1472. All 18 cells pass the U3 lag-1 gate; no
+      logistic readout was voided by the program's fit-invalidating
+      divergence rule.</caption>
+      <tr><th>ρ</th><th class="num">ridge val bpc</th><th class="num">U3 depth</th><th class="num">conv_ratio</th></tr>
+      <tr class="hl"><td>0.50</td><td class="num">3.0796 / 3.0802</td><td class="num">7.18 / 7.18</td><td class="num">0.000 / 0.000</td></tr>
+      <tr class="hl"><td>0.80</td><td class="num">3.1073 / 3.1155</td><td class="num">9.16 / 9.25</td><td class="num">0.000 / 0.000</td></tr>
+      <tr><td>0.95</td><td class="num">3.1472 / 3.1566</td><td class="num">10.11 / 10.17</td><td class="num">0.000 / 0.000</td></tr>
+      <tr><td>1.00</td><td class="num">3.1649 / 3.1742</td><td class="num">10.30 / 10.36</td><td class="num">0.000 / 0.000</td></tr>
+      <tr><td>1.10</td><td class="num">3.2064 / 3.2155</td><td class="num">10.63 / 10.72</td><td class="num">0.000 / 0.000</td></tr>
+      <tr><td>1.30</td><td class="num">3.3084 / 3.3180</td><td class="num">11.33 / 11.50</td><td class="num">0.000 / 0.000</td></tr>
+      <tr><td>1.60</td><td class="num">3.4678 / 3.4766</td><td class="num">12.10 / 12.35</td><td class="num">0.000 / 0.000</td></tr>
+      <tr><td>1.80</td><td class="num">3.5482 / 3.5554</td><td class="num">12.03 / 12.21</td><td class="num">0.462 / 0.447</td></tr>
+      <tr><td>2.00</td><td class="num">3.6045 / 3.6103</td><td class="num">11.63 / 11.72</td><td class="num">0.724 / 0.634</td></tr>
+    </table>
+    </div>
+
+    <figure>
+      <img src="fig1.png" width="1220" height="509"
+        alt="Three panels sharing a spectral-radius axis from 0.5 to 2.0, each with two lines for the two seeds, a dotted vertical line at rho equals 1 and a shaded band between 1.6 and 1.8. Left: ridge validation bits per character rises smoothly through both boundaries, with a dashed horizontal line at the reference-reservoir anchor 3.1472 sitting above the two lowest-rho points. Middle: decode depth rises to an interior peak at rho 1.6 then turns down. Right: the convergence ratio is exactly zero through rho 1.6, then jumps to roughly 0.45 at 1.8 and 0.63 to 0.72 at 2.0.">
+      <figcaption><b>Figure 1.</b> The sweep, both seeds (internal run log
+      entries #34, #35). Dotted vertical line: the classical ρ=1 boundary.
+      Shaded band: the empirically measured transition window (1.60, 1.80).
+      Left panel's dashed line: the cited reference-reservoir anchor
+      3.1472 — the ρ=0.50 and ρ=0.80 cells sit below it in both
+      seeds.</figcaption>
+    </figure>
+
+    <p><strong>The empirical forgetting boundary is sharp, and lies well
+    beyond the classical line.</strong> Disagreement between the forked
+    copies decays to exactly zero at every ρ through 1.60, in both
+    seeds — the reservoir state is a function of its input history alone
+    even 60% past the classical boundary. At ρ=1.80 the two copies never
+    converge (conv_ratio 0.462 / 0.447), and at ρ=2.00 the plateau
+    deepens (0.724 / 0.634). The transition falls in the same narrow
+    window in both seeds (RC1/RRC1 confirmed; RCQ1/RRCQ1 confirmed).</p>
+
+    <p><strong>Prediction and memory dissociate across the same
+    sweep.</strong> Ridge bpc worsens monotonically from ρ=0.80 through
+    2.00 — 7/7 adjacent pairs, both seeds, with no visible kink at either
+    ρ=1 or the empirical transition — while decode depth keeps improving
+    to an interior peak at exactly ρ=1.60 in both seeds, then turns down.
+    The peak in depth lands almost exactly where forgetting starts to
+    fail. Whatever bpc pays for is a smooth mechanism separate from the
+    sharp one the forgetting test measures (RC2/RC3 and their
+    replications confirmed; this reservoir <em>does</em> show the
+    decodability–usability split that the
+    <a href="../threshold-fire-reservoir/index.html">threshold-fire-and-refractory
+    reservoir</a> did not).</p>
+
+    <p><strong>The reproduction check passed, and its named alternative
+    was triggered.</strong> At seed 0 the sweep's ρ=0.95 cell reproduces
+    the on-disk reference-reservoir anchor exactly (3.1472, difference
+    0.0000; the archived anchor was itself computed at seed 0, so this is
+    a like-for-like rebuild). But ρ=0.50 (3.0796 / 3.0802) and ρ=0.80
+    (3.1073 / 3.1155) beat the anchor outright at both seeds — margins
+    0.0676 / 0.0670 bits at ρ=0.50, a 0.0006-bit spread across
+    independently drawn reservoirs, in a smooth four-point trend rather
+    than an isolated cell. The registered 0.10-bit band (RCQ2)
+    technically held; the band's own motivating question — was ρ=0.95
+    already near this architecture's optimum? — resolved clearly in the
+    negative.</p>
+
+    <h2 id="s5"><span class="sec">§5</span> Discussion</h2>
+
+    <p><strong>The classical line is not where this system
+    breaks.</strong> For a saturating tanh reservoir under real text
+    drive, the empirical echo-state boundary sits far past the classical
+    sufficient condition — and when it fails, it fails sharply, not
+    gradually. Between the two boundaries lies a genuinely usable regime:
+    at ρ=1.60 the reservoir decodes <em>deeper</em> than anywhere else on
+    the grid while still fully forgetting its initial state — obtained at
+    a real bpc cost, the same trade-off between decodability and
+    usability that recurs throughout this program.</p>
+
+    <p><strong>The program's own baseline is not optimal, and this is now
+    a confirmed finding.</strong> The fixed-ρ=0.95 anchor (3.1472) cited
+    as the standard baseline across dozens of registrations is a
+    reproducible ~0.05–0.07 bit underperformance relative to lower ρ on
+    this same architecture. What this paper does <em>not</em> say:
+    whether the baseline convention should change across the program,
+    whether any past conclusion needs re-reading (each was judged on its
+    own registered terms), or whether ρ below 0.50 does better still —
+    untested. Those questions are flagged in the program's records for a
+    deliberate decision, not decided by this study. Uncertainty is
+    reported as a min–max range across two seeds, and the program's
+    independent audit of this entry is still pending.</p>
+
+    <h2 id="refs"><span class="sec">§6</span> References</h2>
+
+    <ol class="refs">
+      <li id="ref1">H. Jaeger, "The 'echo state' approach to analysing and
+      training recurrent neural networks," GMD Report 148, German National
+      Research Center for Information Technology, 2001.</li>
+      <li id="ref2">M. Lukoševičius, H. Jaeger, "Reservoir computing
+      approaches to recurrent neural network training," <em>Computer
+      Science Review</em> 3(3), 2009.</li>
+      <li id="ref3">M. Mahoney, "Large text compression benchmark" (text8),
+      <a href="http://mattmahoney.net/dc/textdata">mattmahoney.net/dc/textdata</a>.</li>
+    </ol>
+
+    <h2 id="s7"><span class="sec">§7</span> Provenance</h2>
+
+    <ul class="plain">
+      <li><strong>907a2395</strong> — <code>2026-08-12-caity-the-rainbow-connection</code>:
+      the originating design brief; 9 cells, seed 0 (internal run log
+      #34). Pilot run disclosed before registration; all four ordinal
+      predictions and both bands confirmed, and RC4's named "would be a
+      major surprise" alternative was triggered ⇒ provisional, intake
+      record filed, replication automatically queued.</li>
+      <li><strong>f6a50222</strong> — <code>2026-08-12-rainbow-connection-rerun1</code>:
+      seed 1726372129, hardware-drawn with the raw draw recorded before
+      running (internal run log #35). All predictions confirmed, zero
+      reversals; the margin over the reference-reservoir anchor
+      replicated to 0.0006 bits ⇒ all three findings promoted to the
+      program's confirmed-findings record per the pre-stated rule.</li>
+    </ul>
+
+    <p>All claims judged strictly against the registered wording; 2 seeds;
+    replicated before publication; the program's independent audit of this
+    entry is still pending. Internal designation: rainbow connection.</p>
+
+    <footer>
+      <p>AuxiLab · findings are pre-registered and replicated before publication</p>
+      <p>© 2026 Caitlyn Meeks — Made in the Canary Islands 🇮🇨</p>
+    </footer>
+  </main>
+</div>
+</body>
+</html>

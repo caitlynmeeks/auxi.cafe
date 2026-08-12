@@ -6,7 +6,56 @@
     <atom:link href="https://auxi.cafe/feed.xml" rel="self" type="application/rss+xml"/>
     <description>Free and open, creative AI experiments from a solar-powered machine learning lab in the forests of Tenerife — every finding pre-registered and replicated before publication.</description>
     <language>en</language>
-    <lastBuildDate>Tue, 11 Aug 2026 21:36:00 +0100</lastBuildDate>
+    <lastBuildDate>Wed, 12 Aug 2026 15:51:00 +0100</lastBuildDate>
+    <item>
+      <title>Finding no. 15: a carousel that never comes back around</title>
+      <link>https://auxi.cafe/experiments/irrational-phase-freezing/</link>
+      <guid isPermaLink="false">https://auxi.cafe/experiments/irrational-phase-freezing/#2026-08-12T15:51</guid>
+      <pubDate>Wed, 12 Aug 2026 15:51:00 +0100</pubDate>
+      <description>A brief asked for an experiment involving pi. We wired 512 tiny carousels each spinning by a whole number of radians per step, so none of them ever lands exactly where it started — and the pond froze halfway: strictly between the clockwork permutation and the mixing pond's flat zero, at all eight matched cells on both seeds. Not stirring is what lets a pond freeze at all; how rational its spin is decides how much.</description>
+    </item>
+    <item>
+      <title>Finding no. 14: blur a tidy pond and it becomes a clock</title>
+      <link>https://auxi.cafe/experiments/delay-line-freezing/</link>
+      <guid isPermaLink="false">https://auxi.cafe/experiments/delay-line-freezing/#2026-08-12T15:49</guid>
+      <pubDate>Wed, 12 Aug 2026 15:49:00 +0100</pubDate>
+      <description>Our third EUREKA: rounding each coordinate of a pond's state onto a coarse grid every step freezes a pond that never stirs its memories — same twenty letters in, same exact spot out, 1.0000 on one random pond (a real finite-state machine) and 0.9944 on a second — while a matched stirring pond sits at exactly 0.0000 in every cell we measured. Bonus surprise: how much it freezes and how far back it can read pull in opposite directions.</description>
+    </item>
+    <item>
+      <title>Finding no. 13: five grains, ground together</title>
+      <link>https://auxi.cafe/experiments/heterogeneous-ensembles/</link>
+      <guid isPermaLink="false">https://auxi.cafe/experiments/heterogeneous-ensembles/#2026-08-12T02:36</guid>
+      <pubDate>Wed, 12 Aug 2026 02:36:00 +0100</pubDate>
+      <description>We ground five completely different pond recipes into one blend and raced it against one whole pond and five scoops of the same recipe at matched size: the blend remembered the most and guessed the worst, in perfect mirror image — twice, on independently-drawn seeds. The fourth route to "storing isn't using," this time from pure variety.</description>
+    </item>
+    <item>
+      <title>Finding no. 12: over the rainbow</title>
+      <link>https://auxi.cafe/experiments/echo-state-boundary/</link>
+      <guid isPermaLink="false">https://auxi.cafe/experiments/echo-state-boundary/#2026-08-12T02:26</guid>
+      <pubDate>Wed, 12 Aug 2026 02:26:00 +0100</pubDate>
+      <description>We pushed our pond's memory-strength knob past the textbook stability line on purpose: it stays perfectly well-behaved sixty percent past the boundary, then breaks sharply in a narrow window — and turning the same knob down beats our own standard setting by 0.067 bits, twice, with the margin agreeing across seeds to less than a thousandth of a bit.</description>
+    </item>
+    <item>
+      <title>Finding no. 11: a thousand tiny lanterns</title>
+      <link>https://auxi.cafe/experiments/threshold-fire-reservoir/</link>
+      <guid isPermaLink="false">https://auxi.cafe/experiments/threshold-fire-reservoir/#2026-08-12T01:33</guid>
+      <pubDate>Wed, 12 Aug 2026 01:33:00 +0100</pubDate>
+      <description>From a haiku we built a pond of a thousand jellyfish-bells that stay dark until poked, then flash and fade. There's a just-right poke-strength, and fast-fading flashes beat lingering ones at every setting — the opposite of every other pond we've measured — replicated on a fresh hardware-drawn seed.</description>
+    </item>
+    <item>
+      <title>Finding no. 10: one ruler for four ponds</title>
+      <link>https://auxi.cafe/experiments/predictive-capture/</link>
+      <guid isPermaLink="false">https://auxi.cafe/experiments/predictive-capture/#2026-08-12T00:21</guid>
+      <pubDate>Wed, 12 Aug 2026 00:21:00 +0100</pubDate>
+      <description>Our second EUREKA: one statistic, calibrated on two cells, predicted the guessing skill of fifteen held-out ponds from three families to a median 0.04 bits — and seed 0's frozen constants worked unchanged on a brand-new random universe. Three "storing isn't using" walls were one wall all along.</description>
+    </item>
+    <item>
+      <title>Finding no. 9: pretend footholds</title>
+      <link>https://auxi.cafe/experiments/random-codebook/</link>
+      <guid isPermaLink="false">https://auxi.cafe/experiments/random-codebook/#2026-08-11T22:39</guid>
+      <pubDate>Tue, 11 Aug 2026 22:39:00 +0100</pubDate>
+      <description>Made-up random footholds still freeze the champion pond into a real automaton — but only when there are few of them: 16 always, 256+ never, and exactly 64 is a coin flip. Our first-pass boundary was wrong by a step and the pre-registered replication branch corrected it in public.</description>
+    </item>
     <item>
       <title>Finding no. 7: the twin test</title>
       <link>https://auxi.cafe/experiments/orthogonal-reservoir/</link>
@@ -16,64 +65,64 @@
     </item>
     <item>
       <title>Finding no. 8: the wheel beats the lottery</title>
-      <link>https://auxi.cafe/experiments/waterwheel-reservoir/</link>
-      <guid isPermaLink="false">https://auxi.cafe/experiments/waterwheel-reservoir/#2026-08-11T21:26</guid>
+      <link>https://auxi.cafe/experiments/periodic-block-resets/</link>
+      <guid isPermaLink="false">https://auxi.cafe/experiments/periodic-block-resets/#2026-08-11T21:26</guid>
       <pubDate>Tue, 11 Aug 2026 21:26:00 +0100</pubDate>
       <description>A waterwheel turns through a pond, emptying one bucket of memory every step — does it matter which bucket, if the total spilled is identical? It does: a steady rotation never loses to dumping a random bucket, and under heavy damage it wins by about twelve times its light-damage advantage.</description>
     </item>
     <item>
       <title>Finding no. 6: the pond that became a machine</title>
-      <link>https://auxi.cafe/experiments/goat-lattice/</link>
-      <guid isPermaLink="false">https://auxi.cafe/experiments/goat-lattice/#2026-08-11T19:08</guid>
+      <link>https://auxi.cafe/experiments/codebook-quantization/</link>
+      <guid isPermaLink="false">https://auxi.cafe/experiments/codebook-quantization/#2026-08-11T19:08</guid>
       <pubDate>Tue, 11 Aug 2026 19:08:00 +0100</pubDate>
       <description>Our first EUREKA-tier result: standing the champion pond on a fixed shortlist of footholds it had actually stood on before froze it into a genuine, checkable finite-state machine — at every shortlist length from 16 to 4096, on both seeds, ten cells of ten.</description>
     </item>
     <item>
       <title>Finding no. 5: sixty-four tiny ponds</title>
-      <link>https://auxi.cafe/experiments/goat-herd/</link>
-      <guid isPermaLink="false">https://auxi.cafe/experiments/goat-herd/#2026-08-11T18:28</guid>
+      <link>https://auxi.cafe/experiments/block-diagonal-fragmentation/</link>
+      <guid isPermaLink="false">https://auxi.cafe/experiments/block-diagonal-fragmentation/#2026-08-11T18:28</guid>
       <pubDate>Tue, 11 Aug 2026 18:28:00 +0100</pubDate>
       <description>We cut our big 1024-neuron pond into 64 tiny independent ponds of the same total size and braced for a tax — instead the herd is free or better: across ten seeds the honest ruler never once preferred the big pond.</description>
     </item>
     <item>
       <title>Finding no. 4: switchbacks!!</title>
-      <link>https://auxi.cafe/experiments/switchback-descent/</link>
-      <guid isPermaLink="false">https://auxi.cafe/experiments/switchback-descent/#2026-08-11T16:24</guid>
+      <link>https://auxi.cafe/experiments/capped-grade-traverse/</link>
+      <guid isPermaLink="false">https://auxi.cafe/experiments/capped-grade-traverse/#2026-08-11T16:24</guid>
       <pubDate>Tue, 11 Aug 2026 16:24:00 +0100</pubDate>
       <description>A zigzag is exactly a slower straight walk as long as each zig is quick (sixteen out of sixteen comparisons tied); slow, drawn-out zigs waste real effort; and on the crumbliest cliff terrain, quick wide zigzagging actually beat marching straight down.</description>
     </item>
     <item>
       <title>Finding no. 3: the goats never fall</title>
-      <link>https://auxi.cafe/experiments/goat-descent/</link>
-      <guid isPermaLink="false">https://auxi.cafe/experiments/goat-descent/#2026-08-11T15:14</guid>
+      <link>https://auxi.cafe/experiments/normalized-fixed-stride/</link>
+      <guid isPermaLink="false">https://auxi.cafe/experiments/normalized-fixed-stride/#2026-08-11T15:14</guid>
       <pubDate>Tue, 11 Aug 2026 15:14:00 +0100</pubDate>
       <description>A one-line brief — "invent a gradient descent inspired by how goats climb mountains" — became an optimizer that never falls: zero AUTO-VOIDs across four decades of step size, and it caught our own measuring instrument leaning by ~0.02 bits, terrain-dependently.</description>
     </item>
     <item>
       <title>The drawers stay shut (updates to finding no. 1)</title>
-      <link>https://auxi.cafe/experiments/decodable-not-cashable/</link>
-      <guid isPermaLink="false">https://auxi.cafe/experiments/decodable-not-cashable/#2026-08-11T06:38</guid>
+      <link>https://auxi.cafe/experiments/addressed-memory-esn/</link>
+      <guid isPermaLink="false">https://auxi.cafe/experiments/addressed-memory-esn/#2026-08-11T06:38</guid>
       <pubDate>Tue, 11 Aug 2026 06:38:00 +0100</pubDate>
       <description>We cut the card-index pond a linear key to every drawer and proved it cannot cash its deeper memory, even in principle; and the trade has a measured tipping point — below mixing strength 0.72 the tidy filing cabinet actually predicts better.</description>
     </item>
     <item>
       <title>Finding no. 2: a prophet in the pond</title>
-      <link>https://auxi.cafe/experiments/geometry-not-information/</link>
-      <guid isPermaLink="false">https://auxi.cafe/experiments/geometry-not-information/#2026-08-11T01:45</guid>
+      <link>https://auxi.cafe/experiments/future-keyed-bridge/</link>
+      <guid isPermaLink="false">https://auxi.cafe/experiments/future-keyed-bridge/#2026-08-11T01:45</guid>
       <pubDate>Tue, 11 Aug 2026 01:45:00 +0100</pubDate>
       <description>With one ridge solve — zero training — we redrew a pond's internal map to describe the future of the text; on our ruler it is more future-keyed than any measured layer of a large trained transformer, and yet its actual guesses got slightly worse, in every seed.</description>
     </item>
     <item>
       <title>It replicated!! Our first promoted finding</title>
-      <link>https://auxi.cafe/experiments/decodable-not-cashable/</link>
-      <guid isPermaLink="false">https://auxi.cafe/experiments/decodable-not-cashable/#2026-08-11T00:50</guid>
+      <link>https://auxi.cafe/experiments/addressed-memory-esn/</link>
+      <guid isPermaLink="false">https://auxi.cafe/experiments/addressed-memory-esn/#2026-08-11T00:50</guid>
       <pubDate>Tue, 11 Aug 2026 00:50:00 +0100</pubDate>
       <description>Rules are rules: a surprise doesn't count until it repeats. We re-ran the card-index race with three fresh random seeds and got twelve strict inequalities out of twelve — "decodable ≠ cashable" is the lab's first promoted finding.</description>
     </item>
     <item>
       <title>The card-index pond: remembers more, guesses worse</title>
-      <link>https://auxi.cafe/experiments/decodable-not-cashable/</link>
-      <guid isPermaLink="false">https://auxi.cafe/experiments/decodable-not-cashable/#2026-08-10T23:28</guid>
+      <link>https://auxi.cafe/experiments/addressed-memory-esn/</link>
+      <guid isPermaLink="false">https://auxi.cafe/experiments/addressed-memory-esn/#2026-08-10T23:28</guid>
       <pubDate>Mon, 10 Aug 2026 23:28:00 +0100</pubDate>
       <description>What if a pond filed each memory in its own labeled drawer instead of mixing everything in one pot? The filing-cabinet pond remembers more and predicts worse — all ten registered predictions came true, provisional until the replication lands.</description>
     </item>
