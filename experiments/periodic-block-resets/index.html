@@ -139,7 +139,7 @@
     <p class="dlrow"><a class="dl" download href="periodic-block-resets.pdf">download whitepaper</a> <span class="hint">(pdf)</span></p>
     <ul class="pills">
       <li>registered 2026-08-11</li>
-      <li>run ledger #20, #21, #24</li>
+      <li>internal run log #20, #21, #24</li>
       <li>3 seeds × 6 comparisons, zero reversals</li>
       <li>replicated before publication</li>
       <li>promoted 2026-08-11</li>
@@ -195,8 +195,7 @@
     reference cell of the
     <a href="../addressed-memory-esn/index.html">addressed-memory ESN study</a>)
     is used with one intervention: its units are partitioned into n_blocks
-    equal contiguous blocks — the block-count parameter is named
-    <code>n_troughs</code> in the implementation code — and immediately
+    equal contiguous blocks, and immediately
     after each normal update, exactly one block is set to zero:</p>
 
     <pre class="eq"># periodic: block (t mod n_blocks) is zeroed at step t
@@ -247,7 +246,7 @@ x[block] ← 0   # after the leaky-tanh update, every step</pre>
 
     <div class="tablewrap">
     <table class="data">
-      <caption><b>Table 1.</b> All three seeds (run ledger #20 / #21 / #24;
+      <caption><b>Table 1.</b> All three seeds (internal run log #20 / #21 / #24;
       values seed 0 / 1 / 2). Reset-free reference cell, cited from the
       archive: ridge 3.1472, logistic 2.6727, depth 10.11. Zero
       consistency-gate failures, and no activation of the divergence
@@ -334,7 +333,7 @@ x[block] ← 0   # after the leaky-tanh update, every step</pre>
 
     <ul class="plain">
       <li><strong>eb8cf008</strong> — <code>2026-08-11-caity-waterwheel-in-the-reservoir</code>:
-      the initiating design brief; 4 cells, seed 0 (run ledger #20).
+      the initiating design brief; 4 cells, seed 0 (internal run log #20).
       Registered before running, pilot run disclosed. Headline hit 6/6 ⇒
       provisional, replication auto-queued before any confirmed-findings
       entry.</li>

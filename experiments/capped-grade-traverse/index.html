@@ -146,7 +146,7 @@
     <p class="dlrow"><a class="dl" download href="capped-grade-traverse.pdf">download whitepaper</a> <span class="hint">(pdf)</span></p>
     <ul class="pills">
       <li>registered 2026-08-11</li>
-      <li>run ledger #10–#11</li>
+      <li>internal run log #10–#11</li>
       <li>2 seeds × 2 feature sets, 18 fits each</li>
       <li>replicated before publication</li>
       <li>promoted 2026-08-11</li>
@@ -173,7 +173,7 @@
     ill-conditioned feature set, wide
     <em>fast</em> traverses <b>beat</b> their matched straight descent by
     0.010–0.025 bits in all four cells — orthogonal dither recovers part of the
-    large-stride oscillation penalty, at exactly the operating point where the
+    large-stride oscillation penalty, at the same nominal step size at which the
     preceding study observed a divergence that the program's tripwire failed to
     catch.</p>
     <p class="keywords"><b>Keywords</b> stochastic optimization ·
@@ -213,6 +213,7 @@
 d = grade·m̂ + √(1 − grade²)·σ·û
 W ← W − s·d
 # effective downhill stride:  η_eff = s·grade
+# grade = sin θ, so cos θ = √(1 − grade²)
 # traverse amplitude:         A = s·L·cos θ</pre>
 
     <p>A <em>traverse leg</em> is the run of L steps between two consecutive
@@ -291,7 +292,7 @@ W ← W − s·d
 
     <div class="tablewrap">
     <table class="data">
-      <caption><b>Table 1.</b> Seed 0 grid (run ledger #10). Δ = traverse
+      <caption><b>Table 1.</b> Seed 0 grid (internal run log #10). Δ = traverse
       validation bpc − matched-η<sub>eff</sub> straight-descent anchor. Zero
       divergence-tripwire events in 18/18 cells.</caption>
       <tr><th>cell (s, grade, L)</th><th class="num">A</th><th class="num">η<sub>eff</sub></th><th class="num">well-cond. val / Δ</th><th class="num">ill-cond. val / Δ</th></tr>
@@ -333,10 +334,10 @@ W ← W − s·d
     required three).</p>
 
     <figure>
-      <img src="fig1.png" width="1440" height="630"
+      <img src="fig1.png" width="1328" height="543"
         alt="Two panels, one for the well-conditioned feature set and one for the ill-conditioned feature set. Each plots the change in validation bits per character relative to matched straight descent against traverse amplitude A on a log axis, with a shaded tie band around zero. Blue stride-built points stay inside the band on the well-conditioned set and fall below zero at large amplitude on the ill-conditioned set; the orange leg-built line leaves the band steeply, reaching about plus 0.088 on the well-conditioned set and plus 0.081 on the ill-conditioned set at L equals 64.">
       <figcaption><b>Figure 1.</b> The penalty follows leg length, not
-      amplitude (seed 0, run ledger #10). Both panels: Δ validation bpc
+      amplitude (seed 0, internal run log #10). Both panels: Δ validation bpc
       relative to
       the matched-η<sub>eff</sub> straight-descent anchor, against traverse
       amplitude A = s·L·cos&thinsp;θ (log scale); shaded: the tie band. Blue:
@@ -352,7 +353,7 @@ W ← W − s·d
 
     <div class="tablewrap">
     <table class="data">
-      <caption><b>Table 2.</b> The registered replication, seed 1 (run ledger
+      <caption><b>Table 2.</b> The registered replication, seed 1 (internal run log
       #11): 4/4 ordinals, 3/3 bands. Fresh reservoir draws and batch order;
       0/18 divergence-tripwire events.</caption>
       <tr><th>claim</th><th class="num">seed 0</th><th class="num">seed 1</th></tr>
@@ -452,7 +453,7 @@ W ← W − s·d
     <ul class="plain">
       <li><strong>00764148</strong> — <code>2026-08-11-caity-goat-ii</code>:
       the design brief and main grid; 18 fits plus a 6-fit pilot run, seed 0
-      (run ledger #10).
+      (internal run log #10).
       Registered before running; the grade-1 identity gate and the pilot run's
       divergence behaviour were disclosed in the registration.</li>
       <li><strong>9e62e253</strong> — <code>2026-08-11-switchback-rerun1</code>:

@@ -164,7 +164,7 @@
     asks whether that negative depends on the <em>mixing</em>. Replacing the
     sparse recurrent matrix with a pure delay line — W = ρ·P for a single
     random N-cycle permutation P, which never combines information across
-    coordinates — and holding every other knob fixed, <b>the same
+    coordinates — and holding every other parameter fixed, <b>the same
     quantization dial drives the reservoir to near-complete determinism over
     its recent input, while an input-matched mixing control shows none.</b> At
     ρ=0.8, the fraction of recurring 20-character contexts mapping to a single
@@ -393,7 +393,7 @@ x = round(x * 2**b) / 2**b</pre>
     approximately. The named loss did not fire. The registered boundary cell
     at b=6 landed at 0.8531 and 0.8418, just under the bar and consistent
     with its designation, and b=8 (0.6384, 0.6158) shows the trend continuing
-    smoothly rather than cliffing. Because the mixing control uses the same
+    smoothly rather than abruptly. Because the mixing control uses the same
     Hadamard input coding as the permutation arm and still reads zero at
     every corner, the effect is a property of the recurrence family and not
     of the input code.</p>

@@ -146,7 +146,7 @@
     <p class="dlrow"><a class="dl" download href="threshold-fire-reservoir.pdf">download whitepaper</a> <span class="hint">(pdf)</span></p>
     <ul class="pills">
       <li>registered 2026-08-12</li>
-      <li>run ledger #31, #32</li>
+      <li>internal run log #31, #32</li>
       <li>2 seeds × 15 cells, zero reversals</li>
       <li>replicated before publication</li>
       <li>promoted 2026-08-12</li>
@@ -281,7 +281,7 @@ else:
     </div>
 
     <figure>
-      <img src="fig1.png" width="1159" height="565"
+      <img src="fig1.png" width="1157" height="565"
         alt="Two panels, one per seed, plotting ridge validation bits per character against firing threshold theta for three emitted-trace decay rates drawn as three blue lines from dark (decay 0.50) to light (decay 0.95). In both panels the curves dip to an interior minimum at theta 0.80, circled in orange on the darkest line, and the three lines stack in the same order — faster decay always lower. A dashed gray line far below marks the cited reference sparse-tanh reservoir anchor at 3.1472.">
       <figcaption><b>Figure 1.</b> Ridge validation bpc against firing
       threshold θ for the three emitted-trace decay rates, both seeds
@@ -312,8 +312,8 @@ else:
 
     <p><strong>A diagnostic limitation, found and retained.</strong> At
     the sparsest-firing corner (θ=1.70, all three decay values), the U3
-    lag-1 diagnostic gate fails at full budget in both seeds despite
-    passing at pilot scale — so both runs score 12/15 cells on the gated
+    lag-1 diagnostic gate fails at full budget in both seeds, as it did at
+    pilot scale — so both runs score 12/15 cells on the gated
     depth instrument, and the depth reading at that corner sits outside
     the gate (its direction is consistent with the rest of the grid). No
     bpc conclusion depends on that gate. The first run's committed

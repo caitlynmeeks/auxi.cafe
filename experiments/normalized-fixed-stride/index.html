@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Normalized Fixed-Stride Descent: Divergence-Free Optimization and a Learning-Rate Calibration Error in a Frozen Readout Instrument — AuxiLab</title>
-<meta name="description" content="AuxiLab whitepaper: normalized fixed-stride descent with minibatch step acceptance never triggers the divergence tripwire across four decades of step size, ties tuned Adam, and exposes a conditioning-dependent ~0.02-bit learning-rate calibration error in the program's frozen logistic readout instrument; step probing is strictly harmful at large stride.">
+<meta name="description" content="AuxiLab whitepaper: normalized fixed-stride descent with minibatch step acceptance never triggers the divergence tripwire across four step sizes spanning three orders of magnitude, ties tuned Adam, and exposes a conditioning-dependent ~0.02-bit learning-rate calibration error in the program's frozen logistic readout instrument; step probing is strictly harmful at large stride.">
 <meta name="color-scheme" content="light">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://auxi.cafe/experiments/normalized-fixed-stride/">
 <meta property="og:title" content="Normalized Fixed-Stride Descent: Divergence-Free Optimization and a Learning-Rate Calibration Error in a Frozen Readout Instrument">
-<meta property="og:description" content="A normalized fixed-stride momentum optimizer that never diverges across four decades of step size, and the conditioning-dependent learning-rate calibration error it reveals in a frozen logistic readout instrument.">
+<meta property="og:description" content="A normalized fixed-stride momentum optimizer that never diverges across four step sizes spanning three orders of magnitude, and the conditioning-dependent learning-rate calibration error it reveals in a frozen logistic readout instrument.">
 <meta property="og:image" content="https://auxi.cafe/experiments/normalized-fixed-stride/fig1.png">
 <meta property="og:image:alt" content="Figure 1 of this preprint.">
 <meta name="twitter:card" content="summary_large_image">
@@ -147,7 +147,7 @@
     <p class="dlrow"><a class="dl" download href="normalized-fixed-stride.pdf">download whitepaper</a> <span class="hint">(pdf)</span></p>
     <ul class="pills">
       <li>registered 2026-08-11</li>
-      <li>run ledger #8–#9</li>
+      <li>internal run log #8–#9</li>
       <li class="hot">2 seeds × 2 feature sets, every registered inequality</li>
       <li class="hot">replicated before publication</li>
       <li>promoted 2026-08-11</li>
@@ -159,8 +159,8 @@
     unit-norm momentum direction, a fixed step length, and each candidate step
     accepted or rejected on the current minibatch — is benchmarked here against
     the research program's frozen training instrument on two feature sets. Three
-    results, all replicated on a second seed. (1)&nbsp;NFSD <b>never diverges</b>:
-    zero divergence-tripwire events across four decades of step size, 2 seeds × 2
+    results, all replicated on a second seed. (1)&nbsp;NFSD <b>never triggered the divergence tripwire</b>:
+    zero divergence-tripwire events across four step sizes spanning three orders of magnitude, 2 seeds × 2
     feature sets, in a sweep where the reference Adam configuration at η=0.1
     voided three times out of four and, in the fourth cell, diverged to 8.6 bits
     per character (bpc) <em>without tripping the tripwire at all</em>.
@@ -186,7 +186,7 @@
     learning rate 1e-3. That instrument's
     validation loss is treated as <em>the</em> value of a representation. Is its
     learning rate well set on every feature set it is asked to score? And what
-    does it cost to train with an optimizer that <em>cannot diverge</em>?</p>
+    does it cost to train with an optimizer whose step length is bounded by construction?</p>
 
     <p>Divergence has a precise operational meaning here. The program applies a
     <em>divergence tripwire</em>: a fit-invalidating rule that voids any run
@@ -204,7 +204,7 @@
     stride</em> s. Before a step is accepted, the candidate is evaluated on the
     current minibatch; if it fails to reduce the minibatch loss, the stride is
     halved and the candidate re-evaluated (up to 3 backtracks, after which the
-    step is refused); 25 consecutive accepted steps without backtracking restore
+    step is refused); 25 consecutive accepted steps without backtracking grow
     the stride. The full machine is therefore NFSD with minibatch step
     acceptance.</p>
 
@@ -228,7 +228,7 @@ W ← W − s·d</pre>
     set is the addressed-memory ESN's <em>linear-activation</em> variant at
     ρ=0.95 (permutation recurrence with Hadamard-coded inputs) — the
     worst-conditioned features in the program's inventory (see <a href="../addressed-memory-esn/index.html">whitepaper
-    01</a> for that construction). Step size was swept across four decades,
+    01</a> for that construction). Step size was swept across four step sizes spanning three orders of magnitude,
     η&nbsp;∈&nbsp;{1e-4, 1e-3, 1e-2, 1e-1}: 32 fits per seed.</p>
 
     <h2 id="s3"><span class="sec">§3</span> Pre-registered predictions</h2>
@@ -309,9 +309,9 @@ W ← W − s·d</pre>
     well-conditioned, 80% ill-conditioned at η=0.1).</p>
 
     <figure>
-      <img src="fig1.png" width="1650" height="1125"
+      <img src="fig1.png" width="1412" height="932"
         alt="Four panels. Top row: logistic validation bits per character versus step size on a log axis, for the reference Adam configuration, momentum SGD, and normalized fixed-stride descent, on the well-conditioned feature set (left) and the ill-conditioned feature set (right); an X mark near the uniform-prediction line flags a divergence-tripwire event for Adam at step size 0.1 on both feature sets; the normalized fixed-stride curves stay low everywhere. Bottom row: ablation points at step sizes 1e-3 and 1e-1 comparing full normalized fixed-stride descent, the probe-free variant, and the unnormalized variant; on the well-conditioned set the probe-free point at 0.1 sits at 2.638, below the dashed reference-instrument anchor at 2.6519.">
-      <figcaption><b>Figure 1.</b> Seed 0 summary (run ledger #8). Top row:
+      <figcaption><b>Figure 1.</b> Seed 0 summary (internal run log #8). Top row:
       logistic validation bpc vs step size η (log scale) for the reference Adam
       configuration, momentum SGD, and NFSD on the well-conditioned (left) and
       ill-conditioned (right) feature sets;
@@ -325,7 +325,7 @@ W ← W − s·d</pre>
 
     <div class="tablewrap">
     <table class="data">
-      <caption><b>Table 2.</b> The registered replication, seed 1 (run ledger #9):
+      <caption><b>Table 2.</b> The registered replication, seed 1 (internal run log #9):
       4/4 ordinals, 2/2 bands.</caption>
       <tr><th>claim</th><th>seed 0</th><th>seed 1</th></tr>
       <tr><td>R1 ill-cond.: best NFSD vs instrument setting</td><td class="num">3.1647 vs 3.1830 (Δ 0.0183)</td><td class="num">3.1651 vs 3.1823 (Δ 0.0172)</td></tr>
@@ -367,7 +367,7 @@ W ← W − s·d</pre>
     <em>levels</em> carry a ~0.02-bit learning-rate × conditioning error bar. The
     instrument nevertheless stays frozen — comparability across the existing
     archive outranks 0.02
-    bits — and separate evidence (run ledger #5) indicates that
+    bits — and separate evidence (internal run log #5) indicates that
     matched-parametrization
     <em>gaps</em> remain robust even where levels are biased.</p>
 
@@ -384,8 +384,9 @@ W ← W − s·d</pre>
     the component the design brief made most distinctive — was strictly
     harmful at large stride, in all four cells and on both seeds. The safety of
     the method comes from normalization, not from step probing. The original run
-    report's summary stands: the ordinal predictions held, the quantitative
-    bands did not, and the step-acceptance component proved dispensable.</p>
+    report's summary stands in substance: several registered ordinal
+    predictions missed onto their pre-named alternatives, the quantitative
+    bands held, and the step-acceptance component proved dispensable.</p>
 
     <h2 id="refs"><span class="sec">§6</span> References</h2>
 
@@ -406,7 +407,7 @@ W ← W − s·d</pre>
 
     <ul class="plain">
       <li><strong>32caa262</strong> — <code>2026-08-11-caity-goats-on-a-mountain</code>:
-      the original design brief and main grid, 32 fits, seed 0 (run ledger #8).
+      the original design brief and main grid, 32 fits, seed 0 (internal run log #8).
       Registered before running; the pilot run was disclosed in the registration,
       including a known pilot-scale inversion artifact against which the
       predictions were held.</li>
