@@ -210,7 +210,7 @@
       <li><strong>Usability</strong>: validation bits per character (bpc) of the
       standard logistic readout predicting the <em>next</em> character. Lower is
       better. For scale on these splits: uniform guessing 4.7549, 3-gram 2.9279,
-      5-gram 2.1585.</li>
+      5-gram 2.1585 (this anchor is under review — an in-run recomputation of the same quantity lands about 0.1 bits lower; quoted for scale only).</li>
     </ul>
 
     <h2 id="s2"><span class="sec">§2</span> Method</h2>
@@ -392,22 +392,45 @@
     <h2 id="s7"><span class="sec">§7</span> Provenance</h2>
 
     <ul class="plain">
-      <li><strong>169b7c2d</strong> — <code>2026-08-10-addressed-pond</code>: main
+      <li><strong>169b7c2d</strong> — main
       factorial, 24 cells, seed 0 (internal run log #1). Registered before running; all
       six ordinal predictions and four quantitative bands confirmed.</li>
-      <li><strong>866d975e</strong> — <code>2026-08-11-addressed-seeds-replication</code>:
+      <li><strong>866d975e</strong> —
       seeds 1–3, 12 cells (internal run log #2). 12/12 strict inequalities; promoted by
       the pre-stated rule.</li>
-      <li><strong>472d4fb7</strong> — <code>2026-08-11-addressed-unbinding-readout</code>:
+      <li><strong>472d4fb7</strong> —
       the linear unbinding test, seed 0 (internal run log #5). Null registered in advance
       and confirmed; this line of inquiry closed.</li>
-      <li><strong>4052cdec</strong> — <code>2026-08-11-addressed-low-rho-crossover</code>:
+      <li><strong>4052cdec</strong> —
       the crossover sweep, seed 0 (internal run log #6). Single-seed measured context,
       labeled as such.</li>
     </ul>
 
+    <p><strong>Audit status: independently audited 2026-08-12, passed.</strong>
+    The audit covered the main factorial, the seeds 1–3 replication and the
+    unbinding test; the low-ρ crossover sweep behind Table 3 was outside its
+    scope and is not audited.
+    All 16 strict inequalities across the four seeds (Table 1's four plus
+    Table 2's twelve) and the unbinding numbers were re-derived from
+    the raw result files with freshly written code that imports nothing from
+    the experiment — in particular, decode depth was recomputed from each
+    file's raw per-lag accuracy ladder using an implementation written from
+    the registration's wording — with 0 mismatches. The auditor established
+    two things the original paper did not: the prediction-cost half of the
+    effect also holds on the untouched <em>test</em> split (8/8) and on the closed-form ridge readout
+    (8/8), so it is not an artifact of the trained readout's conditioning.
+    The headline was additionally re-implemented from the registration text
+    alone, at reduced budget on a fresh seed, reproducing 4/4 ordinals with
+    depth gaps of +0.87 to +3.02. Two limits were disclosed by the audit and
+    belong with any quotation of this result: the addressed arm's
+    Hadamard input coding is deterministic, so its four seeds vary only in the
+    permutation; and the bpc gap's growth with ρ is budget-dependent
+    (+0.068 → +0.075 at 100k training characters, against +0.07 → +0.15 at
+    2M), so the budget tag should stay attached to that range.</p>
+
     <p>All experiments registered before running, with named falsifiers. Headline
-    claim tested on 4 seeds (0–3); replicated before publication. Unbinding and
+    claim tested on 4 seeds (0–3); replicated before publication and
+    independently audited afterward. Unbinding and
     crossover results are single-seed and presented as supporting structure, not
     as the promoted claim. Internal designation: addressed pond.</p>
 

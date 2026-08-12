@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Normalized Fixed-Stride Descent: Divergence-Free Optimization and a Learning-Rate Calibration Error in a Frozen Readout Instrument — AuxiLab</title>
-<meta name="description" content="AuxiLab whitepaper: normalized fixed-stride descent with minibatch step acceptance never triggers the divergence tripwire across four step sizes spanning three orders of magnitude, ties tuned Adam, and exposes a conditioning-dependent ~0.02-bit learning-rate calibration error in the program's frozen logistic readout instrument; step probing is strictly harmful at large stride.">
+<meta name="description" content="AuxiLab whitepaper: normalized fixed-stride descent with minibatch step acceptance never triggers the divergence tripwire across four step sizes spanning three orders of magnitude, ties tuned Adam, and exposes a conditioning-dependent ~0.02-bit learning-rate calibration error in the program's frozen logistic readout instrument; step probing is harmful at large stride in 4/4 cells, one margin inside the tie band. Independently audited 2026-08-12 with a recorded concern.">
 <meta name="color-scheme" content="light">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://auxi.cafe/experiments/normalized-fixed-stride/">
@@ -159,7 +159,9 @@
     unit-norm momentum direction, a fixed step length, and each candidate step
     accepted or rejected on the current minibatch — is benchmarked here against
     the research program's frozen training instrument on two feature sets. Three
-    results, all replicated on a second seed. (1)&nbsp;NFSD <b>never triggered the divergence tripwire</b>:
+    results, all replicated on a second seed, plus one single-seed observation
+    recorded but <em>not</em> promoted (the 8.6-bpc unvoided divergence in (1)).
+    (1)&nbsp;NFSD <b>never triggered the divergence tripwire</b>:
     zero divergence-tripwire events across four step sizes spanning three orders of magnitude, 2 seeds × 2
     feature sets, in a sweep where the reference Adam configuration at η=0.1
     voided three times out of four and, in the fourth cell, diverged to 8.6 bits
@@ -170,8 +172,9 @@
     feature set, 0.013–0.014 on the well-conditioned one — so every
     cross-feature-set comparison of levels the program publishes now carries a
     ~0.02-bit error bar. (3)&nbsp;The step-acceptance test is dead weight: probing
-    each candidate step before accepting it is <b>strictly harmful</b> at large
-    stride, 4/4 cells. The safety comes from normalization, not from step
+    each candidate step before accepting it is <b>harmful</b> at large
+    stride in 4/4 cells, though one of the four margins (+0.0038) sits inside
+    the ±0.005 tie band. The safety comes from normalization, not from step
     probing.</p>
     <p class="keywords"><b>Keywords</b> stochastic optimization ·
     normalized gradient methods · fixed step size · momentum · Adam ·
@@ -190,7 +193,8 @@
 
     <p>Divergence has a precise operational meaning here. The program applies a
     <em>divergence tripwire</em>: a fit-invalidating rule that voids any run
-    whose validation loss blows up during training. In this study that rule is
+    whose validation loss worsens by more than 0.5 bpc in a single epoch. In
+    this study that rule is
     the primary measurement.</p>
 
     <h2 id="s2"><span class="sec">§2</span> Method</h2>
@@ -202,11 +206,16 @@
     β=0.9, validation early stopping). Take the
     momentum direction, normalize it to unit norm, and step a <em>fixed
     stride</em> s. Before a step is accepted, the candidate is evaluated on the
-    current minibatch; if it fails to reduce the minibatch loss, the stride is
-    halved and the candidate re-evaluated (up to 3 backtracks, after which the
-    step is refused); 25 consecutive accepted steps without backtracking grow
-    the stride. The full machine is therefore NFSD with minibatch step
-    acceptance.</p>
+    current minibatch; if it fails to hold the minibatch loss within a
+    0.001-nat slack of its pre-step value, the stride is
+    halved and the candidate re-evaluated (up to 3 halvings, after which the
+    step is refused and the persistent stride is itself halved, floored at
+    η/1024); 25 consecutive accepted steps without backtracking grow
+    the persistent stride by 1.25×, capped at 4η. "Fixed stride" is therefore
+    exact for the probe-free ablation below and <em>nominal</em> for the full
+    machine, whose persistent stride adapts within [η/1024, 4η] and was
+    observed to reach 3.81η at η=0.1. The full machine is NFSD with minibatch
+    step acceptance.</p>
 
     <pre class="eq"># unit-norm direction: fixed step, independent of gradient magnitude
 d = m / ‖m‖
@@ -218,8 +227,9 @@ W ← W − s·d</pre>
     identical seeded batch
     order, over the program's standard text8 splits <a class="cite" href="#ref4">[4]</a>.
     Two ablations isolate the two components: <code>noprobe</code> (probe-free
-    NFSD — normalized fixed stride only, with no per-parameter state and no step
-    acceptance test) and
+    NFSD — normalized fixed stride only, carrying the same single momentum
+    buffer as every other arm but with no step acceptance test and no stride
+    adaptation, so its stride is literally fixed at η) and
     <code>nonorm</code> (unnormalized probed descent — step acceptance without
     normalization). Two feature sets are used. The <strong>well-conditioned</strong>
     set is the program's reference sparse-tanh echo state network (ESN) features
@@ -228,8 +238,12 @@ W ← W − s·d</pre>
     set is the addressed-memory ESN's <em>linear-activation</em> variant at
     ρ=0.95 (permutation recurrence with Hadamard-coded inputs) — the
     worst-conditioned features in the program's inventory (see <a href="../addressed-memory-esn/index.html">whitepaper
-    01</a> for that construction). Step size was swept across four step sizes spanning three orders of magnitude,
-    η&nbsp;∈&nbsp;{1e-4, 1e-3, 1e-2, 1e-1}: 32 fits per seed.</p>
+    permutation-recurrence ESN whitepaper</a> for that construction). The three
+    optimizer arms were swept over four step sizes spanning three orders of
+    magnitude, η&nbsp;∈&nbsp;{1e-4, 1e-3, 1e-2, 1e-1}; the two ablation arms
+    were run at η&nbsp;∈&nbsp;{1e-3, 1e-1} only. 24 sweep + 8 ablation = 32
+    fits per seed. This restriction matters when the probe-free ablation is
+    quoted as an instrument elsewhere, and is revisited in §5.</p>
 
     <h2 id="s3"><span class="sec">§3</span> Pre-registered predictions</h2>
 
@@ -247,14 +261,22 @@ W ← W − s·d</pre>
       bits. Named alternative, written in advance: if it does, the instrument's
       learning rate is off-optimum — provisional, replication automatically
       queued. (The alternative fired on the ill-conditioned set.)</li>
+      <li><strong>G3</strong>: the cost of the bounded step is small — per
+      feature set, best-over-η NFSD ≤ best-over-η Adam + 0.05 bits. (Hit, with
+      room to spare: the tax measured ≤ 0 on both feature sets.)</li>
       <li><strong>G4</strong>: the optimizer ordering Adam &lt; NFSD &lt; SGD
-      transfers across feature sets. (Miss, informatively: on the
-      ill-conditioned set, optimizer choice at each method's best η stopped
+      transfers across feature sets. (Miss on both, informatively: on the
+      well-conditioned set the Adam–NFSD leg tied inside the ±0.005 band and
+      inverted (Δ 0.0017 in NFSD's favour), and on the
+      ill-conditioned set optimizer choice at each method's best η stopped
       mattering at all.)</li>
       <li><strong>G5</strong>: mechanism claims — where NFSD's step refusals
-      fire and where its worst cell sits. (One miss: full refusals <em>never</em>
-      fired; the mechanism operated one level up, in stride-halving
-      backtracks.)</li>
+      fire and where its worst cell sits. (Two misses: refusals were
+      essentially absent — 3 in 9,680 steps in one cell, zero in every other —
+      so the mechanism operated one level up, in stride-halving backtracks;
+      and on the ill-conditioned set the worst cell was the <em>largest</em>
+      step, not the smallest, which is thrashing rather than the predicted
+      undertraining.)</li>
       <li><strong>G6</strong>: step acceptance should earn its keep against
       <code>noprobe</code>. Named alternative: step probing is redundant, and
       the safety comes from normalization rather than from step probing. (The
@@ -304,9 +326,14 @@ W ← W − s·d</pre>
     cell in the entire grid, 0.0135 below the reference instrument setting. Step
     acceptance was worse than useless at large stride: full NFSD lost to its own
     <code>noprobe</code> ablation by +0.0174 (well-conditioned) and +0.1032
-    (ill-conditioned). The full step-refusal path never once fired — a single
-    stride halving always produced an acceptable candidate (backtrack rates 47%
-    well-conditioned, 80% ill-conditioned at η=0.1).</p>
+    (ill-conditioned). Step refusal — the terminal path, reached only after
+    three halvings all fail — fired 3 times in 9,680 steps in one cell
+    (well-conditioned, η=0.1, seed 1) and never in the other three η=0.1
+    cells. A single halving sufficed for the large majority of backtracking
+    steps but not all: on the well-conditioned set at seed 0, 203 of 2,619
+    backtracking steps needed two or three. Backtrack rates at η=0.1 were 47%
+    well-conditioned and 80% ill-conditioned at seed 0, rising to 69% and 89%
+    at seed 1.</p>
 
     <figure>
       <img src="fig1.png" width="1412" height="932"
@@ -345,7 +372,7 @@ W ← W − s·d</pre>
     Adam at η=0.1 diverged to 8.5978 bpc — nearly double the uniform-prediction
     baseline (4.7549) — without ever tripping the divergence tripwire, because
     the loss oscillated rather than rising monotonically and no single epoch's
-    increase crossed the threshold. The tripwire detects monotone blow-up, not
+    increase reached the 0.5-bpc bar (the largest was 0.4656). The tripwire detects monotone blow-up, not
     sustained oscillation. Across both seeds, the reference Adam configuration
     at η=0.1 therefore voided in 3/4 cells, with unvoided divergence in the 4th.
     NFSD: 0 voids in all
@@ -371,22 +398,88 @@ W ← W − s·d</pre>
     matched-parametrization
     <em>gaps</em> remain robust even where levels are biased.</p>
 
-    <p><strong>Second, the optimizer.</strong> Normalized fixed-stride descent
-    with exponentially weighted moving-average momentum needs no per-parameter
-    state, never voided across four
-    decades of step size on two seeds and two feature sets, and either ties
-    tuned Adam to
-    within 0.001 or beats it. Its stability derives entirely from the
-    normalization: the step length is fixed regardless of gradient
-    magnitude.</p>
+    <p><strong>Second, the optimizer</strong> — stated separately for the two
+    variants, because they were not run over the same grid and an earlier
+    wording of this program's summary conflated them. <em>Full NFSD</em>, with
+    step acceptance, was swept over all four step sizes (1e-4 to 1e-1, three
+    orders of magnitude) on both seeds and both feature sets: it needs no
+    per-parameter <em>adaptive learning rates</em> — only the single momentum
+    buffer every arm here carries — never triggered the divergence tripwire in
+    any of the
+    16 sweep cells, and either ties tuned Adam to within 0.001 or beats it
+    (−0.0017 / −0.0104 well-conditioned, −0.0003 / +0.0002 ill-conditioned).
+    The <em>probe-free</em> variant — normalized fixed stride with no step
+    acceptance — was run at only two step
+    sizes, 1e-3 and 1e-1 — 8 cells, not the four-rung sweep. Within that
+    coverage it never voided either, 8 of 8. Its tie-with-tuned-Adam tolerance
+    is <em>not</em> 0.001: on the ill-conditioned feature set it is
+    +0.0099 / +0.0097 worse than tuned Adam, so the correct figure for the
+    probe-free variant is 0.010. Both variants derive their stability from
+    the normalization — the step <em>direction</em> is unit-norm, so no step
+    can be scaled up by a large gradient — but only the probe-free variant
+    holds its stride literally fixed; under step acceptance the persistent
+    stride adapts within [η/1024, 4η] and was observed at 3.81η. The
+    probe-free variant's evidence base is narrower than
+    the full method's, and elsewhere in this program it is relied on as a
+    trusted instrument, which is why the distinction is drawn here
+    explicitly.</p>
 
     <p><strong>Third, the attribution.</strong> Minibatch step acceptance —
-    the component the design brief made most distinctive — was strictly
-    harmful at large stride, in all four cells and on both seeds. The safety of
-    the method comes from normalization, not from step probing. The original run
-    report's summary stands in substance: several registered ordinal
-    predictions missed onto their pre-named alternatives, the quantitative
-    bands held, and the step-acceptance component proved dispensable.</p>
+    the component the design brief made most distinctive — was harmful at
+    large stride, in all four cells and on both seeds, though the
+    well-conditioned seed-1 margin of +0.0038 sits inside the ±0.005 tie band
+    this program uses and so supports the sign but not the word "strictly".
+    The safety of the method comes from normalization, not from step probing.
+    The original run report's summary stands in substance: several registered
+    ordinal predictions missed onto their pre-named alternatives, the
+    quantitative bands held, and the step-acceptance component proved
+    dispensable.</p>
+
+    <h2 id="s51"><span class="sec">§5.1</span> Amendment: the independent
+    audit</h2>
+
+    <p>This study was independently audited on 2026-08-12. The audit's
+    verdict on the principal result is unambiguous and, if anything, makes it
+    stronger. Both off-optimum gaps re-derive exactly from the raw result
+    files (0.0183 / 0.0172 ill-conditioned, 0.0135 / 0.0142
+    well-conditioned); the probe-free variant at η=0.1 really is the argmin of
+    the entire well-conditioned grid at both seeds; and all six gaps keep
+    their sign beyond 0.005 bits on the <em>untouched test split</em>, so none
+    of the instrument finding is an artifact of selecting the best epoch on
+    the same split early stopping uses. The auditor checked the reference-Adam
+    arm and the fixed-stride arms line by line for asymmetry and found the
+    same skeleton throughout — same zero initialization, same seeded batch
+    order, same gradient clipping, same divergence rule, same patience, same
+    best-epoch restore, one shared metric path. The ill-conditioned half of
+    the instrument finding requires no fixed-stride code at all: it is the
+    program's own logistic readout at η=1e-4 against the same readout at
+    η=1e-3, on identical features. An independent re-measurement on a fresh
+    hardware-drawn seed at reduced budget reproduces the headline ordinals.</p>
+
+    <p>The audit recorded a <strong>concern</strong>, and it is against the
+    optimizer summary rather than the instrument finding: an earlier program
+    wording described the probe-free variant while quoting the full method's
+    numbers, making two claims that are false of the variant they were
+    attached to — the step-size coverage and the 0.001 tie tolerance. Both are
+    corrected in §5's second paragraph above, and the auditor's own
+    re-measurement independently reproduced the tolerance concern. A third,
+    minor observation — that "strictly harmful" overstates a +0.0038 margin
+    inside the tie band — is corrected in §5's third paragraph and in the
+    abstract. A repair run
+    is registered in the program's queue. No number in this paper's tables
+    changed.</p>
+
+    <p>Three further corrections were made at the same time, found while
+    checking the above rather than by the audit itself. First, the claim that
+    the step-refusal path "never once fired" was a seed-0 statement carried
+    into a two-seed paper; on seed 1 it fired three times in 9,680 steps, and
+    §4 now reports that, along with the backtracking steps that needed more
+    than one halving. Second, the ablation arms were described as though they
+    shared the main sweep's four step sizes; they were run at two, which §2
+    now states where a replicator will meet it. Third, "fixed stride" was
+    stated without qualification: it is exact for the probe-free ablation but
+    nominal for the full method, whose persistent stride adapts within
+    [η/1024, 4η]. §2 and §5 now draw that distinction.</p>
 
     <h2 id="refs"><span class="sec">§6</span> References</h2>
 
@@ -406,16 +499,26 @@ W ← W − s·d</pre>
     <h2 id="s7"><span class="sec">§7</span> Provenance</h2>
 
     <ul class="plain">
-      <li><strong>32caa262</strong> — <code>2026-08-11-caity-goats-on-a-mountain</code>:
-      the original design brief and main grid, 32 fits, seed 0 (internal run log #8).
+      <li><strong>32caa262</strong> — the original design brief and main
+      grid, 32 fits, seed 0 (internal run log #8).
       Registered before running; the pilot run was disclosed in the registration,
       including a known pilot-scale inversion artifact against which the
       predictions were held.</li>
-      <li><strong>8a0a29b4</strong> — <code>2026-08-11-goat-descent-rerun1</code>:
-      full 32-fit grid on seed 1, fresh reservoir draws and batch order (run
-      ledger
+      <li><strong>8a0a29b4</strong> — the registered replication: full 32-fit
+      grid on seed 1, fresh reservoir draws and batch order (internal run log
       #9). Promotion by the pre-stated R1+R2 rule on two independent passes.</li>
     </ul>
+
+    <p><strong>Audit status: independently audited 2026-08-12, with a
+    recorded concern.</strong> The concern, in one line: the program's summary
+    of this finding described the probe-free variant while carrying the full
+    method's numbers, overstating that variant's step-size coverage and its
+    tie tolerance against tuned Adam, plus a third, minor overstatement in the
+    word "strictly". The instrument finding — this
+    paper's principal result — re-derived exactly, survived on the untouched
+    test split, and was independently re-measured. The corrections are made in
+    §5 and §5.1 above; no table on this page changed. A repair run is
+    registered in the program's queue.</p>
 
     <p>All claims are judged strictly against the registered wording, with misses
     included above; 2 seeds × 2 feature sets; replicated before publication.

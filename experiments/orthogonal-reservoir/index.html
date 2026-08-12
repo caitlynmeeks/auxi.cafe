@@ -297,6 +297,36 @@
     record: it is a point about how to <em>measure</em> orthogonality
     between co-driven reservoirs, not an effect size.</p>
 
+    <p><strong>Why the duplicate's full-spectrum mean is 0.906 and not
+    1.0.</strong> A reader may reasonably expect any whole-spectrum
+    correlation summary between an exactly identical pair to read 1.0. For
+    this regularized construction it does not, and the shortfall is
+    closed-form rather than empirical. The estimator adds a ridge term reg·I, here 10<sup>−3</sup>, to both
+    auto-covariances before whitening, but not to the cross-covariance. For a bit-identical pair the three covariances are the
+    same matrix C, so the whitened matrix is
+    (C&nbsp;+&nbsp;reg·I)<sup>−1/2</sup>&nbsp;C&nbsp;(C&nbsp;+&nbsp;reg·I)<sup>−1/2</sup>,
+    which shares C's eigenvectors and has eigenvalues λ<sub>i</sub>/(λ<sub>i</sub>&nbsp;+&nbsp;reg)
+    — strictly below 1 for every finite λ<sub>i</sub>. A follow-up
+    (internal run log #50) confirmed the pair <em>is</em> bit-identical by
+    direct array comparison at seed 0 (maximum absolute difference exactly
+    0.0) and
+    checked the prediction numerically: the predicted eigenvalue ratios match
+    the estimator's actual singular values to 4.4&nbsp;×&nbsp;10<sup>−14</sup>,
+    and the predicted mean reproduces the recorded 0.9060 to all four
+    decimals. The raw covariance spectrum runs from 0.00117 to 14.15, with
+    212 of 512 eigenvalues below 10<sup>−2</sup>, ten times the ridge term — the regime where
+    the suppression bites — which is consistent with a 512-unit reservoir driven by a 27-symbol
+    alphabet carrying a long tail of low-variance, near-redundant
+    directions. Sweeping the ridge term down
+    confirms the limit: the predicted mean rises to 0.999885 at reg=1e-6 and
+    to 1.000000, at displayed precision, at reg=1e-9. The shortfall from 1.0 is entirely and only a
+    function of the regularization, not evidence of any difference between
+    the two blocks. This paper makes no claim that the statistic
+    <em>should</em> read 1.0; it is used throughout as a discriminating
+    quantity (0.906 against 0.448) and that use is unaffected. The check
+    described here is an internal validity check, not the independent audit
+    this finding still awaits.</p>
+
     <h2 id="s5"><span class="sec">§5</span> Discussion</h2>
 
     <p><strong>Duplication is exactly worthless; independence is nearly
@@ -335,19 +365,34 @@
     <h2 id="s7"><span class="sec">§7</span> Provenance</h2>
 
     <ul class="plain">
-      <li><strong>c660a423</strong> — <code>2026-08-11-caity-orthogonal-reservoir</code>:
+      <li><strong>c660a423</strong> —
       the initiating design brief; 3 cells, seed 0 (internal run log #18).
       Registered before running; the pilot run's saturation surprise
       disclosed in the registration. Headline hit 3/3 ⇒ provisional,
       replication auto-queued before any confirmed-findings entry.</li>
-      <li><strong>142d0104</strong> — <code>2026-08-11-orthogonal-reservoir-rerun1</code>:
+      <li><strong>142d0104</strong> —
       seed 1, fresh independent draws of both reservoirs (internal run log #19).
       All three unbundled claims hit; promoted.</li>
-      <li><strong>8879faae</strong> — <code>2026-08-11-caity-orthogonal-reservoir-rerun</code>:
+      <li><strong>8879faae</strong> —
       seed 2, commissioned as a direct third-seed confirmation; identical
       registered wording (internal run log #25). All three claims hit again; the
       findings entry annotated 3/3 seeds.</li>
+      <li><strong>48c99128</strong> — a
+      read-only validity check prompted by a reader objection to this page's
+      0.906 figure (internal run log #50). Bit-identity verified directly;
+      the estimator's behaviour derived in closed form. No published number
+      moved and no confirmed-findings entry changed; the methodological
+      paragraph in §4 was added as a result.</li>
     </ul>
+
+    <p><strong>Audit status: audit pending.</strong> This program requires
+    every promoted finding to be independently audited by a party that did
+    not run the science, re-deriving its numbers from the raw result files
+    with freshly written code. That audit has not yet been carried out for
+    either of the two findings reported here. The 2026-08-12 validity check recorded above is narrower
+    and was run inside the program; it is not that audit and does not stand
+    in for it. Replication and audit are different guarantees, and this
+    result currently has the first and not the second.</p>
 
     <p>All claims judged strictly against the registered wording, misses
     included above; 3 seeds; replicated before publication. Internal

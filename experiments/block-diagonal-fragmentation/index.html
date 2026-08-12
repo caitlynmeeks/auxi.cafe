@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Block-Diagonal Fragmentation of a Reservoir Is Free or Better at Matched Width — AuxiLab</title>
-<meta name="description" content="AuxiLab whitepaper: making the mixing matrix of a 1024-unit reservoir block-diagonal in 64 independent blocks, at matched total width and matched per-block spectral radius, never costs ridge validation bits per character (strictly negative in 10/10 seeds), usually improves the trained logistic readout (8/10, two dead ties), and reduces linear decode depth by at most 0.20 characters — the reference reservoir sits measurably past its own operating optimum.">
+<meta name="description" content="AuxiLab whitepaper: making the mixing matrix of a 1024-unit reservoir block-diagonal in 64 independent blocks, at matched total width and matched nominal per-block spectral radius, never costs ridge validation bits per character on the validation split (strictly negative in 10/10 seeds; 9/10 on the untouched test split), usually improves the trained logistic readout (8/10, two dead ties), and reduces linear decode depth by at most 0.20 characters. Independently audited 2026-08-12 with a recorded concern; an exactly-scaled re-implementation reproduces the effect 5/5 on validation and test.">
 <meta name="color-scheme" content="light">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://auxi.cafe/experiments/block-diagonal-fragmentation/">
 <meta property="og:title" content="Block-Diagonal Fragmentation of a Reservoir Is Free or Better at Matched Width">
-<meta property="og:description" content="At matched total width, 64 independent sub-reservoirs never degrade ridge validation bits per character, usually improve the trained logistic readout, and lose almost no linear decode depth.">
+<meta property="og:description" content="At matched total width, 64 independent sub-reservoirs never degrade ridge validation bits per character on the validation split (9 of 10 on held-out test), usually improve the trained logistic readout, and lose almost no linear decode depth. Amended 2026-08-12 after independent audit.">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f5eee0'/%3E%3Cpolygon points='14,26 18,6 31,16' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpolygon points='50,26 46,6 33,16' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpolygon points='18.5,21.5 20.5,11 27.5,16.5' fill='%23e8a8bc'/%3E%3Cpolygon points='45.5,21.5 43.5,11 36.5,16.5' fill='%23e8a8bc'/%3E%3Ccircle cx='32' cy='31' r='19' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5'/%3E%3Ccircle cx='25' cy='30' r='6' fill='%23ffffff' fill-opacity='0.6' stroke='%2334689e' stroke-width='2.2'/%3E%3Ccircle cx='39' cy='30' r='6' fill='%23ffffff' fill-opacity='0.6' stroke='%2334689e' stroke-width='2.2'/%3E%3Cline x1='31' y1='30' x2='33' y2='30' stroke='%2334689e' stroke-width='2.2'/%3E%3Cpath d='M30.4 38.2 L33.6 38.2 L32 40.4 Z' fill='%23b04f6d'/%3E%3Cpath d='M28 42.5 Q30 44.8 32 42.8 Q34 44.8 36 42.5' fill='none' stroke='%234a382e' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M17 48.5 L32 53.5 L24.5 63 L13 56 Z' fill='%23ffffff' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpath d='M47 48.5 L32 53.5 L39.5 63 L51 56 Z' fill='%23ffffff' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='32' cy='57.5' r='2.4' fill='%23b04f6d'/%3E%3C/svg%3E">
 
@@ -133,7 +133,7 @@
         <div class="ph-name">Caitlyn Meeks</div>
         <div>AuxiLab Tenerife — research@auxi.cafe</div>
       </div>
-      <div class="ph-date">August 11, 2026</div>
+      <div class="ph-date">August 11, 2026 (amended August 12, 2026)</div>
     </header>
     <div class="sidestamp" aria-hidden="true">AuxiLab · auxi.cafe · August 2026</div>
     <p class="dlrow"><a class="dl" download href="block-diagonal-fragmentation.pdf">download whitepaper</a> <span class="hint">(pdf)</span></p>
@@ -143,14 +143,32 @@
       <li>10 seeds, four registered passes</li>
       <li>replicated before publication</li>
       <li>promoted 2026-08-11</li>
+      <li>amended 2026-08-12 after audit</li>
     </ul>
+
+    <div class="note"><strong>Amendment notice, 2026 August 12.</strong> This
+    preprint was independently audited on 2026-08-12. The decode-depth
+    finding was an outright pass. The bits-per-character finding passed with
+    a recorded <strong>concern</strong>, and two qualifications now attach to
+    how it is stated. First, "never costs ridge bpc, strictly negative in all
+    10 seeds" is a <em>validation-split</em> result; on the untouched test
+    split it is 9 of 10, and the trained-readout result falls from 8 of 10 to
+    7 of 10. Second, the two arms' spectral radii were set by different
+    estimators: the 64 blocks land on ρ=0.950000 exactly, while the intact
+    reservoir they are compared against runs slightly hot in 4 of the 10
+    seeds — an asymmetry that runs in the partition's favour. Neither
+    qualification overturns the finding: an audit re-implementation with both
+    arms scaled exactly, on four fresh seeds and two budgets, favours the
+    partition 5 of 5 on validation <em>and</em> 5 of 5 on test. §4.1 reports
+    all of this in full. No number in Table 1 changed.</div>
 
     <p class="abshead">Abstract</p>
     <p class="abstract">An open-ended design brief on reservoir computing
     became a controlled fragmentation study: the mixing matrix of the
     program's reference 1024-unit sparse tanh echo state network was made
     block-diagonal in H equal blocks, each block's spectral radius ρ matched
-    to that of the intact reservoir (ρ=0.95), with the readout always seeing
+    to the intact reservoir's <em>requested</em> ρ=0.95 (the realised radii
+    differ; see §4.1), with the readout always seeing
     the full 1024-wide concatenated state.
     We registered a fragmentation <em>tax</em>; the pre-named alternative
     fired instead and, in its final ridge-first wording, hit two consecutive
@@ -160,7 +178,12 @@
     partition never costs ridge validation bits per character (bpc) —
     strictly negative in all 10 seeds — and wins outright on the trained
     logistic readout in 8 of 10, the two misses being dead ties (+0.0004,
-    +0.0006), not reversals. The reference reservoir at ρ=0.95 sits
+    +0.0006), not reversals. An independent audit has since qualified how
+    that first clause should be read (§4.1): "never" is a validation-split
+    statement, holding 9 of 10 on the untouched test split, and the two arms'
+    spectral radii were set by different estimators, an asymmetry favouring
+    the partition. An audit re-implementation with both arms scaled exactly
+    finds the effect intact, 5 of 5 on validation and test alike. The reference reservoir at ρ=0.95 sits
     measurably past its own bpc optimum; block-diagonalizing the mixing
     matrix moves the network to an effectively lower-ρ operating point at no
     cost. (2)&nbsp;<b>Memory survives</b>: the partitioned ensemble's decode
@@ -193,8 +216,11 @@
     <p>The program's reference sparse tanh reservoir (N=1024, fan-in 10,
     standard input map and bias, leak 1.0), with its mixing matrix W made
     block-diagonal: H equal contiguous blocks of n = 1024/H units, each
-    block's own spectral radius set to 0.95 — the intact reservoir's value —
-    so per-block gain is matched rather than diluted. The readout always sees
+    block's own spectral radius set to 0.95 — the intact reservoir's
+    <em>requested</em> value — so per-block gain is nominally matched rather
+    than diluted. The two arms' radii were set by different estimators and
+    the intact arm's realised radius runs slightly high in four of ten seeds;
+    §4.1 quantifies this and reports an exactly-scaled re-implementation. The readout always sees
     the full 1024-wide concatenated state, eliminating the feature-width
     confound <a href="../orthogonal-reservoir/index.html">measured
     separately</a> in a companion study. Three instruments carry the paper:
@@ -237,7 +263,7 @@
       channel helps at H=16 and H=64. Named alternatives: A2, a
       readout-suffices null (|Δ| ≤ 0.005 everywhere); A3, over-synchronization
       (coupling hurts). (A2 fired at seed 0 — and was itself refuted by the
-      reruns; see §4.)</li>
+      reruns; see §4.1.)</li>
       <li><strong>R3</strong> (heterogeneity no-win): the heterogeneous-ρ
       ensemble does not beat the uniform-ρ ensemble. (Hit; the heterogeneous
       arm cost +0.0070.)</li>
@@ -283,7 +309,9 @@
       (negative favors the partition); depth in characters. Runs: ledger #12
       (seed 0), #13 (1–3), #14 (4–6), #15 (7–9). No cell was voided by the
       program's divergence tripwire, a fit-invalidating divergence rule, in
-      48/48 cells across the family.</caption>
+      48/48 cells across the family. All Δ are validation-split; §4.1 gives
+      the test-split figures (ridge 9/10, logistic 7/10) and the
+      spectral-radius asymmetry affecting seeds 0, 2, 6 and 9.</caption>
       <tr><th class="num">seed</th><th class="num">Δ ridge val</th><th class="num">Δ logistic val</th><th class="num">depth H1</th><th class="num">depth H64</th><th class="num">depth loss</th></tr>
       <tr><td class="num">0</td><td class="num">−0.0151</td><td class="num">−0.0141</td><td class="num">10.11</td><td class="num">9.91</td><td class="num">0.20</td></tr>
       <tr><td class="num">1</td><td class="num">−0.0140</td><td class="num">−0.0115</td><td class="num">10.10</td><td class="num">9.94</td><td class="num">0.16</td></tr>
@@ -301,11 +329,83 @@
     <p>The ridge column is negative ten times out of ten. The logistic
     column is beyond the −0.005 bar eight times out of ten, and the two
     misses (seeds 3 and 8) are dead ties a fraction of a thousandth of a bit
-    wide — the partitioned ensemble never loses, it occasionally only draws.
+    wide — on the validation split the partitioned ensemble never loses, it
+    occasionally only draws; §4.1 gives the test-split figures, where seed 8
+    reverses.
     The depth column's worst case is 0.20 characters, for blocks that each
     span 16 units where the intact reservoir's probe sees 1024. T2 and T3
     each hit their unbundled registered bars on seeds 7–9 and were promoted
     on their own merits (T2's second ridge-first pass; T3's third pass).</p>
+
+    <h2 id="s41"><span class="sec">§4.1</span> Amendment: two qualifications
+    found by the independent audit</h2>
+
+    <p>This study was independently audited on 2026-08-12 and the audit
+    recorded a <strong>concern</strong> against the bpc finding. Every
+    promoted number re-derived exactly from the raw result files, the
+    reproduction gate against the archived reference reservoir reproduced it
+    to the last digit, and all 20 cells cleared the lag-1 diagnostic gate
+    with no divergence events. Two qualifications attach to how the result
+    was stated, and both belong in this paper rather than only in the
+    program's files.</p>
+
+    <p><strong>(a) The two arms were not scaled by the same instrument.</strong>
+    "Matched per-block spectral radius" is true of the blocks and not of the
+    reservoir they are compared against. The auditor rebuilt every matrix and
+    measured its <em>realised</em> spectral radius with dense eigenvalues:
+    all 640 blocks of the partitioned arm land on ρ = 0.950000 to within
+    6&nbsp;×&nbsp;10<sup>−15</sup>, but the intact arm does not, because the
+    sparse iterative eigenvalue routine used to scale it under-estimates on a
+    1024&nbsp;×&nbsp;1024 draw. The intact reservoir therefore runs
+    <em>hotter</em> than requested in 4 of the 10 seeds (by +0.0015, +0.0051,
+    +0.0030 and +0.0070; never cooler), and this program's own reference
+    anchor is in fact a ρ = 0.9515 reservoir rather than a ρ = 0.95 one.
+    Since higher ρ is worse bpc over this range, the asymmetry runs in the
+    partition's favour wherever it bites: those 4 seeds carry 1.93× the mean
+    ridge win of the 6 clean ones (−0.0200 against −0.0104). The program's
+    own ρ ladder accounts for only about 12% of that group gap, leaving most
+    of it attributable to chance at n = 10, but the direction of the bias is
+    not in doubt.</p>
+
+    <p><strong>(b) "Never" is a statement about the validation split.</strong>
+    That is what was registered, and ridge's temperature parameter is fitted
+    in-sample on validation. On the untouched test split the ridge result is
+    9 of 10 rather than 10 of 10 — seed 8, whose validation margin was
+    already the thinnest at −0.0023, flips to +0.0038 — and the logistic
+    result falls to 7 of 10 beyond the −0.005 bar. The effect keeps about 85%
+    of its size (test mean −0.0123 against validation −0.0142).</p>
+
+    <p><strong>The finding survives its own strongest attack.</strong> The
+    auditor re-implemented the comparison end to end — own states, own ridge
+    solve, own temperature fit, own bpc — with <em>both</em> arms scaled to
+    ρ = 0.95 by exact dense eigenvalues, removing qualification (a) by
+    construction. Across four fresh hardware-drawn seeds and two training
+    budgets, the partitioned arm wins 5 of 5 on ridge validation
+    <em>and</em> 5 of 5 on ridge test, at Δ from −0.0008 to −0.0285 on
+    validation and −0.0060 to −0.0322 on test. The
+    effect is real and is not an artifact of the scaling asymmetry. It should
+    be quoted with that spread rather than as a single number, and the
+    ten-seed "never" should be quoted as a validation-split result. A repair
+    run is registered in the program's queue, and the radius estimator itself
+    has been filed as an apparatus defect rather than a scientific one.</p>
+
+    <p>The companion decode-depth finding was audited in the same session and
+    <strong>passed</strong>. Decode depth was re-implemented from the
+    registration's wording and recomputed from each result file's raw per-lag
+    accuracy ladder rather than read from its stored summary: 20 of 20 cells
+    agree exactly, at a maximum difference of 0.0000. The per-seed losses are
+    0.20 / 0.16 / 0.09 / 0.16 / 0.12 / 0.00 / 0.17 / 0.11 / 0.01 / 0.09 —
+    maximum 0.20 and median 0.115, exactly as stated, with no seed decoding
+    deeper than the intact reservoir. Qualification (a) runs
+    <em>conservative</em> here: decode depth rises with ρ over this range, so
+    an accidentally hot intact reservoir decodes deeper and makes the measured
+    loss larger, which makes the ≤ 0.20 bound harder to satisfy rather than
+    easier. Depth is a closed-form ridge ladder with no learning rate, no
+    early stopping and no divergence rule, so it carries none of the
+    optimizer exposure the program's trained-readout claims do. The auditor's
+    independent re-measurement, both arms exactly scaled, gives depth losses
+    of 0.00 / 0.19 / 0.07 / 0.06 / 0.01 — 5 of 5 inside the promoted
+    bound.</p>
 
     <p><strong>What did not survive, reported with equal weight.</strong>
     The mean-field coupled composite — H=64 with the mean-state feedback
@@ -326,13 +426,18 @@
     <h2 id="s5"><span class="sec">§5</span> Discussion</h2>
 
     <p><strong>The reference reservoir operates above its own optimum.</strong>
-    The intact reservoir at ρ=0.95 sits measurably past its own bpc optimum
+    The intact reservoir at a requested ρ=0.95 — realised at roughly 0.9515
+    in four of the ten seeds (§4.1) — sits measurably past its own bpc optimum
     (the program's spectral-radius ladder places that optimum near ρ=0.8).
     Cutting W into 64 blocks — while explicitly holding per-block spectral
     radius at 0.95 — mixes less, and behaves as an effectively
     <em>lower-ρ</em> operating point at matched width and matched per-block
-    gain. The result is not an artifact of the trained readout's optimizer:
-    the optimizer-free ridge instrument shows it in all ten seeds, which is
+    gain. That account is partial rather than complete: the partition recovers
+    only about 47% of the ρ-ladder gap between ρ=0.95 and ρ=0.8, so
+    "effectively lower ρ" names a direction the mechanism moves in, not the
+    whole of it. The result is not an artifact of the trained readout's optimizer:
+    the optimizer-free ridge instrument shows it in all ten seeds on
+    validation, and nine of ten on the untouched test split (§4.1), which is
     why the promoted wording is ridge-first. Decomposing a reservoir into
     decoupled sub-reservoirs has precedent as an architecture proposal
     <a class="cite" href="#ref2">[2]</a>; what this study adds is the
@@ -379,24 +484,37 @@
     <h2 id="s7"><span class="sec">§7</span> Provenance</h2>
 
     <ul class="plain">
-      <li><strong>77cd2338</strong> — <code>2026-08-11-caity-goat-iii</code>:
+      <li><strong>77cd2338</strong> —
       the initiating design brief; 9 cells, seed 0 (internal run log #12).
       Registered before running; exact-reproduction gate against the archived
       reference reservoir passed at Δ = 0.0000.</li>
-      <li><strong>8f5bdd07</strong> — <code>2026-08-11-goat-herd-rerun1</code>:
+      <li><strong>8f5bdd07</strong> —
       15 cells, seeds 1–3 (internal run log #13). The replication split:
       reduced-mixing win 2/3 on logistic, 3/3 on ridge; the coupling null
-      refuted.</li>
-      <li><strong>cc447b8d</strong> — <code>2026-08-11-goat-herd-rerun2</code>:
+      refuted on this pass, later destabilised (§4.1).</li>
+      <li><strong>cc447b8d</strong> —
       15 cells, seeds 4–6 (internal run log #14). All but one registered claim
       hit; the conjunctive promotion rule blocked promotion, recorded as a
       registration-design error.</li>
-      <li><strong>d3881e88</strong> — <code>2026-08-11-goat-herd-rerun3</code>:
+      <li><strong>d3881e88</strong> —
       9 cells, seeds 7–9 (internal run log #15). Claims unbundled; T2
       (reduced-mixing win, ridge-first) and T3 (depth rescue) promoted on
       their own rules; T1 (mean-field coupled composite) hit 2 of 3 seeds,
       short of its registered all-3 bar, and stays out.</li>
     </ul>
+
+    <p><strong>Audit status: independently audited 2026-08-12. The bpc
+    finding drew a recorded CONCERN — the entry stays promoted; the
+    decode-depth finding was an outright AUDIT PASS.</strong> The concern,
+    stated in one line: the intact and
+    partitioned arms had their spectral radii set by different estimators, so
+    "matched per-block gain" holds of the blocks but not of the reservoir
+    they are measured against, and the promoted "never" is a validation-split
+    result that stands at 9 of 10 on the untouched test split. Both
+    qualifications are reported in §4.1, together with the audit's own
+    re-implementation — both arms exactly scaled — in which the effect
+    survives 5 of 5 on validation and test. A repair run is registered in the
+    program's queue.</p>
 
     <p>All claims judged strictly against the registered wording, misses
     included above; 10 seeds across four registered passes; replicated

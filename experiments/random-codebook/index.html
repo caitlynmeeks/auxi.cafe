@@ -175,7 +175,7 @@
     between K=16 and K=64. The prediction cost of a random codebook depends
     on K rather than being flat: it is near zero at K=16 (0.07–0.18 bits
     against matched visited-state codebooks) and 0.5–0.76 bits at K≥256,
-    tracking a sharp decay in codebook utilization — at K=4096, only ~19–22%
+    tracking a sharp decay in codebook utilization — at K=4096, only ~18.8–21.5%
     of random anchors are ever the nearest neighbor of any visited state,
     against 81% for codebooks of visited states.</p>
     <p class="keywords"><b>Keywords</b> reservoir computing · state
@@ -269,7 +269,7 @@ codebook = rng.uniform(-1, 1, size=(K, N))</pre>
       tripped the divergence tripwire, a fit-invalidating divergence
       rule.</caption>
       <tr><th>K</th><th>k* (s0 / s1 / s2)</th><th class="num">utilization (s0 / s1 / s2)</th><th class="num">logistic val (s0 / s1 / s2)</th><th class="num">visited logistic (s0 / s1)</th></tr>
-      <tr class="hl"><td>16</td><td>13 / 10 / 15</td><td class="num">93.8% / 93.75% / 93.75%</td><td class="num">3.8508 / 3.9477 / 3.9077</td><td class="num">3.7762 / 3.7695</td></tr>
+      <tr class="hl"><td>16</td><td>13 / 10 / 15</td><td class="num">93.8% / 93.8% / 93.8%</td><td class="num">3.8508 / 3.9477 / 3.9077</td><td class="num">3.7762 / 3.7695</td></tr>
       <tr class="hl"><td>64</td><td>20 (bare) / None / None</td><td class="num">78.1% / 87.5% / 84.4%</td><td class="num">3.7978 / 3.8802 / 3.8141</td><td class="num">3.3916 / 3.3665</td></tr>
       <tr><td>256</td><td>None / None / None</td><td class="num">66.4% / 67.6% / 62.5%</td><td class="num">3.6753 / 3.6333 / 3.6660</td><td class="num">3.1122 / 3.1085</td></tr>
       <tr><td>1024</td><td>None / None / None</td><td class="num">40.0% / 37.9% / 39.6%</td><td class="num">3.5329 / 3.5458 / 3.4587</td><td class="num">2.8401 / 2.8376</td></tr>
@@ -372,20 +372,27 @@ codebook = rng.uniform(-1, 1, size=(K, N))</pre>
     <h2 id="s7"><span class="sec">§7</span> Provenance</h2>
 
     <ul class="plain">
-      <li><strong>e2257f87</strong> — <code>2026-08-11-caity-which-matters-more-real-footholds-or-jus</code>:
+      <li><strong>e2257f87</strong> —
       the design brief; 5 cells, seed 0 (internal run log #26). Registered
       before running, with the unexpected pilot result disclosed. RC1
       confirmed ⇒ provisional; RC3's informative miss opened an intake
       record; replication automatically queued.</li>
-      <li><strong>968046b7</strong> — <code>2026-08-11-goat-lattice-random-rerun1</code>:
+      <li><strong>968046b7</strong> —
       seed 1, fresh reservoir and codebook draws (internal run log #27). The
       K=64 flip — threshold location not confirmed, no promotion, third seed
       queued per the replication rule.</li>
-      <li><strong>86bbc0f0</strong> — <code>2026-08-11-goat-lattice-random-rerun2</code>:
+      <li><strong>86bbc0f0</strong> —
       seed 2, both promotion branches pre-registered (internal run log #28).
       T2 held 9/9 across all seeds; the mirror-image branch fired ⇒
       promoted in the corrected form.</li>
     </ul>
+
+    <p><strong>Audit status: audit pending.</strong> This program requires
+    every promoted finding to be independently audited by a party that did not
+    run the science, re-deriving its numbers from the raw result files with
+    freshly written code. That audit has not yet been carried out for this
+    finding. Replication and audit are different guarantees, and this result
+    currently has the first and not the second.</p>
 
     <p>All claims judged strictly against the registered wording, misses
     included above; 3 seeds; replicated before publication. The

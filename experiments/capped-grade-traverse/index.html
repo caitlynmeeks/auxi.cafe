@@ -451,20 +451,57 @@ W ← W − s·d
     <h2 id="s7"><span class="sec">§7</span> Provenance</h2>
 
     <ul class="plain">
-      <li><strong>00764148</strong> — <code>2026-08-11-caity-goat-ii</code>:
+      <li><strong>00764148</strong> —
       the design brief and main grid; 18 fits plus a 6-fit pilot run, seed 0
       (internal run log #10).
       Registered before running; the grade-1 identity gate and the pilot run's
       divergence behaviour were disclosed in the registration.</li>
-      <li><strong>9e62e253</strong> — <code>2026-08-11-switchback-rerun1</code>:
+      <li><strong>9e62e253</strong> —
       full 18-fit grid on seed 1, fresh reservoir draws and batch order (run
-      ledger #11). Promotion by the pre-stated R1∧R2∧R3 rule on two
+      internal run log #11). Promotion by the pre-stated R1∧R2∧R3 rule on two
       independent passes.</li>
     </ul>
 
+    <p><strong>Audit status: independently audited 2026-08-12, passed</strong>
+    — 30 checks, 0 failures. Every difference, amplitude and leg aspect ratio
+    was recomputed from the raw step-size, grade and leg-length settings
+    rather than read from the stored summaries, and the registered anchor
+    pairing rule was rebuilt from scratch: small-amplitude maximum |Δ| 0.0026
+    (16/16), leg tax +0.0881 / +0.0808 / +0.0897 / +0.0756, ill-conditioned
+    rescue −0.0185 / −0.0220 / −0.0102 / −0.0251, aspect ratios 636.8 against
+    62.0 / 159.2, and the within-η monotonicity holding on both seeds — every
+    promoted number exact. The identity between the grade-1 traverse and the
+    probe-free straight descent, which is what licenses using one script's
+    cells as anchors for the other, was verified line by line <em>and</em> by
+    the smoke-budget identity cells agreeing on every entry of the per-epoch
+    validation trace rather than only on the final number. The auditor's main
+    attack was winner's curse: validation bpc is a minimum over epochs on the
+    same split early stopping uses, and the rescue cells' traces oscillate by
+    0.14 and 3.22 bpc against their anchor's 0.02 — exactly the shape needed
+    to manufacture a 0.02-bit rescue. It fails. On the untouched test split
+    the rescue keeps its sign 4/4, clears −0.01 4/4, and gets
+    <em>stronger</em> (−0.0159 / −0.0220 / −0.0143 / −0.0291), with the
+    thinnest cell moving from −0.0102 to −0.0143; the leg tax and the
+    small-amplitude ties also survive on test.</p>
+
+    <p>Three disclosures accompany the pass, none of them recorded as
+    concerns. The full-budget grade-1 identity is never cross-checked
+    directly — the fresh grade-1 cells sit at an effective stride where the
+    comparison script has no matching probe-free cell — and so rests on the
+    code reading rather than on a measurement. The "free at amplitudes 62–159"
+    range omits a shorter-leg cell at aspect ratio 39.8, which is also free.
+    And the statement that probe-free descent at η=1e-3 still wins the
+    ill-conditioned terrain is true of the rescue cells reported here, but not
+    of the whole traverse grid, where the cells at effective stride 1e-2
+    (3.1671 / 3.1668) beat it. No independent re-measurement was attempted for this entry and
+    none is claimed: the auditor's own run showed the large-stride regime does
+    not engage below the full training budget, so a cheap re-measurement would
+    have been uninformative.</p>
+
     <p>All claims are judged strictly against the registered wording, with
     misses
-    included above; 2 seeds × 2 feature sets; replicated before publication.
+    included above; 2 seeds × 2 feature sets; replicated before publication
+    and independently audited afterward.
     Internal designation: switchback descent.</p>
 
     <footer>

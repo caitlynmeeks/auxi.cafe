@@ -166,7 +166,7 @@
     no reversal.
     (3)&nbsp;The largest tested codebook is nearly free: K=4096 costs only
     0.053–0.057 bits over the unquantized float32 reference — the cheapest
-    tested point on the dial is also the one that compiles.</p>
+    tested point on the dial compiles just as completely as the expensive ones.</p>
     <p class="keywords"><b>Keywords</b> reservoir computing · vector
     quantization · finite-state automata · state-space discretization ·
     determinism · pre-registration</p>
@@ -293,7 +293,7 @@ x ← argmin_{c ∈ C} ‖x − c‖   # after every update step</pre>
 
     <p><strong>M2/N2: the dial is smooth, 8/8.</strong> Logistic validation
     bpc improves strictly at every adjacent step of the ladder on both seeds,
-    with gaps (0.385/0.279/0.272/0.131 at seed 0; 0.403/0.259/0.271/0.133
+    with gaps (0.385/0.279/0.272/0.131 at seed 0; 0.403/0.258/0.271/0.133
     at seed 1) tens of times the tie band. The disclosed non-monotonicity
     concern did not materialize for cost, even though k* itself is mildly
     non-monotone in K at seed 0; the two curves do not have the same shape,
@@ -364,18 +364,25 @@ x ← argmin_{c ∈ C} ‖x − c‖   # after every update step</pre>
     <h2 id="s7"><span class="sec">§7</span> Provenance</h2>
 
     <ul class="plain">
-      <li><strong>0c1eaba4</strong> — <code>2026-08-11-caity-goat-3</code>:
+      <li><strong>0c1eaba4</strong> —
       the design brief for this study; 5 cells, seed 0 (internal run log #16).
       Registered before running, with the pilot run disclosed (including that
       both pilot K values froze — flagged as suggestive only at that scale).
       The pre-stated highest-tier combination fired; the replication was queued
       ahead of all other pending work before any entry in the
       confirmed-findings record.</li>
-      <li><strong>14080b1b</strong> — <code>2026-08-11-goat-lattice-rerun1</code>:
+      <li><strong>14080b1b</strong> —
       same 5-K sweep, seed 1 — an independent draw of the base reservoir, the
       warmup trajectory, and the codebook sample (internal run log #17). All
       three claims confirmed; promoted separately per the pre-stated rules.</li>
     </ul>
+
+    <p><strong>Audit status: audit pending.</strong> This program requires
+    every promoted finding to be independently audited by a party that did not
+    run the science, re-deriving its numbers from the raw result files with
+    freshly written code. That audit has not yet been carried out for any of
+    the three findings reported here. Replication and audit are different guarantees, and this result
+    currently has the first and not the second.</p>
 
     <p>All claims judged strictly against the registered wording; 2 seeds ×
     5 codebook sizes; replicated before publication. Internal designation:

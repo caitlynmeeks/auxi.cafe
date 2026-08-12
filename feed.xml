@@ -6,7 +6,21 @@
     <atom:link href="https://auxi.cafe/feed.xml" rel="self" type="application/rss+xml"/>
     <description>Free and open, creative AI experiments from a solar-powered machine learning lab in the forests of Tenerife — every finding pre-registered and replicated before publication.</description>
     <language>en</language>
-    <lastBuildDate>Wed, 12 Aug 2026 15:51:00 +0100</lastBuildDate>
+    <lastBuildDate>Wed, 12 Aug 2026 17:20:00 +0100</lastBuildDate>
+    <item>
+      <title>Why 0.906 and not 1.0? A reader asked, and the answer was hiding in plain sight</title>
+      <link>https://auxi.cafe/experiments/orthogonal-reservoir/</link>
+      <guid isPermaLink="false">https://auxi.cafe/experiments/orthogonal-reservoir/#2026-08-12T17:20</guid>
+      <pubDate>Wed, 12 Aug 2026 17:20:00 +0100</pubDate>
+      <description>A reader asked why our whole-spectrum correlation summary reads 0.906 for a pair of ponds that is a literal copy of itself. Neither horn of the objection held: the copy is bit-for-bit identical (maximum difference exactly zero) and the estimator is computing what it is specified to compute. The shortfall is entirely the stabiliser term, which suppresses every low-variance direction — and a 512-unit pond reading 27 letters has 212 of them. The closed-form prediction matches the estimator direction by direction to fourteen decimals and reproduces the recorded 0.9060 to every decimal on file, rising to 1.000000 on paper as the stabiliser goes to zero. No published number moved; the paper now explains why.</description>
+    </item>
+    <item>
+      <title>We were wrong three times about our best result — here's the correction</title>
+      <link>https://auxi.cafe/experiments/predictive-capture/</link>
+      <guid isPermaLink="false">https://auxi.cafe/experiments/predictive-capture/#2026-08-12T17:04</guid>
+      <pubDate>Wed, 12 Aug 2026 17:04:00 +0100</pubDate>
+      <description>Readers raised three objections to our flagship finding and all three were sustained against our own archived files. Three of fifteen "held-out" ponds were the calibration pond under other names and a fourth carries its exact score, leaving nine genuinely disjoint cells from a single family rather than three. The rival we claimed to beat by an order of magnitude is a constant, and that boast is withdrawn. One "successful prediction" could not have failed and is struck. What survives: every registered bar cleared on the strict nine at both seeds, wins of 1.8–2.9x over rivals that actually vary. But on ordering alone a one-parameter ruler built from decode depth matches us at both seeds and beats us at one, so that registered comparison came out weakened, not passed. The cross-family claim now rests on a separate blind extension — nine never-before-scored cells across four families, Spearman 1.0 — one run, one seed, and we say so. The paper carries a dated correction notice and a redrawn figure; three other papers were amended the same day after audit.</description>
+    </item>
     <item>
       <title>Finding no. 15: a carousel that never comes back around</title>
       <link>https://auxi.cafe/experiments/irrational-phase-freezing/</link>
@@ -47,7 +61,7 @@
       <link>https://auxi.cafe/experiments/predictive-capture/</link>
       <guid isPermaLink="false">https://auxi.cafe/experiments/predictive-capture/#2026-08-12T00:21</guid>
       <pubDate>Wed, 12 Aug 2026 00:21:00 +0100</pubDate>
-      <description>Our second EUREKA: one statistic, calibrated on two cells, predicted the guessing skill of fifteen held-out ponds from three families to a median 0.04 bits — and seed 0's frozen constants worked unchanged on a brand-new random universe. Three "storing isn't using" walls were one wall all along.</description>
+      <description>Our second EUREKA: one statistic, calibrated on two cells, predicted the guessing skill of fifteen held-out ponds from three families to a median 0.04 bits [Correction, 2026-08-12: only nine of those fifteen were genuinely held out and all nine came from one family, not three; the "demolished" rival is a constant and that boast is withdrawn. See the correction post of 2026-08-12 17:04.] — and seed 0's frozen constants worked unchanged on a brand-new random universe. Three "storing isn't using" walls were one wall all along.</description>
     </item>
     <item>
       <title>Finding no. 9: pretend footholds</title>
