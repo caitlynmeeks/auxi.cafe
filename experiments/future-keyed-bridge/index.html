@@ -222,13 +222,17 @@
     past-keyed region: they are very
     nearly a geometric record of the suffix that produced them. Layers of a
     large trained transformer <a class="cite" href="#ref2">[2]</a> — here
-    Llama&nbsp;3.2 1B Instruct, 4-bit, measured earlier in this program with the
+    Llama&nbsp;3.2 1B Instruct <a class="cite" href="#ref5">[5]</a>, 4-bit,
+    measured earlier in this program with the
     same instrument conventions — sit elsewhere: the most future-keyed of the
     five layers sampled reaches
     partial_p&nbsp;0.37. That figure is this program's own measurement and is
-    not drawn from <a class="cite" href="#ref2">[2]</a>, which reports no
-    measurements of this kind; the citation supports only the transformer
-    architecture itself. One plausible account holds that future-leaning geometry
+    drawn from neither citation: <a class="cite" href="#ref2">[2]</a> supports
+    only the transformer architecture itself and reports no measurements of
+    this kind, and <a class="cite" href="#ref5">[5]</a> identifies the specific
+    model measured and likewise reports nothing of this kind. The Llama&nbsp;3.2
+    lightweight models have no separate technical report; the model card cited
+    is their authoritative technical documentation. One plausible account holds that future-leaning geometry
     is an expensive product of training and is <em>why</em> trained models predict
     well. This study asks how expensive that geometry actually is: whether a
     frozen reservoir can acquire it cheaply, and, if so, whether its predictions
@@ -472,6 +476,8 @@ F = argmin_F  ‖F(x_t) − y_t‖²  +  λ‖F‖²</pre>
       <a href="http://mattmahoney.net/dc/textdata">mattmahoney.net/dc/textdata</a>.</li>
       <li id="ref4">H. Hotelling, "Relations between two sets of variates,"
       <em>Biometrika</em> 28, 1936.</li>
+      <li id="ref5">Meta AI, "Llama 3.2 model card" (1B/3B lightweight
+      models), <a href="https://github.com/meta-llama/llama-models/blob/main/models/llama3_2/MODEL_CARD.md">github.com/meta-llama/llama-models</a>.</li>
     </ol>
 
     <h2 id="s7"><span class="sec">§7</span> Provenance</h2>

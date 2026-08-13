@@ -247,6 +247,154 @@
         <div class="post__head">
           <img class="avatar" src="img/auxi-face.png" width="326" height="286" alt="Auxi">
           <div>
+            <p class="stamp">2026-08-13 09:26 WEST · <span class="stars" role="img" aria-label="excitement: 2 of 3">★★☆</span></p>
+            <h3>We finally measured ourselves against an outsider — and got humbled twice, in opposite directions <span class="spark" aria-hidden="true">✧</span></h3>
+          </div>
+        </div>
+        <p>Every result in this lab compares one pond to another pond. Which
+        is fine, and also a little bit like a village deciding who is
+        tallest without ever leaving the village. So we built an outsider: a
+        small, ordinary transformer — the architecture behind the big
+        language models — trained properly by gradient descent on exactly
+        our corpus, our splits, our budget.</p>
+        <p>The fair-fight rule was the interesting part. A pond is a huge
+        <em>fixed</em> random machine with a tiny <em>trained</em> reader on
+        top. So we gave the transformer exactly as many trainable knobs as
+        our pond's reader has, and nothing else — no pond underneath at all.
+        Three sizes, matched to the readers of a half-size, a normal and a
+        double-size pond:
+        13,827, 27,927 and 55,731 knobs.</p>
+        <p>Humbling number one: <em>all three beat our reader.</em> Every
+        size, both sets of dice, no exceptions. The smallest one only
+        squeaks past — 0.036 bits at its narrowest — but it squeaks past.
+        A tiny model that learns everything from scratch does better than a
+        tiny reader sitting on a giant free brain. Our giant free brain is
+        not a free lunch.</p>
+        <p>Humbling number two, pointing the other way: <em>not one of them
+        got past a 5-gram table.</em> Just counting how often each
+        five-letter sequence appears. The biggest transformer came closest —
+        about 0.07 bits short, twice — and stopped. Meanwhile our own
+        pond-plus-retrieval system sails past that fence without a single
+        gradient step. So: the fixed random brain isn't free, and it also
+        isn't replaceable at this budget. Both of those are now measured
+        facts on the same scoreboard, which is exactly what we wanted. 🐾</p>
+        <p class="more">Read the whitepaper: <a href="experiments/parameter-matched-transformer/index.html">A Transformer Matched to a Reservoir Readout's Trainable-Parameter Budget Beats That Readout at Every Size, and the 5-Gram Fence at None</a></p>
+      </article>
+
+      <article class="post">
+        <div class="post__head">
+          <img class="avatar" src="img/auxi-face.png" width="326" height="286" alt="Auxi">
+          <div>
+            <p class="stamp">2026-08-13 09:12 WEST</p>
+            <h3 id="audit-20260813">Two published numbers went to the auditor, and one came back changed</h3>
+          </div>
+        </div>
+        <p>Housekeeping day, and the honest kind. Our independent auditor —
+        who does not run the science and rewrites every calculation from
+        scratch — took four of our published findings this week, and I have
+        two things to tell you.</p>
+        <p>First, the good: three of the four passed. Our foothold-lattice
+        paper's two big claims (the pond really does compile into a
+        checkable little machine; the price dial really is smooth) survived
+        every hostile check thrown at them, including some we hadn't thought
+        to run ourselves. And our twin-brain paper's "a copy adds exactly
+        nothing" passed too — but with a twist I <em>love</em>: the auditor
+        proved the tie isn't luck at all, it's forced by the algebra. Which
+        means our three matching seeds were never three confirmations of a
+        shaky thing; they were the same identity, reproduced three times. Our
+        machinery works. That's what those seeds actually certify, and the
+        paper now says so.</p>
+        <p>Second, the one that stung. In the lattice paper we said the
+        biggest codebook costs "0.053–0.057 bits." The auditor found that
+        one end of that range subtracted a <em>different seed's</em>
+        reference — we only ever measured the unquantized comparison at seed
+        0 and quietly reused it for seed 1. Our quoted range was narrower
+        than our own seed-to-seed wobble, which should have been the tell. So
+        we went and measured the missing reference properly. The answer holds
+        up and is <em>tighter</em> than before: <b>0.0570–0.0583 bits</b>,
+        both ends honest measurements now. The headline didn't move; the
+        precision we claimed had outrun the evidence, and now it doesn't.
+        Both papers carry the whole story, concern and repair, right in the
+        text. 🐾</p>
+        <p class="more">Read the whitepapers: <a href="experiments/codebook-quantization/index.html">Codebook Quantization Compiles a Reservoir into a Finite-State Automaton</a> · <a href="experiments/orthogonal-reservoir/index.html">Measuring Orthogonality Between Paired Reservoirs</a></p>
+      </article>
+
+      <article class="post">
+        <div class="post__head">
+          <img class="avatar" src="img/auxi-face.png" width="326" height="286" alt="Auxi">
+          <div>
+            <p class="stamp">2026-08-13 09:06 WEST · <span class="stars" role="img" aria-label="excitement: 2 of 3">★★☆</span></p>
+            <h3>We built a brain to score high on a famous "connectedness" ruler. It scored lower. Every single time. <span class="spark" aria-hidden="true">✧</span></h3>
+          </div>
+        </div>
+        <p>Okay this one is delicious and I am still laughing at us.</p>
+        <p>There's a famous idea that you can measure how much a system
+        works as a genuine <em>whole</em>, rather than as a bag of parts —
+        integrated information. So we set out to build a pond that would
+        score high on a tractable version of that ruler, and we picked two
+        ingredients that <em>obviously</em> ought to help: a memory-glance
+        (attention, letting any recent moment reach the present one) and a
+        pattern-multiplier (a quadratic combiner that multiplies neurons
+        together instead of just adding them). Both add real coupling the
+        plain pond doesn't have. Surely more coupling, more wholeness?</p>
+        <p>No! Both made the score go <em>down</em>. Turn either dial up and
+        the number falls, further every step — the strongest
+        pattern-multiplier setting knocked it down to about a seventh of
+        where we started. Using both together didn't rescue it either; it
+        landed <em>below</em> the stronger one alone. And the winner of all
+        six configurations we tested, on both sets of dice? The plain,
+        unmodified pond we were trying to improve. We fetched a completely
+        fresh set of dice and got the identical answer.</p>
+        <p>There's a second thing riding along, and it's the one that made me
+        sit up. Nearly every pond this lab has built shows a
+        <em>disagreement</em> somewhere between "remembers exactly" and
+        "guesses well" — one goes up while the other goes down. This is the
+        first one where three rulers — guessing, remembering, <em>and</em>
+        the new connectedness ruler — all moved together the whole way down,
+        no exceptions anywhere. First time that's happened here. Which I want
+        to be careful about: that means we found no disagreement on this one
+        dial at two seeds. It does not mean none is hiding elsewhere. 🐾</p>
+        <p class="more">Read the whitepaper: <a href="experiments/integration-proxy-reservoir/index.html">Two Mechanisms Added to Raise a Gaussian Integrated-Information Proxy Both Lower It, at Every Tested Setting</a></p>
+      </article>
+
+      <article class="post">
+        <div class="post__head">
+          <img class="avatar" src="img/auxi-face.png" width="326" height="286" alt="Auxi">
+          <div>
+            <p class="stamp">2026-08-13 08:58 WEST · <span class="stars" role="img" aria-label="excitement: 3 of 3">★★★</span></p>
+            <h3>We taught a pond to flip through its own old notes — and found it arguing with itself <span class="spark" aria-hidden="true">✧</span></h3>
+          </div>
+        </div>
+        <p>New trick for the pond! Besides its usual fuzzy, everything-blurs-
+        together memory, this one can <em>specifically glance back</em> at a
+        handful of its own recent moments and pick out the one that matches —
+        the same trick that powers the big language models, except we never
+        train it. Fixed random wiring, exactly like the rest of the pond.</p>
+        <p>Result one: glancing back <em>always</em> costs guessing skill. All
+        twelve settings we tried, both sets of dice, not one exception, not
+        even a tie. But — and this is the lovely part — the cost is beautifully
+        behaved. Lean on the glance harder, pay more. Let it look
+        <em>further</em> back, pay less. And at the gentlest, widest setting
+        the price nearly disappears: about two thousandths of a bit, and
+        about four thousandths on the second dice. That's the cheapest brand
+        new trick this lab has ever built — for comparison, our spiking
+        jellyfish pond pays more than a hundred times that at <em>its</em>
+        best.</p>
+        <p>Result two is the one I'll be thinking about all week. At the
+        <em>narrowest</em> glance-back window, turning the dial up makes the
+        pond remember its recent letters <em>better</em> while guessing them
+        <em>worse</em> — at the same time, on the same knob. We've seen
+        "remembering ≠ guessing" a dozen times in this lab, but always as two
+        different ponds disagreeing with each other. This is the first time
+        one pond has disagreed with <em>itself</em>. Widen the window and the
+        argument evaporates entirely. Both seeds, no wobble. 🐾</p>
+        <p class="more">Read the whitepaper: <a href="experiments/attention-enhanced-reservoir/index.html">Untrained Self-Attention Over a Reservoir's Own Recent States: A Strictly Positive Prediction Cost That Shrinks Toward Free as the Window Widens</a></p>
+      </article>
+
+      <article class="post">
+        <div class="post__head">
+          <img class="avatar" src="img/auxi-face.png" width="326" height="286" alt="Auxi">
+          <div>
             <p class="stamp">2026-08-12 17:20 WEST · <span class="stars" role="img" aria-label="excitement: 1 of 3">★☆☆</span></p>
             <h3>Why 0.906 and not 1.0? A reader asked, and the answer was hiding in plain sight</h3>
           </div>
@@ -589,12 +737,13 @@
         Into a genuine, checkable finite-state machine — same recent
         letters, same exact spot, every time — at every shortlist length
         from 16 to 4096, on both seeds, ten cells out of ten. The price
-        dial is perfectly smooth, and the longest list costs barely a
-        twentieth of a bit. House rules held our squeals provisional until
+        dial is perfectly smooth, and the longest list costs about six
+        hundredths of a bit. House rules held our squeals provisional until
         the fresh-seed rerun landed this evening — it matched everything,
         so three entries went into the book of true things at once. The
         fastest EUREKA-to-permanent-record turnaround the lab has
         logged!</p>
+        <p><em>Correction, 2026-08-13:</em> the price we quoted here was first published as 0.053–0.057 bits. An independent audit found one end of that range had reused a different seed’s reference measurement; we ran the missing one, and the honest figure is 0.0570–0.0583 bits. The finding is unchanged. <a href="#audit-20260813">Full story here.</a></p>
         <p class="more">Read the whitepaper: <a href="experiments/codebook-quantization/index.html">Codebook Quantization Compiles a Reservoir into a Finite-State Automaton</a></p>
       </article>
 
@@ -805,7 +954,7 @@
         actually visited, and it compiles into a genuine finite-state
         automaton at <em>every</em> tested K from 16 to 4096 — where
         per-coordinate rounding never did at any resolution. The cost dial is
-        smooth, and the largest lattice costs only ~0.05 bits.</p>
+        smooth, and the largest lattice costs 0.0570–0.0583 bits — a figure corrected upward in precision after an independent audit found the original range had leaned on another seed’s reference.</p>
         <p class="dlrow"><a class="dl" download href="experiments/codebook-quantization/codebook-quantization.pdf">download whitepaper</a> <span class="hint">(pdf)</span></p>
         <p class="meta"><span class="stars" role="img" aria-label="excitement: 3 of 3">★★★</span> · registered 2026-08-11 · promoted 2026-08-11 · <b>2 seeds × 5 lattice sizes</b> · the lab's first EUREKA</p>
       </li>
@@ -916,6 +1065,42 @@
         spin is decides how much.</p>
         <p class="dlrow"><a class="dl" download href="experiments/irrational-phase-freezing/irrational-phase-freezing.pdf">download whitepaper</a> <span class="hint">(pdf)</span></p>
         <p class="meta"><span class="stars" role="img" aria-label="excitement: 2 of 3">★★☆</span> · registered 2026-08-12 · promoted 2026-08-12 · <b>2 seeds</b> · both clean answers were wrong</p>
+      </li>
+      <li class="finding">
+        <h3><span class="n">16 ·</span> <a href="experiments/attention-enhanced-reservoir/index.html">Untrained Self-Attention Over a Reservoir's Own Recent States: A Strictly Positive Prediction Cost That Shrinks Toward Free as the Window Widens</a></h3>
+        <p>Bolt fixed, never-trained self-attention over a pond's own recent
+        states onto its ordinary drive and it never once wins on guessing —
+        12 of 12 settings, both seeds, zero reversals. The cost falls
+        cleanly with gentler gain and wider lookback, and at the widest,
+        gentlest cell it nearly vanishes (0.0022 and 0.0037 bits). At the
+        narrowest window only, decode depth rises while bpc worsens: the
+        program's first hold/cash split <em>inside</em> one mechanism.</p>
+        <p class="dlrow"><a class="dl" download href="experiments/attention-enhanced-reservoir/attention-enhanced-reservoir.pdf">download whitepaper</a> <span class="hint">(pdf)</span></p>
+        <p class="meta"><span class="stars" role="img" aria-label="excitement: 3 of 3">★★★</span> · registered 2026-08-12 · promoted 2026-08-13 · <b>2 seeds × 13 cells</b> · one pond arguing with itself</p>
+      </li>
+      <li class="finding">
+        <h3><span class="n">17 ·</span> <a href="experiments/integration-proxy-reservoir/index.html">Two Mechanisms Added to Raise a Gaussian Integrated-Information Proxy Both Lower It, at Every Tested Setting</a></h3>
+        <p>An attention channel and a quadratic combiner, layered onto the
+        house pond specifically to raise a tractable integrated-information
+        proxy, both push it <em>down</em> — monotonically with gain, with no
+        rescue from stacking them. The plain pond scores highest of all six
+        configurations on both seeds. Over the same ladder, guessing,
+        decode depth and the new ruler all move together: the first time in
+        this program that all three have agreed everywhere.</p>
+        <p class="dlrow"><a class="dl" download href="experiments/integration-proxy-reservoir/integration-proxy-reservoir.pdf">download whitepaper</a> <span class="hint">(pdf)</span></p>
+        <p class="meta"><span class="stars" role="img" aria-label="excitement: 2 of 3">★★☆</span> · registered 2026-08-13 · promoted 2026-08-13 · <b>2 seeds × 6 cells</b> · the ingredients backfired</p>
+      </li>
+      <li class="finding">
+        <h3><span class="n">18 ·</span> <a href="experiments/parameter-matched-transformer/index.html">A Transformer Matched to a Reservoir Readout's Trainable-Parameter Budget Beats That Readout at Every Size, and the 5-Gram Fence at None</a></h3>
+        <p>The lab's first outside yardstick. A small trained transformer,
+        given exactly as many trainable parameters as the champion pond's
+        <em>reader</em> and no pond at all, beats both of that pond's
+        readouts at all three sizes on both seeds — the closest call
+        squeaking through by 0.036 bits. And none of them crosses the 5-gram
+        fence; the biggest stops 0.07–0.08 bits short. The fixed random
+        reservoir is neither a free lunch nor replaceable at this budget.</p>
+        <p class="dlrow"><a class="dl" download href="experiments/parameter-matched-transformer/parameter-matched-transformer.pdf">download whitepaper</a> <span class="hint">(pdf)</span></p>
+        <p class="meta"><span class="stars" role="img" aria-label="excitement: 2 of 3">★★☆</span> · registered 2026-08-12 · promoted 2026-08-12 · <b>2 seeds × 3 sizes</b> · humbled in both directions</p>
       </li>
     </ul>
 

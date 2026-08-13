@@ -4,13 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Measuring Orthogonality Between Paired Reservoirs: Duplicate Twins Are Reparametrizations, Independent Twins Are Nearly Free — AuxiLab</title>
-<meta name="description" content="AuxiLab whitepaper: a bit-identical duplicate twin reservoir adds exactly nothing (ties the lone half-width reservoir to the last digit, 3/3 seeds), an independently drawn twin beats the duplicate on every instrument, and two independent half-width reservoirs concatenated land within thousandths of a bit of a full-width reservoir — while the naive orthogonality reading saturates above 0.999 for both.">
+<meta name="description" content="AuxiLab whitepaper: a bit-identical duplicate twin reservoir adds exactly nothing (ties the lone half-width reservoir to the last digit, 3/3 seeds), an independently drawn twin beats the duplicate on every instrument, and two independent half-width reservoirs concatenated land within thousandths of a bit of a full-width reservoir — while the naive orthogonality reading saturates above 0.999 for both. Amended 2026-08-13: the duplicate-twin finding was independently audited and passed, with the tie shown to be algebraically forced; the independent-twin finding remains audit pending.">
 <meta name="color-scheme" content="light">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://auxi.cafe/experiments/orthogonal-reservoir/">
 <meta property="og:title" content="Measuring Orthogonality Between Paired Reservoirs">
-<meta property="og:description" content="A duplicate twin adds nothing, to the recorded decimal; an independently drawn twin recovers a full-width reservoir to within thousandths of a bit. Orthogonality has to be measured, not assumed.">
-<meta name="twitter:card" content="summary">
+<meta property="og:description" content="Amended 2026-08-13 after independent audit: the duplicate-twin tie is algebraically forced, and the independent-twin result is audit pending. A duplicate twin adds nothing, to the recorded decimal; an independently drawn twin recovers a full-width reservoir to within thousandths of a bit. Orthogonality has to be measured, not assumed.">
+<meta property="og:image" content="https://auxi.cafe/img/auxi.png">
+<meta property="og:image:width" content="639">
+<meta property="og:image:height" content="519">
+<meta property="og:image:alt" content="Auxi, the lab's mascot: a cat-eared researcher with a clipboard in a café.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://auxi.cafe/img/auxi.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f5eee0'/%3E%3Cpolygon points='14,26 18,6 31,16' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpolygon points='50,26 46,6 33,16' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpolygon points='18.5,21.5 20.5,11 27.5,16.5' fill='%23e8a8bc'/%3E%3Cpolygon points='45.5,21.5 43.5,11 36.5,16.5' fill='%23e8a8bc'/%3E%3Ccircle cx='32' cy='31' r='19' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5'/%3E%3Ccircle cx='25' cy='30' r='6' fill='%23ffffff' fill-opacity='0.6' stroke='%2334689e' stroke-width='2.2'/%3E%3Ccircle cx='39' cy='30' r='6' fill='%23ffffff' fill-opacity='0.6' stroke='%2334689e' stroke-width='2.2'/%3E%3Cline x1='31' y1='30' x2='33' y2='30' stroke='%2334689e' stroke-width='2.2'/%3E%3Cpath d='M30.4 38.2 L33.6 38.2 L32 40.4 Z' fill='%23b04f6d'/%3E%3Cpath d='M28 42.5 Q30 44.8 32 42.8 Q34 44.8 36 42.5' fill='none' stroke='%234a382e' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M17 48.5 L32 53.5 L24.5 63 L13 56 Z' fill='%23ffffff' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpath d='M47 48.5 L32 53.5 L39.5 63 L51 56 Z' fill='%23ffffff' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='32' cy='57.5' r='2.4' fill='%23b04f6d'/%3E%3C/svg%3E">
 
 <style>
@@ -22,6 +27,7 @@
     background: #fff; color: #000;
     font-family: Georgia, "Times New Roman", Times, serif;
     font-size: 1.0625rem; line-height: 1.6;
+    overflow-wrap: break-word;
   }
   .dossier { margin: 0; }
   main { max-width: 46rem; margin: 0 auto; }
@@ -133,17 +139,33 @@
         <div class="ph-name">Caitlyn Meeks</div>
         <div>AuxiLab Tenerife — research@auxi.cafe</div>
       </div>
-      <div class="ph-date">August 11, 2026</div>
+      <div class="ph-date">August 11, 2026 · amended August 13, 2026</div>
     </header>
     <div class="sidestamp" aria-hidden="true">AuxiLab · auxi.cafe · August 2026</div>
     <p class="dlrow"><a class="dl" download href="orthogonal-reservoir.pdf">download whitepaper</a> <span class="hint">(pdf)</span></p>
     <ul class="pills">
       <li>registered 2026-08-11</li>
-      <li>internal run log #18, #19, #25</li>
+      <li>internal run log #18, #19, #25, #50</li>
       <li>3 seeds, replicated claims 3/3</li>
       <li>replicated before publication</li>
       <li>promoted 2026-08-11</li>
+      <li>amended 2026-08-13 after audit</li>
     </ul>
+
+    <div class="note"><strong>Amendment notice, 2026 August 13.</strong> The
+    first of the two findings below — the duplicate twin as a pure
+    reparametrization — was independently audited on 2026-08-13 and was an
+    outright <strong>pass</strong>. No number changed; the audit found the
+    tie holds in more places than this preprint claimed, and it verified by
+    direct measurement a premise the study had only asserted. One
+    qualification does attach, and it is about how the evidence should be
+    weighed rather than whether it holds: the audit showed the tie is
+    <em>algebraically forced</em>, so the three seeds are three instances of
+    an identity rather than three independent confirmations of an uncertain
+    proposition. What the replication count certifies here is the measurement
+    pipeline, not the effect. §4.1 reports this in full. The second finding —
+    that an independent twin beats the duplicate on every instrument and
+    nearly matches a full-width reservoir — has not yet been audited.</div>
 
     <p class="abshead">Abstract</p>
     <p class="abstract">An open-ended design brief called for two
@@ -157,7 +179,10 @@
     obtained on all three seeds, and one registered methodological
     observation. (1)&nbsp;A duplicate twin is a pure reparametrization,
     <b>exactly</b>: it ties the lone half-width reservoir on ridge bpc and
-    decode depth to the last recorded digit, three seeds in a row.
+    decode depth to the last recorded digit, three seeds in a row — a tie a
+    subsequent independent audit showed to be algebraically forced rather
+    than empirically lucky, so the three seeds certify the measurement
+    pipeline rather than an uncertain effect (§4.1).
     (2)&nbsp;An independent twin beats the duplicate on <b>every</b>
     instrument — ridge, logistic, and decode depth — and lands within
     0.0008–0.0049 bits of a full-width 1024-unit reservoir built as a
@@ -230,7 +255,8 @@
       saturation is real at 20× the data.)</li>
       <li><strong>O3</strong> (reparametrization null): the duplicate twin
       ties the lone half-width reservoir on ridge bpc (|gap| ≤ 0.01) and
-      decode depth (|gap| ≤ 0.3). (Hit — exactly, gap 0.0000 on both.)</li>
+      decode depth (|gap| ≤ 0.3). (Hit — exactly: ridge gap 0.0000, depth
+      gap 0.00.)</li>
       <li><strong>O4</strong> (the headline): the independent twin beats the
       duplicate on all three of ridge, logistic, and depth. Named
       alternative: any single reversal = the pilot run's pattern was
@@ -268,8 +294,8 @@
 
     <p><strong>The duplicate is inert, to the digit.</strong> On every seed,
     twin_redundant's ridge bpc and decode depth equal single512's exactly
-    as recorded — 3.3142/8.66, 3.3100/8.57, 3.3013/8.18 — the cleanest null
-    this program has produced. A duplicated readout column adds no
+    as recorded — 3.3142/8.66, 3.3100/8.57, 3.3013/8.18 — an exact tie at
+    every seed, for the reason given in §4.1. A duplicated readout column adds no
     information the ridge instrument or the decode-depth probe can use; this is the 2×-redundancy edge
     case of the program's measured result that widening a readout in this
     way is a reparametrization, now with an exact copy instead of a
@@ -324,8 +350,63 @@
     the two blocks. This paper makes no claim that the statistic
     <em>should</em> read 1.0; it is used throughout as a discriminating
     quantity (0.906 against 0.448) and that use is unaffected. The check
-    described here is an internal validity check, not the independent audit
-    this finding still awaits.</p>
+    described here was an internal validity check; the independent audit
+    reported in §4.1 came later and covers the first of this paper's two
+    findings, not this statistic.</p>
+
+    <h2 id="s41"><span class="sec">§4.1</span> What the independent audit
+    found, and what it changes</h2>
+
+    <p><strong>The tie re-derives, and runs deeper than this paper
+    claimed.</strong> The audit of 2026-08-13 recomputed all six quoted
+    values from the raw result files with freshly written code and matched
+    them exactly. It then checked places this paper does not report, and the
+    duplicate and the lone half-width reservoir agree in all of them: the
+    complete eleven-lag decode-accuracy ladder (33 of 33 lag accuracies
+    bit-equal across the three seeds), the untouched test split
+    (3.3196/3.3131/3.3050, identical in both arms), and even the fitted
+    calibration temperature (0.1005/0.1002/0.1004). The trained logistic
+    readout correctly does <em>not</em> tie — the duplicate comes in
+    0.0026/0.0029/0.0037 bits below the lone half-width reservoir — which
+    is the expected conditioning-rather-than-information signature and serves
+    as a negative control: had logistic tied as well, the two arms would be
+    under suspicion of being accidentally the same object.</p>
+
+    <p><strong>An asserted premise was measured.</strong> This study's
+    construction code <em>asserts</em> that a same-seed twin is bit-identical
+    to its original at every step and nowhere tests it. The audit tested it.
+    At all three seeds the two reservoirs match bit-for-bit in mixing matrix
+    (5,120 nonzeros), input map and bias; stepped in lockstep for 400 steps
+    using the auditor's own update loop — written from the documented rule
+    rather than reusing this program's stepper, precisely so that a bug in
+    the stepper could not hide itself — the maximum absolute state difference
+    is exactly 0.000, while the independent-draw arm diverges (maximum 1.97,
+    mean 0.65). That run also cross-validates the program's own batch stepper
+    against the auditor's loop, again at exactly 0.000.</p>
+
+    <p><strong>The qualification: the tie is a theorem, so the seed count
+    means something narrower than it appears.</strong> Ridge regression on a
+    duplicated design — the design matrix X placed beside an exact copy of
+    itself — with penalty λ produces predictions identical to
+    ridge on X alone with penalty λ/2: the duplicated weight splits evenly
+    between the two copies; the audit verified this numerically to a maximum
+    prediction difference of 1.0&nbsp;×&nbsp;10<sup>−9</sup>. Because this
+    program's ridge penalty is absolute rather than per-sample, λ=10<sup>−2</sup>
+    accumulated against a two-million-row normal matrix is a relative
+    perturbation of order 10<sup>−8</sup>, so λ against λ/2 is invisible far
+    below the fourth decimal place, and the decode probe's penalty is smaller
+    still. The exact tie is therefore forced by algebra. This paper's wording
+    for the finding — "a pure reparametrization", "adds no information a
+    linear instrument can use" — is exactly that theorem, correctly stated,
+    which is why the audit passed it without amendment. But it follows that
+    the three seeds are three instances of an identity, not three independent
+    confirmations of an uncertain proposition. The right reading of this
+    finding is: <em>the pipeline reproduces an algebraic identity to the last
+    digit, three times</em> — a real and reassuring thing to know about the
+    instrument stack — and not: <em>an uncertain empirical effect replicated
+    three times</em>. The second finding of this paper, the independent
+    twin's near-free doubling, carries no such identity behind it and is a
+    genuinely empirical result; it has not yet been audited.</p>
 
     <h2 id="s5"><span class="sec">§5</span> Discussion</h2>
 
@@ -334,7 +415,8 @@
     independently; doing so buys almost the whole doubling: two half-width reservoirs
     recover a full-width reservoir to within thousandths of a bit, three
     seeds in a row. Copying the wiring buys exactly nothing, to the recorded
-    decimal, three seeds in a row. The result composes with the
+    decimal — an algebraic identity the pipeline reproduced exactly at all
+    three seeds (§4.1). The result composes with the
     <a href="../block-diagonal-fragmentation/index.html">partitioned sub-reservoir ensemble
     finding</a> from the same day's program — there, 64 blocks of a single
     draw at matched width never cost and usually helped; here, two fully
@@ -376,7 +458,7 @@
       <li><strong>8879faae</strong> —
       seed 2, commissioned as a direct third-seed confirmation; identical
       registered wording (internal run log #25). All three claims hit again; the
-      findings entry annotated 3/3 seeds.</li>
+      both findings entries annotated 3/3 seeds.</li>
       <li><strong>48c99128</strong> — a
       read-only validity check prompted by a reader objection to this page's
       0.906 figure (internal run log #50). Bit-identity verified directly;
@@ -385,17 +467,29 @@
       paragraph in §4 was added as a result.</li>
     </ul>
 
-    <p><strong>Audit status: audit pending.</strong> This program requires
+    <p><strong>Audit status: the duplicate-twin finding was independently
+    audited 2026-08-13 and passed; the independent-twin finding is still
+    audit pending.</strong> This program requires
     every promoted finding to be independently audited by a party that did
     not run the science, re-deriving its numbers from the raw result files
-    with freshly written code. That audit has not yet been carried out for
-    either of the two findings reported here. The 2026-08-12 validity check recorded above is narrower
-    and was run inside the program; it is not that audit and does not stand
-    in for it. Replication and audit are different guarantees, and this
-    result currently has the first and not the second.</p>
+    with freshly written code. For the first finding that has now happened:
+    an AUDIT PASS. The six quoted values were re-derived from the raw result
+    files with freshly written code, and the study's unmeasured bit-identity
+    premise was re-measured at bench scale and matched; no full-budget rerun
+    was performed. No number moved, and one recorded consequence attaches to
+    how the evidence should be weighed — reported in full in §4.1. For the
+    second finding — that an independent twin beats the duplicate on every
+    instrument and nearly matches a full-width reservoir — it has not.
+    The 2026-08-12 validity check recorded above is narrower still and was
+    run inside the program; it is not an audit of either finding and does not
+    stand in for one. Replication and audit are different guarantees, and
+    this page now carries the second for one of them, and the first for both
+    — with the caveat of §4.1 that for the duplicate-twin finding the
+    replication certifies the pipeline rather than the effect.</p>
 
     <p>All claims judged strictly against the registered wording, misses
-    included above; 3 seeds; replicated before publication. Internal
+    included above; 3 seeds; replicated before publication, and the first
+    finding audited afterward. Internal
     designation: orthogonal reservoir.</p>
 
     <footer>

@@ -4,13 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Codebook Quantization Compiles a Reservoir into a Finite-State Automaton — AuxiLab</title>
-<meta name="description" content="AuxiLab whitepaper: snapping a reservoir's state each step to the nearest of K previously visited states compiles it into a finite-state automaton at every tested K from 16 to 4096 (10/10 cells, 2 seeds), where independent per-coordinate quantization never did at any resolution — and the largest tested codebook costs only 0.053–0.057 bits over the unquantized reservoir.">
+<meta name="description" content="AuxiLab whitepaper: snapping a reservoir's state each step to the nearest of K previously visited states compiles it into a finite-state automaton at every tested K from 16 to 4096 (10/10 cells, 2 seeds), where independent per-coordinate quantization never did at any resolution — and the largest tested codebook costs 0.0570–0.0583 bits over the unquantized reservoir. Amended 2026-08-13 after an independent audit: two findings passed outright, the cost figure drew a concern about a cross-seed comparison and has been corrected by measuring the missing reference.">
 <meta name="color-scheme" content="light">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://auxi.cafe/experiments/codebook-quantization/">
 <meta property="og:title" content="Codebook Quantization Compiles a Reservoir into a Finite-State Automaton">
-<meta property="og:description" content="A reservoir restricted to a codebook of states it has actually visited compiles into a finite-state machine, at a cost of about a twentieth of a bit.">
-<meta name="twitter:card" content="summary">
+<meta property="og:description" content="A reservoir restricted to a codebook of states it has actually visited compiles into a finite-state machine, at a cost of about six hundredths of a bit. Amended 2026-08-13 after independent audit.">
+<meta property="og:image" content="https://auxi.cafe/img/auxi.png">
+<meta property="og:image:width" content="639">
+<meta property="og:image:height" content="519">
+<meta property="og:image:alt" content="Auxi, the lab's mascot: a cat-eared researcher with a clipboard in a café.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://auxi.cafe/img/auxi.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f5eee0'/%3E%3Cpolygon points='14,26 18,6 31,16' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpolygon points='50,26 46,6 33,16' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpolygon points='18.5,21.5 20.5,11 27.5,16.5' fill='%23e8a8bc'/%3E%3Cpolygon points='45.5,21.5 43.5,11 36.5,16.5' fill='%23e8a8bc'/%3E%3Ccircle cx='32' cy='31' r='19' fill='%23f6e3cf' stroke='%234a382e' stroke-width='2.5'/%3E%3Ccircle cx='25' cy='30' r='6' fill='%23ffffff' fill-opacity='0.6' stroke='%2334689e' stroke-width='2.2'/%3E%3Ccircle cx='39' cy='30' r='6' fill='%23ffffff' fill-opacity='0.6' stroke='%2334689e' stroke-width='2.2'/%3E%3Cline x1='31' y1='30' x2='33' y2='30' stroke='%2334689e' stroke-width='2.2'/%3E%3Cpath d='M30.4 38.2 L33.6 38.2 L32 40.4 Z' fill='%23b04f6d'/%3E%3Cpath d='M28 42.5 Q30 44.8 32 42.8 Q34 44.8 36 42.5' fill='none' stroke='%234a382e' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M17 48.5 L32 53.5 L24.5 63 L13 56 Z' fill='%23ffffff' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpath d='M47 48.5 L32 53.5 L39.5 63 L51 56 Z' fill='%23ffffff' stroke='%234a382e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='32' cy='57.5' r='2.4' fill='%23b04f6d'/%3E%3C/svg%3E">
 
 <style>
@@ -133,24 +138,44 @@
         <div class="ph-name">Caitlyn Meeks</div>
         <div>AuxiLab Tenerife — research@auxi.cafe</div>
       </div>
-      <div class="ph-date">August 11, 2026</div>
+      <div class="ph-date">August 11, 2026 · amended August 13, 2026</div>
     </header>
     <div class="sidestamp" aria-hidden="true">AuxiLab · auxi.cafe · August 2026</div>
     <p class="dlrow"><a class="dl" download href="codebook-quantization.pdf">download whitepaper</a> <span class="hint">(pdf)</span></p>
     <ul class="pills">
       <li>registered 2026-08-11</li>
-      <li>internal run log #16–#17</li>
+      <li>internal run log #16–#17, #82</li>
       <li>2 seeds × 5 codebook sizes, zero misses</li>
       <li>replicated before publication</li>
       <li>promoted 2026-08-11</li>
+      <li>amended 2026-08-13 after audit</li>
     </ul>
+
+    <div class="note"><strong>Amendment notice, 2026 August 13.</strong> All
+    three findings in this preprint were independently audited on 2026-08-13.
+    The compilation finding and the smoothness finding drew <strong>audit
+    passes</strong>, on re-derivation and code review, with full-budget
+    re-measurement deferred because the machine was locked by a running
+    experiment. The cost finding drew a recorded <strong>concern</strong>
+    about the precision of one quoted number — a distinct verdict, not a
+    qualified pass — and that number has since been corrected.
+    In one line: the float32 reference the K=4096 cost was measured against
+    existed at seed 0 only, so the originally published band, 0.053–0.057
+    bits, subtracted a <em>seed-0</em> reference from a <em>seed-1</em>
+    measurement without disclosing it — a band narrower than the family's own
+    seed-to-seed spread. The missing seed-1 reference has now been measured
+    directly (2.6467; internal run log #82), and the corrected, entirely
+    same-seed band is <strong>0.0570–0.0583 bits</strong>. The headline is
+    unchanged and the correction tightens rather than weakens it. §4 and §7
+    report this in full; the Table 1 caption now carries both references.</div>
 
     <p class="abshead">Abstract</p>
     <p class="abstract">Can a continuous-state reservoir be <em>compiled</em>
     into a finite-state automaton at negligible cost? An earlier study in this
     research program asked the question with the obvious instrument — quantizing
     every coordinate of the state to b bits — and obtained a clean negative:
-    determinism never appeared at any resolution from 1 to 23 bits, because a
+    determinism never appeared at any of the nine resolutions tested between
+    1 and 23 bits, because a
     coarser grid still leaves astronomically many representable states. This
     study changes one thing: instead of rounding coordinates independently,
     the state is snapped, at every step, to its nearest vector in a <b>fixed
@@ -158,15 +183,20 @@
     cap on the cardinality of the state vector itself. That one change reverses
     the result.
     (1)&nbsp;At <em>every</em> tested K ∈ {16, 64, 256, 1024, 4096}, on both
-    seeds — 10 of 10 cells — the system becomes deterministic and compiles to a
-    finite-state automaton: identical recent-character suffixes of depth 7–11
-    map to the identical state at every one of 40,000 probed positions.
+    seeds — 10 of 10 cells — the automaton the codebook defines becomes
+    <em>synchronizing</em>: over 40,000 probed positions, identical
+    recent-character suffixes of depth 7–11 map to the identical state in
+    every multi-sample suffix class.
     (2)&nbsp;The dial is smooth: prediction cost degrades monotonically as
     the codebook shrinks, 8/8 adjacent comparisons, with no discontinuity and
     no reversal.
-    (3)&nbsp;The largest tested codebook is nearly free: K=4096 costs only
-    0.053–0.057 bits over the unquantized float32 reference — the cheapest
-    tested point on the dial compiles just as completely as the expensive ones.</p>
+    (3)&nbsp;The largest tested codebook is nearly free: K=4096 costs
+    0.0570–0.0583 bits over each seed's <em>own</em> unquantized float32
+    reference — the cheapest tested point on the dial compiles just as
+    completely as the expensive ones. That third band is a post-publication
+    correction: an independent audit found the originally quoted figure had
+    silently compared a seed-1 measurement against a seed-0 reference, and the
+    missing reference was then measured directly (§4, §7).</p>
     <p class="keywords"><b>Keywords</b> reservoir computing · vector
     quantization · finite-state automata · state-space discretization ·
     determinism · pre-registration</p>
@@ -178,10 +208,11 @@
     contrast, can be tabulated, audited, and proved things about. An earlier
     study in this program (internal run log #7) posed the compilation question
     with per-coordinate state quantization and obtained a striking negative:
-    bits-per-character (bpc) cost degraded smoothly below b≈6 bits and was
-    <em>exact</em> to float32 from b=8 — but short-memory determinism stayed at
-    exactly 0.0 at every b from
-    1 to 23. Rounding re-injects a small perturbation at each step, and a
+    bits-per-character (bpc) cost degraded smoothly below b≈6 bits and the
+    trained readout was <em>exact</em> to float32 from b=8 (the closed-form
+    ridge readout to within 0.0001 bits) — but short-memory determinism stayed
+    at exactly 0.0 at all nine tested resolutions between b=1 and b=23.
+    Rounding re-injects a small perturbation at each step, and a
     b-bit grid over 1024 coordinates still admits vastly more representable
     states than any run visits; no state recurred among the 40,000
     sampled states. A companion
@@ -223,8 +254,11 @@ x ← argmin_{c ∈ C} ‖x − c‖   # after every update step</pre>
     The freeze depth k* is the smallest depth at which that
     fraction reaches 1.0 — that is, the shortest window of recent input that
     fixes the state exactly. A system with finite k* is said to
-    <em>freeze</em>: its closed-loop dynamics are then a finite-state
-    automaton over the codebook. k* is judged only where at least 20
+    <em>freeze</em>. The closed-loop dynamics are a K-state automaton by
+    construction, whether or not k* is finite; what finite k* adds — and what
+    is measured here — is that the automaton <em>synchronizes</em>, so that
+    k* characters of input drive it to one determined state regardless of
+    where it started. k* is judged only where at least 20
     multi-sample classes
     support it — at K=4096 (seed 0), k*=10 rests on 2,172 such classes, not
     a thin slice. A consistency-check cell (K=∞, no snapping) reproduced the
@@ -238,8 +272,8 @@ x ← argmin_{c ∈ C} ‖x − c‖   # after every update step</pre>
       k* come out finite at each of the five K's? Named alternative, per K:
       the snap-to-nearest correction re-injects noise the way rounding did,
       and a small <em>cardinality</em> cap does not force determinism by
-      itself. Freezing at any K is a substantive result against the 0/23
-      contrast.</li>
+      itself. Freezing at any K is a substantive result against the
+      earlier study's zero-for-nine contrast.</li>
       <li><strong>M2</strong> (the dial): logistic validation bpc strictly
       improves along the whole ladder K = 16 → 4096, all four adjacent pairs
       (tie band ±0.005). Named alternative: non-monotone — as disclosed at
@@ -269,8 +303,11 @@ x ← argmin_{c ∈ C} ‖x − c‖   # after every update step</pre>
     <table class="data">
       <caption><b>Table 1.</b> Both registered passes (internal run log #16,
       seed 0; #17, seed 1; values seed 0 / seed 1). "Used" = distinct codewords
-      active in the closed loop. Float32 reference: logistic 2.6519, ridge
-      3.1073 (per-coordinate quantization study, run log #7). No cell tripped
+      active in the closed loop. Float32 reference, logistic: 2.6519 at seed 0
+      (per-coordinate quantization study, run log #7) and 2.6467 at seed 1
+      (run log #82, measured after the audit — see the amendment notice); ridge
+      reference 3.1073 at seed 0 and 3.1027 at seed 1, from the same two
+      cells. No cell tripped
       the divergence tripwire — a fit-invalidating divergence rule — across
       10/10 cells.</caption>
       <tr><th class="num">K</th><th class="num">logistic val bpc</th><th class="num">ridge val bpc</th><th class="num">k*</th><th class="num">used</th></tr>
@@ -287,7 +324,7 @@ x ← argmin_{c ∈ C} ‖x − c‖   # after every update step</pre>
     characters — k*'s exact value is not seed-stable, but its finiteness is
     universal, always well inside the probe's depth limit of 20. The
     contrast with per-coordinate rounding is not a near-miss; it is total
-    (0/23 there, 10/10 here). The freeze is not a collapse into a
+    (0 of 9 cells there, 10 of 10 here). The freeze is not a collapse into a
     trivial handful of states: at K=4096, over 3,300 distinct codewords
     remain in active use.</p>
 
@@ -300,14 +337,46 @@ x ← argmin_{c ∈ C} ‖x − c‖   # after every update step</pre>
     which is recorded as an observation and not pursued further here.</p>
 
     <p><strong>MQ1/NQ1: the low-cost end of the dial compiles.</strong>
-    K=4096 sits 0.0570
-    bits (seed 0) and 0.0531 bits (seed 1) above the float32 logistic
+    K=4096 sits 0.0570 bits (seed 0, 2.7089 − 2.6519) and 0.0583 bits
+    (seed 1, 2.7050 − 2.6467) above its own seed's float32 logistic
     reference — a third of the registered tolerance — while still freezing
-    at k*=10/11. Ridge gives the same picture (3.1406/3.1403 against the
-    reference's 3.1073), so the price is not an artifact of the trained
+    at k*=10/11. Ridge gives the same picture on the same same-seed basis
+    (+0.0333 at seed 0, 3.1406 − 3.1073; +0.0376 at seed 1, 3.1403 − 3.1027),
+    so the price is not an artifact of the trained
     instrument. Both halves of the result landed at the same K on both
     seeds; per the pre-stated rule, all three claims were promoted separately
     after the second pass.</p>
+
+    <h2 id="s41"><span class="sec">§4.1</span> The audit's concern on this
+    number, and its repair</h2>
+
+    <p>The seed-1 figure above is not what this preprint originally published.
+    The audit of 2026-08-13 re-derived both deltas exactly as they were then
+    written (0.0570 and 0.0531) and confirmed, field by field, that the
+    reference reservoir and the codebook-quantized reservoir share every
+    configuration value and the identical readout stack — a genuine
+    like-for-like comparison rather than a pipeline mismatch. But it then
+    established something the study had not disclosed: the unquantized float32
+    reference cell <em>existed at seed 0 only</em>. An exhaustive scan of the
+    program's result files found no unquantized reference at any other seed.
+    The seed-1 endpoint was therefore a cross-seed subtraction — a seed-1
+    codebook cell minus a seed-0 reference — and the quoted band's width,
+    0.0039 bits, was <em>narrower than this family's own seed-to-seed spread
+    at matched K</em> (0.0025–0.0251). "0.053–0.057" read as a two-seed
+    measurement range when it was one measurement plus one unquantified
+    difference. The audit left the finding promoted and the headline intact —
+    at roughly 0.055 bits the largest codebook is cheap under any reading —
+    and recorded the precision claim as having outrun its baseline coverage.</p>
+
+    <p>The repair was run rather than argued. The missing seed-1 unquantized
+    cell was measured directly at the same full budget (internal run log #82),
+    giving logistic validation bpc 2.6467 — within 0.0052 bits of the seed-0
+    reference, so the reference reservoir is in fact seed-stable at this width
+    and the substitution was imprecise rather than materially wrong. With both
+    endpoints now same-seed measurements, the corrected band is
+    <strong>0.0570–0.0583 bits</strong>, width 0.0013 — genuinely narrower
+    than the family's seed spread this time, because neither endpoint is a
+    stand-in. No other number in Table 1 changed.</p>
 
     <h2 id="s5"><span class="sec">§5</span> Discussion</h2>
 
@@ -325,7 +394,7 @@ x ← argmin_{c ∈ C} ‖x − c‖   # after every update step</pre>
     question was only what that costs.</p>
 
     <p><strong>The cost is measured, small, and smooth.</strong> The
-    compiled reservoir at K=4096 gives up about a twentieth of a bit of
+    compiled reservoir at K=4096 gives up about six hundredths of a bit of
     next-character prediction relative to its continuous counterpart, and the
     price rises predictably, without discontinuity, as the codebook shrinks
     toward 16. For this research program, an inspectable
@@ -375,18 +444,52 @@ x ← argmin_{c ∈ C} ‖x − c‖   # after every update step</pre>
       same 5-K sweep, seed 1 — an independent draw of the base reservoir, the
       warmup trajectory, and the codebook sample (internal run log #17). All
       three claims confirmed; promoted separately per the pre-stated rules.</li>
+      <li><strong>c16d8d49</strong> —
+      the audit's own repair card: one cell, the missing seed-1 unquantized
+      float32 reference at full budget (internal run log #82). Registered by
+      the audit before running, with both of its predictions — reference
+      within 0.01 bits of seed 0's, corrected same-seed delta inside
+      [0.045, 0.065] — stated in advance and both confirmed. This run
+      corrected an existing number; it added no new claim.</li>
     </ul>
 
-    <p><strong>Audit status: audit pending.</strong> This program requires
-    every promoted finding to be independently audited by a party that did not
-    run the science, re-deriving its numbers from the raw result files with
-    freshly written code. That audit has not yet been carried out for any of
-    the three findings reported here. Replication and audit are different guarantees, and this result
-    currently has the first and not the second.</p>
+    <p><strong>Audit status: independently audited 2026-08-13. Two of the
+    three findings — compilation and smoothness — drew AUDIT PASSES; the
+    cost finding drew a recorded CONCERN, since repaired, and stays
+    promoted.</strong> The audit re-derived the promoted numbers from the raw
+    result files with freshly written code and reviewed the code that
+    produced them. It did not re-measure at full budget: the machine was
+    locked by a running experiment for the whole session, and the auditor
+    recorded that refusal rather than presenting re-derivation as
+    re-measurement. On compilation, all ten
+    freeze depths were <em>recomputed</em> from the raw probe rows rather than
+    read from a stored field, and agreed 10/10; three checks the study had not
+    run were added, all clean — determinism holds at 1.0 at every depth from
+    k* out to the probe's limit of 20 in all ten cells, so it is not a
+    one-depth blip; k* is genuinely the first qualifying depth, with the depth
+    immediately below it already above 0.998 in every cell, so the ladder
+    converges rather than
+    oscillating; and the support behind each k* clears the study's own
+    twenty-class bar by 81–241×, which excludes chance agreement by hundreds
+    of orders of magnitude. On smoothness, all eight adjacent comparisons
+    re-derived with no mismatch, every gap 26–81× the tie band, and the audit
+    added six ladders the study does not claim: the sequence is monotone
+    under the closed-form ridge readout at both seeds, and monotone on the
+    untouched test split for both readouts at both seeds, which removes any
+    reading of
+    the smoothness as a trained-readout conditioning or split-selection
+    artifact. The concern, and its repair, are reported in §4.1; note that
+    the repair run itself post-dates the audit and has not been audited. One
+    interpretive note the audit recorded and this preprint adopts: finiteness
+    is definitional for any K-point codebook, so the empirical content of the
+    compilation finding is the <em>synchronization depth</em> and the cost,
+    not finiteness as such.</p>
 
     <p>All claims judged strictly against the registered wording; 2 seeds ×
-    5 codebook sizes; replicated before publication. Internal designation:
-    foothold lattice.</p>
+    5 codebook sizes; replicated before publication, and audited afterward,
+    with the one number the audit qualified corrected above and the audit
+    trail kept rather than tidied away. Internal designation:
+    goat lattice.</p>
 
     <footer>
       <p>AuxiLab · findings are pre-registered and replicated before publication</p>

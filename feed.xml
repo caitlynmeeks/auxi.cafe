@@ -6,7 +6,35 @@
     <atom:link href="https://auxi.cafe/feed.xml" rel="self" type="application/rss+xml"/>
     <description>Free and open, creative AI experiments from a solar-powered machine learning lab in the forests of Tenerife — every finding pre-registered and replicated before publication.</description>
     <language>en</language>
-    <lastBuildDate>Wed, 12 Aug 2026 17:20:00 +0100</lastBuildDate>
+    <lastBuildDate>Thu, 13 Aug 2026 09:26:00 +0100</lastBuildDate>
+    <item>
+      <title>We finally measured ourselves against an outsider — and got humbled twice, in opposite directions</title>
+      <link>https://auxi.cafe/experiments/parameter-matched-transformer/</link>
+      <guid isPermaLink="false">https://auxi.cafe/experiments/parameter-matched-transformer/#2026-08-13T09:26</guid>
+      <pubDate>Thu, 13 Aug 2026 09:26:00 +0100</pubDate>
+      <description>Every result in this lab compares one pond to another, so we built an outsider: a small transformer trained end to end on exactly our corpus, splits and budget, given exactly as many trainable parameters as our pond's reader and no pond underneath. All three sizes beat both of the pond's readouts, on both seeds, with the smallest squeaking past the trained-readout anchor by 0.036 bits at its narrowest. And none of them crossed a plain 5-gram count table: the biggest stopped 0.07-0.08 bits short, twice, while our own pond-plus-retrieval system clears that fence with no gradient descent at all. The fixed random reservoir is neither a free lunch nor replaceable at this budget — both halves now measured on one scoreboard.</description>
+    </item>
+    <item>
+      <title>Two published numbers went to the auditor, and one came back changed</title>
+      <link>https://auxi.cafe/experiments/codebook-quantization/</link>
+      <guid isPermaLink="false">https://auxi.cafe/experiments/codebook-quantization/#2026-08-13T09:12</guid>
+      <pubDate>Thu, 13 Aug 2026 09:12:00 +0100</pubDate>
+      <description>Four published findings went to the independent auditor this week. Three passed: the foothold-lattice paper's compilation and smoothness claims survived every hostile check, and the twin-brain paper's "a copy adds exactly nothing" passed with a twist — the auditor proved the tie is forced by algebra, so our three matching seeds certify the machinery rather than an uncertain effect, and the paper now says exactly that. The fourth drew a concern and a corrected number: our quoted "0.053–0.057 bits" for the biggest codebook had subtracted a seed-0 reference from a seed-1 measurement without disclosing it, giving a range narrower than our own seed-to-seed wobble. We measured the missing reference. The honest, entirely same-seed figure is 0.0570–0.0583 bits. The headline is unchanged; the precision we claimed had outrun the evidence, and now it doesn't. Both papers carry the concern and the repair in full.</description>
+    </item>
+    <item>
+      <title>We built a brain to score high on a famous "connectedness" ruler. It scored lower. Every single time.</title>
+      <link>https://auxi.cafe/experiments/integration-proxy-reservoir/</link>
+      <guid isPermaLink="false">https://auxi.cafe/experiments/integration-proxy-reservoir/#2026-08-13T09:06</guid>
+      <pubDate>Thu, 13 Aug 2026 09:06:00 +0100</pubDate>
+      <description>We set out to build a pond that would score high on a tractable measure of integrated information, using two ingredients that ought to help: a memory-glance and a pattern-multiplier that multiplies neurons together instead of just adding them. Both made the score fall, monotonically with gain, and using them together landed below the stronger one alone — the plain unmodified pond won on both seeds, and at the strongest setting the score dropped to about a seventh of where it started. Riding along: over the same ladder, guessing, remembering and the new ruler all moved together with no disagreement anywhere, the first time all three instruments have agreed everywhere in this lab. Read narrowly — no disagreement found on this one dial at two seeds, not proof that none exists.</description>
+    </item>
+    <item>
+      <title>We taught a pond to flip through its own old notes — and found it arguing with itself</title>
+      <link>https://auxi.cafe/experiments/attention-enhanced-reservoir/</link>
+      <guid isPermaLink="false">https://auxi.cafe/experiments/attention-enhanced-reservoir/#2026-08-13T08:58</guid>
+      <pubDate>Thu, 13 Aug 2026 08:58:00 +0100</pubDate>
+      <description>We gave a pond the trick that powers the big language models — glancing back at its own recent moments and picking the one that matches — but never trained it, leaving the wiring a fixed random draw like the rest of the pond. Glancing back cost guessing skill at all twelve settings, on both seeds, with no exceptions and no ties. But the cost is well behaved: gentler gain and wider lookback both make it cheaper, and at the widest, gentlest cell it nearly disappears (0.0022 and 0.0037 bits), the cheapest structurally new mechanism this lab has built. At the narrowest lookback window only, the pond remembers its recent letters better while guessing them worse on the very same dial — the first time one pond has disagreed with itself rather than with another pond.</description>
+    </item>
     <item>
       <title>Why 0.906 and not 1.0? A reader asked, and the answer was hiding in plain sight</title>
       <link>https://auxi.cafe/experiments/orthogonal-reservoir/</link>
